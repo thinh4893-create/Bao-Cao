@@ -25,6 +25,7 @@
         label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
         input[type="text"], input[type="number"], textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
         input:focus, textarea:focus { border-color: #007aff; background: #fff; }
+        input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
         textarea { height: 60px; resize: vertical; }
 
         /* Output Box */
@@ -50,25 +51,25 @@
     <h1>BÁO CÁO F4 AUTO - TAM TRINH</h1>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('tab8h')">1. Đầu giờ (8H)</button>
-        <button class="tab-btn" onclick="switchTab('tab17h')">2. Tăng ca (17H)</button>
-        <button class="tab-btn" onclick="switchTab('tab18h')">3. Cuối ngày (18H)</button>
+        <button class="tab-btn active" onclick="switchTab('tab8h', event)">1. Đầu giờ (8H)</button>
+        <button class="tab-btn" onclick="switchTab('tab17h', event)">2. Tăng ca (17H)</button>
+        <button class="tab-btn" onclick="switchTab('tab18h', event)">3. Cuối ngày (18H)</button>
     </div>
 
     <!-- FORM 8H -->
     <div id="tab8h" class="form-section active">
         <div class="form-grid">
             <div class="form-group">
-                <label>Cơ sở:</label>
-                <input type="text" id="coSo_8h" value="Tam Trinh" oninput="render8h()">
+                <label>Cơ sở (Cố định):</label>
+                <input type="text" id="coSo_8h" value="Tam Trinh" readonly>
             </div>
             <div class="form-group">
                 <label>Thời gian:</label>
                 <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
             </div>
             <div class="form-group">
-                <label>Quản lý (số người):</label>
-                <input type="number" id="quanLy_8h" value="1" oninput="render8h()">
+                <label>Quản lý (Cố định):</label>
+                <input type="number" id="quanLy_8h" value="1" readonly>
             </div>
             <div class="form-group">
                 <label>Sale Off (số người):</label>
@@ -79,8 +80,8 @@
                 <input type="number" id="kyThuat_8h" value="5" oninput="render8h()">
             </div>
             <div class="form-group">
-                <label>Kế toán văn phòng:</label>
-                <input type="number" id="keToan_8h" value="1" oninput="render8h()">
+                <label>Kế toán văn phòng (Cố định):</label>
+                <input type="number" id="keToan_8h" value="1" readonly>
             </div>
             <div class="form-group">
                 <label>Nhân sự đi làm:</label>
@@ -92,7 +93,7 @@
             </div>
             <div class="form-group full-width">
                 <label>Chi tiết (nghỉ/vắng...):</label>
-                <input type="text" id="chiTiet_8h" value="Hoàng nghỉ buổi sáng." oninput="render8h()">
+                <input type="text" id="chiTiet_8h" value="" placeholder="Nhập chi tiết nếu có..." oninput="render8h()">
             </div>
             <div class="form-group full-width">
                 <label>Đi muộn:</label>
@@ -105,8 +106,8 @@
     <div id="tab17h" class="form-section">
         <div class="form-grid">
             <div class="form-group full-width">
-                <label>Cơ sở:</label>
-                <input type="text" id="coSo_17h" value="Tam Trinh" oninput="render17h()">
+                <label>Cơ sở (Cố định):</label>
+                <input type="text" id="coSo_17h" value="Tam Trinh" readonly>
             </div>
             <div class="form-group full-width">
                 <label>Kỹ thuật viên (tên các nhân sự tăng ca):</label>
@@ -127,8 +128,8 @@
     <div id="tab18h" class="form-section">
         <div class="form-grid">
             <div class="form-group full-width">
-                <label>Cơ sở:</label>
-                <input type="text" id="coSo_18h" value="Tam Trinh" oninput="render18h()">
+                <label>Cơ sở (Cố định):</label>
+                <input type="text" id="coSo_18h" value="Tam Trinh" readonly>
             </div>
             <div class="form-group full-width">
                 <label>Dán phim cách nhiệt:</label>
@@ -177,7 +178,6 @@
 <script>
     let currentTab = 'tab8h';
 
-    // Định dạng số 1 chữ số thành 2 chữ số (ví dụ: 1 -> 01)
     function fmt(val) {
         if (!val && val !== 0) return '00';
         let num = parseInt(val, 10);
@@ -185,7 +185,6 @@
         return num < 10 && num >= 0 ? '0' + num : '' + num;
     }
 
-    // Lấy ngày hiện tại dạng DD/MM/YYYY
     function getTodayString() {
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -194,12 +193,12 @@
         return `${dd}/${mm}/${yyyy}`;
     }
 
-    function switchTab(tabId) {
+    function switchTab(tabId, evt) {
         currentTab = tabId;
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
 
-        event.target.classList.add('active');
+        if(evt) evt.target.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
         if (tabId === 'tab8h') render8h();
@@ -209,19 +208,19 @@
 
     // Mẫu 1: Báo cáo đầu giờ 8h
     function render8h() {
-        const coSo = document.getElementById('coSo_8h').value.trim();
+        const coSo = "Tam Trinh";
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
-        const ql = fmt(document.getElementById('quanLy_8h').value);
+        const ql = fmt(1); // Cố định 01
         const sale = fmt(document.getElementById('saleOff_8h').value);
         const kt = fmt(document.getElementById('kyThuat_8h').value);
-        const ktvp = fmt(document.getElementById('keToan_8h').value);
+        const ktvp = fmt(1); // Cố định 01
         
-        // Tính tổng nhân lực tự động
-        const tong = fmt((parseInt(document.getElementById('quanLy_8h').value)||0) + 
+        // Tính tổng nhân lực tự động: Quản lý (1) + Sale Off + Kỹ thuật + Kế toán (1)
+        const tong = fmt(1 + 
                          (parseInt(document.getElementById('saleOff_8h').value)||0) + 
                          (parseInt(document.getElementById('kyThuat_8h').value)||0) + 
-                         (parseInt(document.getElementById('keToan_8h').value)||0));
+                         1);
                          
         const diLam = fmt(document.getElementById('diLam_8h').value);
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
@@ -252,7 +251,7 @@ Em xin cảm ơn ạ!`;
 
     // Mẫu 2: Báo cáo tăng ca 17h
     function render17h() {
-        const coSo = document.getElementById('coSo_17h').value.trim();
+        const coSo = "Tam Trinh";
         const kyThuat = document.getElementById('kyThuat_17h').value.trim();
         const congViec = document.getElementById('congViec_17h').value.trim();
         const thoiGian = document.getElementById('thoiGian_17h').value.trim();
@@ -271,7 +270,7 @@ Em gửi ạ.`;
 
     // Mẫu 3: Báo cáo cuối ngày 18h
     function render18h() {
-        const coSo = document.getElementById('coSo_18h').value.trim();
+        const coSo = "Tam Trinh";
         const ngay = getTodayString();
         const danPhim = document.getElementById('danPhim_18h').value.trim();
         const ppf = document.getElementById('ppf_18h').value.trim();
@@ -311,7 +310,6 @@ Em báo cáo ạ.`;
         });
     }
 
-    // Khởi tạo hiển thị ban đầu
     window.onload = function() {
         render8h();
     };
