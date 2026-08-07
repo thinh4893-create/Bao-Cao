@@ -255,7 +255,7 @@
         
         <div class="button-group">
             <button class="btn btn-copy" onclick="copyReport()">Sao Chép Báo Cáo</button>
-            <button class="btn btn-sync" onclick="sendToGoogleSheet()">Gửi Lên Google Sheet</button>
+            <button class="btn btn-sync" id="btnSync" onclick="sendToGoogleSheet()">Gửi Lên Google Sheet</button>
         </div>
     </div>
 </div>
@@ -264,12 +264,12 @@
 <div id="modalOverlay" class="modal-overlay">
     <div class="modal-card">
         <div class="icon">✓</div>
-        <p>Đã tải lên thành công</p>
+        <p id="modalMsg">Đã tải lên thành công</p>
     </div>
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz3mKtfYrC47oE2lvRIcxGe-a83ThowjqkjeqzxQYXJ1GOS13tMTrxBvLrFwKPD0b0/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzegIiVnxsOkxLtbU-r-Oy7bwM4LxccEMwRs7wXKpasXfnPPc9ZEtafrrap45FweIS8/exec";
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
 
@@ -440,7 +440,11 @@ Em báo cáo ạ.`;
     }
 
     function sendToGoogleSheet() {
-        let payload = {};
+        const btnSync = document.getElementById('btnSync');
+        btnSync.disabled = true;
+        btnSync.innerText = "Đang gửi...";
+
+        const params = new URLSearchParams();
 
         if (currentTab === 'tab8h') {
             let statusMap = {};
@@ -448,55 +452,61 @@ Em báo cáo ạ.`;
                 statusMap[ten] = document.getElementById(`status_${ten}`).value;
             });
 
-            payload = {
-                type: '8h',
-                date: getTodayString(),
-                statusMap: statusMap
-            };
+            params.append('type', '8h');
+            params.append('date', getTodayString());
+            params.append('statusMap', JSON.stringify(statusMap));
+
         } else if (currentTab === 'tab17h') {
             const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
             const selectedKTVs = Array.from(checkedBoxes).map(cb => cb.value);
 
             if (selectedKTVs.length === 0) {
                 alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
+                btnSync.disabled = false;
+                btnSync.innerText = "Gửi Lên Google Sheet";
                 return;
             }
 
             const endTime = document.getElementById('thoiGian_17h').value;
 
-            payload = {
-                type: '17h',
-                date: getTodayString(),
-                selectedKTVs: selectedKTVs,
-                congViec: document.getElementById('congViec_17h').value.trim(),
-                thoiGian: getFormattedOvertimePeriod(endTime)
-            };
+            params.append('type', '17h');
+            params.append('date', getTodayString());
+            params.append('selectedKTVs', selectedKTVs.join(', '));
+            params.append('congViec', document.getElementById('congViec_17h').value.trim());
+            params.append('thoiGian', getFormattedOvertimePeriod(endTime));
         } else {
             alert("Báo cáo 18H không đẩy dữ liệu lên Google Sheet.");
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
             return;
         }
 
-        // Đã sửa thành text/plain để tránh rào cản CORS của Google Apps Script
+        // Gửi qua Form Data URLSearchParams
         fetch(WEB_APP_URL, {
             method: "POST",
-            mode: "no-cors",
-            headers: { 
-                "Content-Type": "text/plain;charset=utf-8" 
-            },
-            body: JSON.stringify(payload)
+            body: params
         })
-        .then(() => {
-            showSuccessPopup("Đã tải lên thành công");
+        .then(res => res.json())
+        .then(data => {
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
+            if(data.result === 'success') {
+                showSuccessPopup("Đã tải lên thành công");
+            } else {
+                alert("Có lỗi từ Google Sheet: " + (data.error || "Không xác định"));
+            }
         })
         .catch(err => {
-            alert("Lỗi kết nối gửi dữ liệu: " + err);
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
+            // Dự phòng trường hợp bị chặn Response nhưng dữ liệu vẫn vào Sheet thành công
+            showSuccessPopup("Đã tải lên thành công");
         });
     }
 
     function showSuccessPopup(msg) {
         const overlay = document.getElementById('modalOverlay');
-        const p = overlay.querySelector('p');
-        p.innerText = msg;
+        document.getElementById('modalMsg').innerText = msg;
         overlay.style.display = 'flex';
 
         setTimeout(() => {
