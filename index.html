@@ -82,12 +82,16 @@
                 <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
             </div>
             
-            <!-- Tuỳ chỉnh số lượng Quản lý và Kế toán -->
+            <!-- Tuỳ chỉnh số lượng Quản lý, Sale Off và Kế toán -->
             <div class="form-group">
                 <label>Số lượng Quản lý:</label>
                 <input type="number" id="quanLy_8h" value="1" min="0" oninput="render8h()">
             </div>
             <div class="form-group">
+                <label>Số lượng Sale Off:</label>
+                <input type="number" id="saleOff_8h" value="0" min="0" oninput="render8h()">
+            </div>
+            <div class="form-group full-width">
                 <label>Số Kế toán văn phòng:</label>
                 <input type="number" id="keToan_8h" value="1" min="0" oninput="render8h()">
             </div>
@@ -254,7 +258,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzegIiVnxsOkxLtbU-r-Oy7bwM4LxccEMwRs7wXKpasXfnPPc9ZEtafrrap45FweIS8/exec";
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
 
@@ -290,13 +294,14 @@
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
         
-        // Đọc số lượng Quản lý và Kế toán từ ô input
+        // Đọc số lượng Quản lý, Sale Off và Kế toán từ ô input
         const quanLy = parseInt(document.getElementById('quanLy_8h').value, 10) || 0;
+        const saleOff = parseInt(document.getElementById('saleOff_8h').value, 10) || 0;
         const keToan = parseInt(document.getElementById('keToan_8h').value, 10) || 0;
         const ktvCoSo = ALL_KTV.length; // 5 KTV
 
-        // Tổng nhân lực = Quản lý + Sale Off (0) + KTV (5) + Kế toán
-        const tongNhanLuc = quanLy + 0 + ktvCoSo + keToan;
+        // Tổng nhân lực = Quản lý + Sale Off + KTV (5) + Kế toán
+        const tongNhanLuc = quanLy + saleOff + ktvCoSo + keToan;
 
         let dsNghiText = [];
         let countKtvDiLam = 0;
@@ -316,8 +321,8 @@
             }
         });
 
-        // Nhân sự đi làm = Quản lý + Kế toán + số KTV đi làm/nghỉ nửa buổi
-        const nhanSuDiLam = quanLy + keToan + countKtvDiLam;
+        // Nhân sự đi làm = Quản lý + Sale Off + Kế toán + số KTV đi làm/nghỉ nửa buổi
+        const nhanSuDiLam = quanLy + saleOff + keToan + countKtvDiLam;
 
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
@@ -329,11 +334,9 @@
             chiTietFull.push(ghiChuBoSung);
         }
         
-        let chiTietFormatted = "Không có.";
+        let chiTietFormatted = "   •  Khái quát ổn định.";
         if (chiTietFull.length > 0) {
             chiTietFormatted = chiTietFull.map(item => `   •  ${item}`).join('\n');
-        } else {
-            chiTietFormatted = `   •  Không có.`;
         }
 
         // Output định dạng chuẩn theo ảnh mẫu
@@ -343,7 +346,7 @@ Ngày: ${ngay}
 Thời gian: ${thoiGian}
 1. Tổng nhân lực: ${fmt(tongNhanLuc)}
    •  Quản lý: ${fmt(quanLy)}
-   •  Sale Off: 00
+   •  Sale Off: ${fmt(saleOff)}
    •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
    •  Kế toán văn phòng: ${fmt(keToan)}
 2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
