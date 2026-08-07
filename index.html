@@ -1,689 +1,274 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Báo Cáo Tự Động - F4 AUTO</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Báo Cáo F4 AUTO</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+    .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #1a73e8; margin-bottom: 20px; }
+    
+    /* Tabs Navigation */
+    .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+    .tab-btn { flex: 1; padding: 12px; border: none; background: #e9ecef; cursor: pointer; font-weight: bold; border-radius: 8px 8px 0 0; transition: 0.3s; }
+    .tab-btn.active { background: #1a73e8; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/emoji/192/sports-car.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/emoji/32/sports-car.png">
-    <meta name="apple-mobile-web-app-title" content="F4 AUTO">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    /* Form Styles */
+    .form-group { margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; }
+    input[type="date"], select, input[type="number"], input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    
+    /* Table Styles */
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 10px; }
+    .btn-delete { background-color: #d9534f; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-delete:hover { background-color: #c9302c; }
+    .btn-submit { background-color: #28a745; color: white; border: none; padding: 12px; width: 100%; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    .btn-submit:hover { background-color: #218838; }
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f2f2f7; padding: 15px; color: #1c1c1e; }
-        .container { max-width: 680px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        h1 { text-align: center; font-size: 20px; margin-bottom: 15px; color: #007aff; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        /* Ô CHỌN NGÀY THỜI GIAN THỰC */
-        .date-picker-box { background: #eef6ff; border: 1px solid #007aff; padding: 10px 14px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .date-picker-box label { font-size: 13px; font-weight: bold; color: #007aff; }
-        .date-picker-box input[type="date"] { padding: 6px 10px; border-radius: 6px; border: 1px solid #007aff; font-size: 14px; font-weight: bold; color: #1c1c1e; outline: none; background: #fff; }
-
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #e5e5ea; padding: 4px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 10px 5px; border: none; background: transparent; font-size: 13px; font-weight: 600; color: #8e8e93; border-radius: 6px; cursor: pointer; transition: 0.2s; text-align: center; }
-        .tab-btn.active { background: #ffffff; color: #007aff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-        .form-section { display: none; }
-        .form-section.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .full-width { grid-column: span 2; }
-        
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
-        input[type="text"], input[type="number"], select { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
-        input:focus, select:focus { border-color: #007aff; background: #fff; }
-        input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
-        
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
-        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; cursor: pointer; color: #1c1c1e; }
-        .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
-
-        .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5ea; background: #fafafa; }
-        .ktv-row:last-child { border-bottom: none; }
-        .ktv-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
-        .ktv-select-status { width: auto; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; background: #ffffff; }
-
-        .output-box { margin-top: 20px; padding: 15px; background: #f9f9fb; border-radius: 8px; border: 1px solid #e5e5ea; }
-        .output-header { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #1c1c1e; }
-        .output-content { white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #d1d1d6; min-height: 120px; color: #000; line-height: 1.5; }
-        
-        .button-group { display: flex; gap: 10px; margin-top: 12px; }
-        .btn { flex: 1; padding: 12px; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
-        .btn-copy { background: #34c759; }
-        .btn-copy:hover { background: #28a745; }
-        .btn-sync { background: #007aff; }
-        .btn-sync:hover { background: #0056b3; }
-
-        /* BẢNG THỐNG KÊ THEO THÁNG THEO MẪU MÀU XANH TÍM */
-        .stat-card { margin-top: 25px; background: linear-gradient(135deg, #2557e0 0%, #3e33c7 100%); border-radius: 14px; padding: 20px; color: #ffffff; box-shadow: 0 8px 20px rgba(37, 87, 224, 0.25); }
-        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
-        .stat-title { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
-        .stat-month-select { background: #ffffff; color: #1c1c1e; font-weight: bold; padding: 6px 12px; border-radius: 8px; border: none; outline: none; font-size: 13px; cursor: pointer; }
-        
-        .stat-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; opacity: 0.9; }
-        .stat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
-        .stat-item-box { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 10px 5px; text-align: center; backdrop-filter: blur(5px); }
-        .stat-item-box .ktv-label { font-size: 12px; font-weight: 700; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; }
-        .stat-item-box .ktv-val { font-size: 15px; font-weight: 800; color: #ffe600; }
-
-        /* LỊCH SỬ BÁO CÁO */
-        .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
-        .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
-        .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
-        .sub-tab-btn.active { background: #007aff; color: #ffffff; }
-
-        .history-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .history-item { background: #f2f2f7; border-radius: 6px; border-left: 4px solid #007aff; overflow: hidden; }
-        .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .history-item-header:hover { background: #e5e5ea; }
-        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.4; }
-        .history-item.open .history-item-body { display: block; }
-        .history-item.open .arrow { transform: rotate(180deg); }
-        .arrow { transition: transform 0.2s ease; font-size: 10px; color: #8e8e93; }
-
-        /* Popup */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
-        .modal-card .icon { font-size: 40px; color: #34c759; margin-bottom: 10px; }
-        .modal-card p { font-size: 16px; font-weight: bold; color: #1c1c1e; }
-
-        @media (max-width: 480px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            .stat-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-    </style>
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background-color: #f8f9fa; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    
+    .ktv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 5px; }
+    .ktv-item { background: #f1f3f4; padding: 10px; border-radius: 6px; }
+    .ktv-item label { margin-bottom: 5px; display: block; color: #1a73e8; }
+  </style>
 </head>
 <body>
 
 <div class="container">
-    <h1> BÁO CÁO F4 AUTO - TAM TRINH</h1>
+  <h2>HỆ THỐNG QUẢN LÝ BÁO CÁO F4 AUTO</h2>
 
-    <!-- Ô TỦY CHỈNH NGÀY BÁO CÁO (MẶC ĐỊNH MÁY THỜI GIAN THỰC) -->
-    <div class="date-picker-box">
-        <label>📅 Chọn Ngày Báo Cáo:</label>
-        <input type="date" id="selectedDate" onchange="updateAllRenders()">
-    </div>
+  <!-- Thanh chọn Tab -->
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="switchTab('8h')">📋 Báo Cáo 8H (Chấm Công)</button>
+    <button class="tab-btn" onclick="switchTab('17h')">⏰ Báo Cáo 17H (Tăng Ca)</button>
+  </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('tab8h', event)">1. Đầu giờ (8H)</button>
-        <button class="tab-btn" onclick="switchTab('tab17h', event)">2. Tăng ca (17H)</button>
-        <button class="tab-btn" onclick="switchTab('tab18h', event)">3. Cuối ngày (18H)</button>
-    </div>
-
-    <!-- FORM 8H -->
-    <div id="tab8h" class="form-section active">
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Cơ sở (Cố định):</label>
-                <input type="text" id="coSo_8h" value="Tam Trinh" readonly>
-            </div>
-            <div class="form-group">
-                <label>Thời gian:</label>
-                <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
-            </div>
-            <div class="form-group">
-                <label>Số lượng Quản lý:</label>
-                <input type="text" id="quanLy_8h" value="01" readonly>
-            </div>
-            <div class="form-group">
-                <label>Số lượng Sale Off:</label>
-                <input type="number" id="saleOff_8h" value="0" min="0" oninput="render8h()">
-            </div>
-            <div class="form-group full-width">
-                <label>Số Kế toán văn phòng:</label>
-                <input type="text" id="keToan_8h" value="01" readonly>
-            </div>
-
-            <div class="form-group full-width">
-                <label>Trạng thái Kỹ thuật viên hôm nay:</label>
-                <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
-                    <div class="ktv-row"><span class="ktv-name">Vũ</span><select id="status_Vũ" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Hậu</span><select id="status_Hậu" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Hoàng</span><select id="status_Hoàng" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Tùng</span><select id="status_Tùng" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Thịnh</span><select id="status_Thịnh" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Dự kiến nghỉ ngày mai:</label>
-                <input type="text" id="nghiMai_8h" value="Chưa có." oninput="render8h()">
-            </div>
-            <div class="form-group">
-                <label>Đi muộn:</label>
-                <input type="text" id="diMuon_8h" value="Không có." oninput="render8h()">
-            </div>
-            <div class="form-group full-width">
-                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
-                <input type="text" id="chiTiet_8h" value="" placeholder="Nhập thêm ghi chú khác nếu cần..." oninput="render8h()">
-            </div>
+  <!-- TAB 1: BÁO CÁO 8H -->
+  <div id="tab-8h" class="tab-content active">
+    <form id="form8h" onsubmit="submitForm(event, '8h')">
+      <div class="form-group">
+        <label>Ngày báo cáo:</label>
+        <input type="date" id="date8h" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Trạng thái KTV:</label>
+        <div class="ktv-grid">
+          <div class="ktv-item"><label>Vũ</label><select id="ktv_Vu"><option>Đi làm</option><option>Nghỉ</option><option>Nghỉ sáng</option><option>Nghỉ chiều</option></select></div>
+          <div class="ktv-item"><label>Hậu</label><select id="ktv_Hau"><option>Đi làm</option><option>Nghỉ</option><option>Nghỉ sáng</option><option>Nghỉ chiều</option></select></div>
+          <div class="ktv-item"><label>Hoàng</label><select id="ktv_Hoang"><option>Đi làm</option><option>Nghỉ</option><option>Nghỉ sáng</option><option>Nghỉ chiều</option></select></div>
+          <div class="ktv-item"><label>Tùng</label><select id="ktv_Tung"><option>Đi làm</option><option>Nghỉ</option><option>Nghỉ sáng</option><option>Nghỉ chiều</option></select></div>
+          <div class="ktv-item"><label>Thịnh</label><select id="ktv_Thinh"><option>Đi làm</option><option>Nghỉ</option><option>Nghỉ sáng</option><option>Nghỉ chiều</option></select></div>
         </div>
-    </div>
+      </div>
+      
+      <button type="submit" class="btn-submit">Gửi Báo Cáo 8H</button>
+    </form>
+  </div>
 
-    <!-- FORM 17H -->
-    <div id="tab17h" class="form-section">
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label>Cơ sở (Cố định):</label>
-                <input type="text" id="coSo_17h" value="Tam Trinh" readonly>
-            </div>
-            <div class="form-group full-width">
-                <label>Chọn Kỹ thuật viên tăng ca:</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Vũ" onchange="render17h()"> Vũ</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Hậu" onchange="render17h()"> Hậu</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Hoàng" onchange="render17h()"> Hoàng</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Tùng" onchange="render17h()"> Tùng</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Thịnh" onchange="render17h()"> Thịnh</label>
-                </div>
-            </div>
-            <div class="form-group full-width">
-                <label>Nội dung công việc:</label>
-                <input type="text" id="congViec_17h" placeholder="Nhập nội dung công việc..." oninput="render17h()">
-            </div>
-            <div class="form-group full-width">
-                <label>Thời gian tăng ca đến:</label>
-                <select id="thoiGian_17h" onchange="render17h()">
-                    <option value="20:00">20:00</option>
-                    <option value="21:00">21:00</option>
-                    <option value="22:00" selected>22:00</option>
-                </select>
-            </div>
+  <!-- TAB 2: BÁO CÁO 17H -->
+  <div id="tab-17h" class="tab-content">
+    <form id="form17h" onsubmit="submitForm(event, '17h')">
+      <div class="form-group">
+        <label>Ngày tăng ca:</label>
+        <input type="date" id="date17h" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Chọn KTV Tăng Ca:</label>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <label><input type="checkbox" name="ktv17" value="Vũ"> Vũ</label>
+          <label><input type="checkbox" name="ktv17" value="Hậu"> Hậu</label>
+          <label><input type="checkbox" name="ktv17" value="Hoàng"> Hoàng</label>
+          <label><input type="checkbox" name="ktv17" value="Tùng"> Tùng</label>
+          <label><input type="checkbox" name="ktv17" value="Thịnh"> Thịnh</label>
         </div>
-    </div>
+      </div>
 
-    <!-- FORM 18H -->
-    <div id="tab18h" class="form-section">
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label>Cơ sở (Cố định):</label>
-                <input type="text" id="coSo_18h" value="Tam Trinh" readonly>
-            </div>
-            <div class="form-group full-width"><label>Dán phim cách nhiệt:</label><input type="text" id="danPhim_18h" placeholder="Ví dụ: 2 xe..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>PPF:</label><input type="text" id="ppf_18h" placeholder="Ví dụ: 1 xe..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Wrap:</label><input type="text" id="wrap_18h" value="" placeholder="Nhập tình trạng Wrap..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Ghi chú:</label><input type="text" id="ghiChu_18h" value="" placeholder="Nhập ghi chú nếu có..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Số lỗi:</label><input type="text" id="soLoi_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Lỗi chất lượng khi giao xe:</label><input type="text" id="loi1_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Lỗi đồng phục không tuân thủ:</label><input type="text" id="loi2_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Lỗi 5S tại cơ sở:</label><input type="text" id="loi3_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Các lỗi khác:</label><input type="text" id="loi4_18h" value="Không có" oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Thiết bị điện các khu vực không sử dụng:</label><input type="text" id="loi5_18h" value="đã được tắt đầy đủ." oninput="render18h()"></div>
-        </div>
-    </div>
+      <div class="form-group">
+        <label>Số giờ tăng ca:</label>
+        <input type="number" id="hours17h" step="0.5" placeholder="Ví dụ: 1.5, 2..." required>
+      </div>
 
-    <!-- KHUNG XUẤT KẾT QUẢ -->
-    <div class="output-box">
-        <div class="output-header">Nội dung báo cáo copy:</div>
-        <div id="reportOutput" class="output-content"></div>
-        
-        <div class="button-group">
-            <button class="btn btn-copy" onclick="copyReport()">Sao Chép Báo Cáo</button>
-            <button class="btn btn-sync" id="btnSync" onclick="sendToGoogleSheet()">Gửi Lên Google Sheet</button>
-        </div>
-    </div>
+      <div class="form-group">
+        <label>Khung giờ tăng ca:</label>
+        <input type="text" id="thoiGian17h" placeholder="Ví dụ: 17h30 - 19h00">
+      </div>
 
-    <!-- BẢNG THỐNG KÊ THEO THÁNG MÀU XANH TÍM -->
-    <div class="stat-card">
-        <div class="stat-header">
-            <div class="stat-title">📊 Thống Kê Theo Tháng</div>
-            <div>
-                <span style="font-size: 11px; opacity:0.8; margin-right: 5px;">CHỌN THÁNG:</span>
-                <input type="month" id="statMonthPicker" class="stat-month-select" onchange="calculateMonthlyStats()">
-            </div>
-        </div>
+      <button type="submit" class="btn-submit">Gửi Báo Cáo Tăng Ca</button>
+    </form>
+  </div>
 
-        <div class="stat-section-title">👨‍🔧 TỔNG SỐ NGÀY ĐI LÀM TRONG THÁNG </div>
-        <div class="stat-grid" id="gridWorkingDays">
-            <!-- RenderJS -->
-        </div>
+  <!-- MỤC LỊCH SỬ DÙNG CHUNG -->
+  <div class="history-header">
+    <h3 style="margin: 0; color: #333;">📜 Lịch Sử Báo Cáo</h3>
+    <button class="btn-delete" onclick="deleteSelectedHistory()">🗑️ Xóa mục đã chọn</button>
+  </div>
 
-        <div class="stat-section-title" style="margin-top: 15px;">⏰ TỔNG SỐ GIỜ TĂNG CA TRONG THÁNG </div>
-        <div class="stat-grid" id="gridOvertimeHours">
-            <!-- RenderJS -->
-        </div>
-    </div>
-
-    <!-- LỊCH SỬ BÁO CÁO -->
-    <div class="history-box">
-        <div class="history-title">
-            <span>📋 Lịch Sử Báo Cáo</span>
-            <button onclick="clearHistoryTab()" style="border:none; background:transparent; color:#ff3b30; font-size:12px; cursor:pointer;">Xóa mục này</button>
-        </div>
-        
-        <div class="history-tabs">
-            <button class="sub-tab-btn active" onclick="switchHistoryTab('8h', event)">Lịch sử 8H</button>
-            <button class="sub-tab-btn" onclick="switchHistoryTab('17h', event)">Lịch sử 17H</button>
-            <button class="sub-tab-btn" onclick="switchHistoryTab('18h', event)">Lịch sử 18H</button>
-        </div>
-
-        <div id="historyList" class="history-list"></div>
-    </div>
-</div>
-
-<div id="modalOverlay" class="modal-overlay">
-    <div class="modal-card">
-        <div class="icon">✓</div>
-        <p id="modalMsg">Đã tải lên thành công</p>
-    </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 40px;"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+        <th>Ngày</th>
+        <th>Vũ</th>
+        <th>Hậu</th>
+        <th>Hoàng</th>
+        <th>Tùng</th>
+        <th>Thịnh</th>
+      </tr>
+    </thead>
+    <tbody id="historyTableBody">
+      <tr><td colspan="7">Đang tải lịch sử...</td></tr>
+    </tbody>
+  </table>
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz3mKtfYrC47oE2lvRIcxGe-a83ThowjqkjeqzxQYXJ1GOS13tMTrxBvLrFwKPD0b0/exec";
-    const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
-    let currentTab = 'tab8h';
-    let currentHistoryTab = '8h';
+  // ⚠️ THAY CẤU HÌNH WEB APP URL CỦA BẠN VÀO ĐÂY
+  const WEB_APP_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; 
 
-    // Đặt ngày thời gian thực cho ô tùy chỉnh ngày
-    function setDefaultDate() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        document.getElementById('selectedDate').value = `${yyyy}-${mm}-${dd}`;
+  let currentTab = '8h';
 
-        const monthStr = `${yyyy}-${mm}`;
-        document.getElementById('statMonthPicker').value = monthStr;
+  // Tự động đặt ngày hôm nay
+  document.getElementById('date8h').valueAsDate = new Date();
+  document.getElementById('date17h').valueAsDate = new Date();
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+    if (tab === '8h') {
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
+      document.getElementById('tab-8h').classList.add('active');
+    } else {
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
+      document.getElementById('tab-17h').classList.add('active');
+    }
+  }
+
+  // Chức năng tích/bỏ tích chọn tất cả
+  function toggleSelectAll(master) {
+    const checkboxes = document.querySelectorAll(".row-checkbox");
+    checkboxes.forEach(cb => cb.checked = master.checked);
+  }
+
+  // Hàm hiển thị Lịch sử
+  function renderHistory(dataList) {
+    const tbody = document.getElementById("historyTableBody");
+    tbody.innerHTML = "";
+
+    if (!dataList || dataList.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7">Không có lịch sử</td></tr>';
+      return;
     }
 
-    function getSelectedDateFormatted() {
-        const val = document.getElementById('selectedDate').value;
-        if (!val) return "";
-        const parts = val.split('-');
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    dataList.forEach(item => {
+      // Bỏ qua dòng Tổng
+      if (item.date && item.date.toString().includes("TỔNG")) return;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="checkbox" class="row-checkbox" value="${item.date}"></td>
+        <td>${item.date || ''}</td>
+        <td>${item.Vu || item['Vũ'] || '-'}</td>
+        <td>${item.Hau || item['Hậu'] || '-'}</td>
+        <td>${item.Hoang || item['Hoàng'] || '-'}</td>
+        <td>${item.Tung || item['Tùng'] || '-'}</td>
+        <td>${item.Thinh || item['Thịnh'] || '-'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Hàm Xóa các mục đã được tích chọn
+  function deleteSelectedHistory() {
+    const selectedCheckboxes = document.querySelectorAll(".row-checkbox:checked");
+    
+    if (selectedCheckboxes.length === 0) {
+      alert("⚠️ Vui lòng tích chọn ít nhất 1 mục lịch sử cần xóa!");
+      return;
     }
 
-    function fmt(val) {
-        let num = parseInt(val, 10);
-        if (isNaN(num)) return '00';
-        return num < 10 && num >= 0 ? '0' + num : '' + num;
-    }
+    const selectedDates = Array.from(selectedCheckboxes).map(cb => cb.value);
 
-    function updateAllRenders() {
-        if (currentTab === 'tab8h') render8h();
-        if (currentTab === 'tab17h') render17h();
-        if (currentTab === 'tab18h') render18h();
-    }
+    if (!confirm(`Bạn có chắc chắn muốn xóa ${selectedDates.length} mục lịch sử đã chọn?`)) return;
 
-    function switchTab(tabId, evt) {
-        currentTab = tabId;
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
-
-        if(evt) evt.target.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
-
-        if (tabId === 'tab8h') { render8h(); switchHistoryTab('8h'); }
-        if (tabId === 'tab17h') { render17h(); switchHistoryTab('17h'); }
-        if (tabId === 'tab18h') { render18h(); switchHistoryTab('18h'); }
-    }
-
-    function render8h() {
-        const coSo = "Tam Trinh";
-        const ngay = getSelectedDateFormatted();
-        const thoiGian = document.getElementById('thoiGian_8h').value.trim();
-        
-        const quanLy = 1;
-        const keToan = 1;
-        const saleOff = parseInt(document.getElementById('saleOff_8h').value, 10) || 0;
-        const ktvCoSo = ALL_KTV.length;
-
-        const tongNhanLuc = quanLy + saleOff + ktvCoSo + keToan;
-
-        let dsNghiText = [];
-        let countKtvDiLam = 0;
-
-        ALL_KTV.forEach(ten => {
-            const status = document.getElementById(`status_${ten}`).value;
-            if (status === "Đi làm") {
-                countKtvDiLam++;
-            } else if (status === "Nghỉ") {
-                dsNghiText.push(`${ten} nghỉ.`);
-            } else if (status === "Nghỉ sáng") {
-                countKtvDiLam++;
-                dsNghiText.push(`${ten} nghỉ buổi sáng.`);
-            } else if (status === "Nghỉ chiều") {
-                countKtvDiLam++;
-                dsNghiText.push(`${ten} nghỉ buổi chiều.`);
-            }
-        });
-
-        const nhanSuDiLam = quanLy + saleOff + keToan + countKtvDiLam;
-
-        const nghiMai = document.getElementById('nghiMai_8h').value.trim();
-        const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
-        const diMuon = document.getElementById('diMuon_8h').value.trim();
-
-        let chiTietFull = [...dsNghiText];
-        if (ghiChuBoSung !== "") {
-            chiTietFull.push(ghiChuBoSung);
-        }
-        
-        let chiTietFormatted = "   •  Khái quát ổn định.";
-        if (chiTietFull.length > 0) {
-            chiTietFormatted = chiTietFull.map(item => `   •  ${item}`).join('\n');
-        }
-
-        const text = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
-Cơ sở: ${coSo}
-Ngày: ${ngay}
-Thời gian: ${thoiGian}
-1. Tổng nhân lực: ${fmt(tongNhanLuc)}
-   •  Quản lý: 01
-   •  Sale Off: ${fmt(saleOff)}
-   •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
-   •  Kế toán văn phòng: 01
-2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
-3. Dự kiến nghỉ ngày mai:
-   •  ${nghiMai}
-4. Chi tiết:
-${chiTietFormatted}
-5. Đi muộn:
-   •  ${diMuon}
-
-Em xin cảm ơn ạ!`;
-
-        document.getElementById('reportOutput').innerText = text;
-    }
-
-    function getHoursValue(endTimeVal) {
-        if (endTimeVal === "20:00") return 1;
-        if (endTimeVal === "21:00") return 2;
-        if (endTimeVal === "22:00") return 3;
-        return 0;
-    }
-
-    function render17h() {
-        const coSo = "Tam Trinh";
-        const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
-        const selectedKTV = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
-        const congViec = document.getElementById('congViec_17h').value.trim();
-        const endTime = document.getElementById('thoiGian_17h').value;
-
-        // Chỉ ghi ngắn gọn thời gian kết thúc (20:00, 21:00, 22:00) theo yêu cầu 2
-        const text = `ĐĂNG KÝ TĂNG CA
-
-– Cơ sở: ${coSo}
-– Kỹ thuật viên: ${selectedKTV || 'Chưa chọn'}
-– Nội dung công việc: ${congViec}
-– Thời gian tăng ca: ${endTime}
-
-Em gửi ạ.`;
-
-        document.getElementById('reportOutput').innerText = text;
-    }
-
-    function render18h() {
-        const coSo = "Tam Trinh";
-        const ngay = getSelectedDateFormatted();
-        const danPhim = document.getElementById('danPhim_18h').value.trim();
-        const ppf = document.getElementById('ppf_18h').value.trim();
-        const wrap = document.getElementById('wrap_18h').value.trim();
-        const ghiChu = document.getElementById('ghiChu_18h').value.trim();
-        const soLoi = document.getElementById('soLoi_18h').value.trim();
-        const loi1 = document.getElementById('loi1_18h').value.trim();
-        const loi2 = document.getElementById('loi2_18h').value.trim();
-        const loi3 = document.getElementById('loi3_18h').value.trim();
-        const loi4 = document.getElementById('loi4_18h').value.trim();
-        const loi5 = document.getElementById('loi5_18h').value.trim();
-
-        const text = `BÁO CÁO CUỐI NGÀY
-
-Cơ sở: ${coSo}
-Ngày: ${ngay}
-Tiến độ công việc
-• Dán phim cách nhiệt: ${danPhim}
-• PPF: ${ppf}
-• Wrap: ${wrap}
-• Ghi chú: ${ghiChu}
-• Số lỗi: ${soLoi}
-Kiểm soát chất lượng
-1. Lỗi chất lượng khi giao xe: ${loi1}
-2. Lỗi đồng phục không tuân thủ: ${loi2}
-3. Lỗi 5S tại cơ sở: ${loi3}
-4. Các lỗi khác: ${loi4}
-5. Thiết bị điện tại các khu vực không sử dụng ${loi5}
-
-Em báo cáo ạ.`;
-
-        document.getElementById('reportOutput').innerText = text;
-    }
-
-    function copyReport() {
-        const text = document.getElementById('reportOutput').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            showSuccessPopup("Đã sao chép nội dung báo cáo!");
-            saveToHistory("Sao chép", text);
-        });
-    }
-
-    function sendToGoogleSheet() {
-        const btnSync = document.getElementById('btnSync');
-        btnSync.disabled = true;
-        btnSync.innerText = "Đang gửi...";
-
-        const params = new URLSearchParams();
-        const reportText = document.getElementById('reportOutput').innerText;
-        const reportDate = getSelectedDateFormatted();
-
-        if (currentTab === 'tab8h') {
-            let statusMap = {};
-            ALL_KTV.forEach(ten => {
-                statusMap[ten] = document.getElementById(`status_${ten}`).value;
-            });
-
-            params.append('type', '8h');
-            params.append('date', reportDate);
-            params.append('statusMap', JSON.stringify(statusMap));
-
-        } else if (currentTab === 'tab17h') {
-            const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
-            const selectedKTVs = Array.from(checkedBoxes).map(cb => cb.value);
-
-            if (selectedKTVs.length === 0) {
-                alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
-                btnSync.disabled = false;
-                btnSync.innerText = "Gửi Lên Google Sheet";
-                return;
-            }
-
-            const endTime = document.getElementById('thoiGian_17h').value;
-
-            params.append('type', '17h');
-            params.append('date', reportDate);
-            params.append('selectedKTVs', selectedKTVs.join(', '));
-            params.append('hours', getHoursValue(endTime));
-            params.append('thoiGian', endTime);
-        } else {
-            alert("Báo cáo 18H không đẩy dữ liệu lên Google Sheet.");
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            saveToHistory("Lưu máy (18H)", reportText);
-            return;
-        }
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            body: params
-        })
-        .then(res => res.json())
-        .then(data => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã tải lên thành công");
-            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
-        })
-        .catch(err => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã tải lên thành công");
-            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
-        });
-    }
-
-    function statusMapStoreData() {
-        if (currentTab === 'tab8h') {
-            let map = {};
-            ALL_KTV.forEach(k => map[k] = document.getElementById(`status_${k}`).value);
-            return map;
-        } else if (currentTab === 'tab17h') {
-            const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
-            const selected = Array.from(checkedBoxes).map(cb => cb.value);
-            const endTime = document.getElementById('thoiGian_17h').value;
-            const hours = getHoursValue(endTime);
-            let map = {};
-            ALL_KTV.forEach(k => {
-                map[k] = selected.includes(k) ? hours : 0;
-            });
-            return map;
-        }
-        return null;
-    }
-
-    function showSuccessPopup(msg) {
-        const overlay = document.getElementById('modalOverlay');
-        document.getElementById('modalMsg').innerText = msg;
-        overlay.style.display = 'flex';
-        setTimeout(() => { overlay.style.display = 'none'; }, 2500);
-    }
-
-    function getReportCategory() {
-        if (currentTab === 'tab8h') return '8h';
-        if (currentTab === 'tab17h') return '17h';
-        if (currentTab === 'tab18h') return '18h';
-        return '8h';
-    }
-
-    function saveToHistory(actionType, content, extraData = null) {
-        const category = getReportCategory();
-        const storageKey = `f4_history_${category}`;
-        let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const now = new Date();
-        const dateVal = document.getElementById('selectedDate').value; // YYYY-MM-DD
-
-        const newItem = {
-            id: Date.now(),
-            dateIso: dateVal,
-            time: `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} - ${getSelectedDateFormatted()}`,
-            action: actionType,
-            content: content,
-            extraData: extraData
-        };
-
-        history.unshift(newItem);
-        localStorage.setItem(storageKey, JSON.stringify(history));
-        switchHistoryTab(category);
-        calculateMonthlyStats();
-    }
-
-    function switchHistoryTab(type, evt) {
-        currentHistoryTab = type;
-        document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
-
-        if(evt) {
-            evt.target.classList.add('active');
-        } else {
-            const btns = document.querySelectorAll('.sub-tab-btn');
-            if(type === '8h') btns[0].classList.add('active');
-            if(type === '17h') btns[1].classList.add('active');
-            if(type === '18h') btns[2].classList.add('active');
-        }
-
-        loadHistory();
-    }
-
-    function toggleHistoryItem(el) {
-        el.parentElement.classList.toggle('open');
-    }
-
-    function loadHistory() {
-        const storageKey = `f4_history_${currentHistoryTab}`;
-        let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const listEl = document.getElementById('historyList');
-
-        if (history.length === 0) {
-            listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử báo cáo ${currentHistoryTab.toUpperCase()} nào.</div>`;
-            return;
-        }
-
-        listEl.innerHTML = history.map(item => `
-            <div class="history-item">
-                <div class="history-item-header" onclick="toggleHistoryItem(this)">
-                    <span>📌 ${item.time} (${item.action})</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="history-item-body">${item.content}</div>
-            </div>
-        `).join('');
-    }
-
-    function clearHistoryTab() {
-        if(confirm(`Xóa toàn bộ lịch sử ${currentHistoryTab.toUpperCase()}?`)) {
-            localStorage.removeItem(`f4_history_${currentHistoryTab}`);
-            loadHistory();
-            calculateMonthlyStats();
-        }
-    }
-
-    // TÍNH TOÁN THỐNG KÊ THÁNG HIỂN THỊ LÊN GIAO DIỆN XANH TÍM
-    function calculateMonthlyStats() {
-        const selectedMonth = document.getElementById('statMonthPicker').value; // YYYY-MM
-        if (!selectedMonth) return;
-
-        let workDaysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
-        let overtimeMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
-
-        // 1. Tính công đi làm từ Lịch sử 8H
-        const list8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
-        list8h.forEach(item => {
-            if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
-                ALL_KTV.forEach(ktv => {
-                    const st = item.extraData[ktv];
-                    if (st === "Đi làm") workDaysMap[ktv] += 1;
-                    else if (st === "Nghỉ sáng" || st === "Nghỉ chiều") workDaysMap[ktv] += 0.5;
-                });
-            }
-        });
-
-        // 2. Tính giờ tăng ca từ Lịch sử 17H
-        const list17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
-        list17h.forEach(item => {
-            if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
-                ALL_KTV.forEach(ktv => {
-                    const hrs = parseFloat(item.extraData[ktv]) || 0;
-                    overtimeMap[ktv] += hrs;
-                });
-            }
-        });
-
-        // Render ra giao diện
-        const gridWork = document.getElementById('gridWorkingDays');
-        gridWork.innerHTML = ALL_KTV.map(ktv => `
-            <div class="stat-item-box">
-                <div class="ktv-label">${ktv}</div>
-                <div class="ktv-val">${workDaysMap[ktv]} công</div>
-            </div>
-        `).join('');
-
-        const gridOt = document.getElementById('gridOvertimeHours');
-        gridOt.innerHTML = ALL_KTV.map(ktv => `
-            <div class="stat-item-box">
-                <div class="ktv-label">${ktv}</div>
-                <div class="ktv-val">${overtimeMap[ktv]} giờ</div>
-            </div>
-        `).join('');
-    }
-
-    window.onload = function() {
-        setDefaultDate();
-        render8h();
-        loadHistory();
-        calculateMonthlyStats();
+    const payload = {
+      action: "delete_selected",
+      type: currentTab,
+      dates: JSON.stringify(selectedDates)
     };
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === "success") {
+        alert("✅ " + (data.message || "Đã xóa thành công các mục được chọn!"));
+        location.reload();
+      } else {
+        alert("❌ Lỗi: " + data.error);
+      }
+    })
+    .catch(err => {
+      alert("❌ Lỗi kết nối!");
+      console.error(err);
+    });
+  }
+
+  // Gửi Form Báo Cáo
+  function submitForm(event, type) {
+    event.preventDefault();
+    let payload = { type: type };
+
+    if (type === '8h') {
+      const dateVal = document.getElementById('date8h').value;
+      const parts = dateVal.split('-');
+      payload.date = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      
+      payload.statusMap = JSON.stringify({
+        "Vũ": document.getElementById('ktv_Vu').value,
+        "Hậu": document.getElementById('ktv_Hau').value,
+        "Hoàng": document.getElementById('ktv_Hoang').value,
+        "Tùng": document.getElementById('ktv_Tung').value,
+        "Thịnh": document.getElementById('ktv_Thinh').value
+      });
+    } else {
+      const dateVal = document.getElementById('date17h').value;
+      const parts = dateVal.split('-');
+      payload.date = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      
+      const selectedKTVs = Array.from(document.querySelectorAll('input[name="ktv17"]:checked')).map(cb => cb.value);
+      payload.selectedKTVs = selectedKTVs.join(', ');
+      payload.hours = document.getElementById('hours17h').value;
+      payload.thoiGian = document.getElementById('thoiGian17h').value;
+    }
+
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === 'success') {
+        alert('✅ Báo cáo thành công!');
+        location.reload();
+      } else {
+        alert('❌ Lỗi: ' + data.error);
+      }
+    })
+    .catch(err => alert('❌ Lỗi kết nối!'));
+  }
 </script>
 
 </body>
