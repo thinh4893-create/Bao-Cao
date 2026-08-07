@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Báo Cáo Tự Động - F4 AUTO</title>
 
-    <!-- 1. ICON Ô TÔ KHI THÊM VÀO MÀN HÌNH CHÍNH (PWA / BOOKMARK ICON) -->
+    <!-- ICON Ô TÔ KHI THÊM VÀO MÀN HÌNH CHÍNH -->
     <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/emoji/192/sports-car.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/emoji/32/sports-car.png">
     <meta name="apple-mobile-web-app-title" content="F4 AUTO">
@@ -52,14 +52,24 @@
         .btn-sync { background: #007aff; }
         .btn-sync:hover { background: #0056b3; }
 
-        /* LỊCH SỬ BÁO CÁO BAN DƯỚI */
+        /* KHUNG LỊCH SỬ BÁO CÁO CÓ THU GỌN / MỞ RỘNG */
         .history-box { margin-top: 25px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
-        .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .history-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .history-item { background: #f2f2f7; padding: 10px; border-radius: 6px; border-left: 4px solid #007aff; font-size: 13px; }
-        .history-item-header { display: flex; justify-content: space-between; font-weight: bold; color: #3a3a3c; margin-bottom: 4px; }
-        .history-item-body { color: #636366; white-space: pre-wrap; }
+        .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
+        .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
+        .sub-tab-btn.active { background: #007aff; color: #ffffff; }
+
+        .history-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         
+        /* CẤU TRÚC ACCORDION THU GỌN LỊCH SỬ */
+        .history-item { background: #f2f2f7; border-radius: 6px; border-left: 4px solid #007aff; overflow: hidden; }
+        .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+        .history-item-header:hover { background: #e5e5ea; }
+        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.4; }
+        .history-item.open .history-item-body { display: block; }
+        .history-item.open .arrow { transform: rotate(180deg); }
+        .arrow { transition: transform 0.2s ease; font-size: 10px; color: #8e8e93; }
+
         /* Modal Popup */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; animation: popIn 0.2s ease-out; }
@@ -274,14 +284,21 @@
         </div>
     </div>
 
-    <!-- 4. LỊCH SỬ BÁO CÁO (TRONG VÒNG 1 THÁNG) -->
+    <!-- LỊCH SỬ BÁO CÁO (THU GỌN / MỞ RỘNG) -->
     <div class="history-box">
         <div class="history-title">
             <span>📋 Lịch Sử Báo Cáo (30 Ngày Qua)</span>
-            <button onclick="clearOldHistory()" style="border:none; background:transparent; color:#ff3b30; font-size:12px; cursor:pointer;">Xóa lịch sử</button>
+            <button onclick="clearHistoryTab()" style="border:none; background:transparent; color:#ff3b30; font-size:12px; cursor:pointer;">Xóa mục này</button>
         </div>
+        
+        <div class="history-tabs">
+            <button class="sub-tab-btn active" onclick="switchHistoryTab('8h', event)">Lịch sử 8H</button>
+            <button class="sub-tab-btn" onclick="switchHistoryTab('17h', event)">Lịch sử 17H</button>
+            <button class="sub-tab-btn" onclick="switchHistoryTab('18h', event)">Lịch sử 18H</button>
+        </div>
+
         <div id="historyList" class="history-list">
-            <div style="text-align:center; color:#8e8e93; padding:10px;">Chưa có lịch sử báo cáo nào.</div>
+            <div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử báo cáo nào.</div>
         </div>
     </div>
 </div>
@@ -298,6 +315,7 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz3mKtfYrC47oE2lvRIcxGe-a83ThowjqkjeqzxQYXJ1GOS13tMTrxBvLrFwKPD0b0/exec";
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
+    let currentHistoryTab = '8h';
 
     function fmt(val) {
         let num = parseInt(val, 10);
@@ -321,9 +339,18 @@
         if(evt) evt.target.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
-        if (tabId === 'tab8h') render8h();
-        if (tabId === 'tab17h') render17h();
-        if (tabId === 'tab18h') render18h();
+        if (tabId === 'tab8h') {
+            render8h();
+            switchHistoryTab('8h');
+        }
+        if (tabId === 'tab17h') {
+            render17h();
+            switchHistoryTab('17h');
+        }
+        if (tabId === 'tab18h') {
+            render18h();
+            switchHistoryTab('18h');
+        }
     }
 
     function render8h() {
@@ -547,11 +574,20 @@ Em báo cáo ạ.`;
         }, 3000);
     }
 
-    // LƯU & XEM LỊCH SỬ BÁO CÁO (30 NGÀY QUẢN LÝ)
+    // XỬ LÝ LỊCH SỬ THU GỌN / MỞ RỘNG (ACCORDION)
+    function getReportCategory() {
+        if (currentTab === 'tab8h') return '8h';
+        if (currentTab === 'tab17h') return '17h';
+        if (currentTab === 'tab18h') return '18h';
+        return '8h';
+    }
+
     function saveToHistory(actionType, content) {
-        let history = JSON.parse(localStorage.getItem('f4_report_history') || '[]');
+        const category = getReportCategory();
+        const storageKey = `f4_history_${category}`;
+        let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
         const now = new Date();
-        
+
         const newItem = {
             id: Date.now(),
             time: `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} - ${getTodayString()}`,
@@ -562,36 +598,59 @@ Em báo cáo ạ.`;
 
         history.unshift(newItem);
 
-        // Lọc lịch sử chỉ giữ lại trong vòng 30 ngày (30 * 24 * 60 * 60 * 1000 ms)
+        // Lọc lịch sử giữ trong vòng 30 ngày
         const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
         history = history.filter(item => item.timestamp >= thirtyDaysAgo);
 
-        localStorage.setItem('f4_report_history', JSON.stringify(history));
+        localStorage.setItem(storageKey, JSON.stringify(history));
+        switchHistoryTab(category);
+    }
+
+    function switchHistoryTab(type, evt) {
+        currentHistoryTab = type;
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+        if(evt) {
+            evt.target.classList.add('active');
+        } else {
+            const btns = document.querySelectorAll('.sub-tab-btn');
+            if(type === '8h') btns[0].classList.add('active');
+            if(type === '17h') btns[1].classList.add('active');
+            if(type === '18h') btns[2].classList.add('active');
+        }
+
         loadHistory();
     }
 
+    function toggleHistoryItem(el) {
+        const item = el.parentElement;
+        item.classList.toggle('open');
+    }
+
     function loadHistory() {
-        let history = JSON.parse(localStorage.getItem('f4_report_history') || '[]');
+        const storageKey = `f4_history_${currentHistoryTab}`;
+        let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
         const listEl = document.getElementById('historyList');
 
         if (history.length === 0) {
-            listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:10px;">Chưa có lịch sử báo cáo nào.</div>`;
+            listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử báo cáo ${currentHistoryTab.toUpperCase()} nào.</div>`;
             return;
         }
 
         listEl.innerHTML = history.map(item => `
             <div class="history-item">
-                <div class="history-item-header">
-                    <span>${item.time} (${item.action})</span>
+                <div class="history-item-header" onclick="toggleHistoryItem(this)">
+                    <span>📌 ${item.time} (${item.action})</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="history-item-body">${item.content}</div>
             </div>
         `).join('');
     }
 
-    function clearOldHistory() {
-        if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử lưu trên máy này?")) {
-            localStorage.removeItem('f4_report_history');
+    function clearHistoryTab() {
+        if(confirm(`Bạn có chắc chắn muốn xóa lịch sử báo cáo nhóm ${currentHistoryTab.toUpperCase()}?`)) {
+            localStorage.removeItem(`f4_history_${currentHistoryTab}`);
             loadHistory();
         }
     }
