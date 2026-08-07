@@ -84,8 +84,8 @@
                 <input type="number" id="keToan_8h" value="1" readonly>
             </div>
             <div class="form-group">
-                <label>Nhân sự đi làm:</label>
-                <input type="number" id="diLam_8h" value="6" oninput="render8h()">
+                <label>Nhân sự đi làm (Tự tính):</label>
+                <input type="number" id="diLam_8h" value="7" readonly>
             </div>
             <div class="form-group">
                 <label>Dự kiến nghỉ ngày mai:</label>
@@ -215,17 +215,24 @@
         const coSo = "Tam Trinh";
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
-        const ql = fmt(1);
-        const sale = fmt(document.getElementById('saleOff_8h').value);
-        const kt = fmt(document.getElementById('kyThuat_8h').value);
-        const ktvp = fmt(1);
+        const qlNum = 1; // Cố định 1 Quản lý
+        const saleNum = parseInt(document.getElementById('saleOff_8h').value) || 0;
+        const ktNum = parseInt(document.getElementById('kyThuat_8h').value) || 0;
+        const ktvpNum = 1; // Cố định 1 Kế toán
+
+        const ql = fmt(qlNum);
+        const sale = fmt(saleNum);
+        const kt = fmt(ktNum);
+        const ktvp = fmt(ktvpNum);
         
-        const tong = fmt(1 + 
-                         (parseInt(document.getElementById('saleOff_8h').value)||0) + 
-                         (parseInt(document.getElementById('kyThuat_8h').value)||0) + 
-                         1);
-                         
-        const diLam = fmt(document.getElementById('diLam_8h').value);
+        // Tính tổng nhân lực và nhân sự đi làm
+        const tongVal = qlNum + saleNum + ktNum + ktvpNum;
+        const tong = fmt(tongVal);
+        
+        // Tự động cập nhật vào ô "Nhân sự đi làm"
+        document.getElementById('diLam_8h').value = tongVal;
+        const diLam = fmt(tongVal);
+
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const chiTiet = document.getElementById('chiTiet_8h').value.trim();
         const diMuon = document.getElementById('diMuon_8h').value.trim();
