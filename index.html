@@ -23,7 +23,7 @@
         
         .form-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
-        input[type="text"], select { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
         input:focus, select:focus { border-color: #007aff; background: #fff; }
         input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
         
@@ -82,6 +82,16 @@
                 <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
             </div>
             
+            <!-- Tuỳ chỉnh số lượng Quản lý và Kế toán -->
+            <div class="form-group">
+                <label>Số lượng Quản lý:</label>
+                <input type="number" id="quanLy_8h" value="1" min="0" oninput="render8h()">
+            </div>
+            <div class="form-group">
+                <label>Số Kế toán văn phòng:</label>
+                <input type="number" id="keToan_8h" value="1" min="0" oninput="render8h()">
+            </div>
+
             <div class="form-group full-width">
                 <label>Trạng thái Kỹ thuật viên hôm nay:</label>
                 <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
@@ -250,7 +260,7 @@
 
     function fmt(val) {
         let num = parseInt(val, 10);
-        if (isNaN(num)) return val;
+        if (isNaN(num)) return '00';
         return num < 10 && num >= 0 ? '0' + num : '' + num;
     }
 
@@ -280,6 +290,14 @@
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
         
+        // Đọc số lượng Quản lý và Kế toán từ ô input
+        const quanLy = parseInt(document.getElementById('quanLy_8h').value, 10) || 0;
+        const keToan = parseInt(document.getElementById('keToan_8h').value, 10) || 0;
+        const ktvCoSo = ALL_KTV.length; // 5 KTV
+
+        // Tổng nhân lực = Quản lý + Sale Off (0) + KTV (5) + Kế toán
+        const tongNhanLuc = quanLy + 0 + ktvCoSo + keToan;
+
         let dsNghiText = [];
         let countKtvDiLam = 0;
 
@@ -298,8 +316,8 @@
             }
         });
 
-        // Nhân sự đi làm = 1 Quản lý + 1 Kế toán + số KTV đi làm/nghỉ nửa buổi
-        const nhanSuDiLam = 1 + 1 + countKtvDiLam;
+        // Nhân sự đi làm = Quản lý + Kế toán + số KTV đi làm/nghỉ nửa buổi
+        const nhanSuDiLam = quanLy + keToan + countKtvDiLam;
 
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
@@ -313,21 +331,21 @@
         
         let chiTietFormatted = "Không có.";
         if (chiTietFull.length > 0) {
-            chiTietFormatted = chiTietFull.map(item => `•  ${item}`).join('\n');
+            chiTietFormatted = chiTietFull.map(item => `   •  ${item}`).join('\n');
         } else {
-            chiTietFormatted = `•  Khái quát ổn định.`;
+            chiTietFormatted = `   •  Không có.`;
         }
 
-        // Định dạng BÁO CÁO ĐẦU GIỜ 8H chuẩn theo mẫu ảnh
+        // Output định dạng chuẩn theo ảnh mẫu
         const text = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
 Cơ sở: ${coSo}
 Ngày: ${ngay}
 Thời gian: ${thoiGian}
-1. Tổng nhân lực: 07
-   •  Quản lý: 01
+1. Tổng nhân lực: ${fmt(tongNhanLuc)}
+   •  Quản lý: ${fmt(quanLy)}
    •  Sale Off: 00
-   •  Kỹ thuật viên cơ sở: 05
-   •  Kế toán văn phòng: 01
+   •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
+   •  Kế toán văn phòng: ${fmt(keToan)}
 2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
 3. Dự kiến nghỉ ngày mai:
    •  ${nghiMai}
