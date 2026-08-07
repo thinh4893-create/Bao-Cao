@@ -34,7 +34,8 @@
 
         .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5ea; background: #fafafa; }
         .ktv-row:last-child { border-bottom: none; }
-        .ktv-select-status { width: auto; font-size: 13px; padding: 4px 8px; border-radius: 6px; border: 1px solid #c7c7cc; }
+        .ktv-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
+        .ktv-select-status { width: auto; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; background: #ffffff; }
 
         /* Output Box */
         .output-box { margin-top: 20px; padding: 15px; background: #f9f9fb; border-radius: 8px; border: 1px solid #e5e5ea; }
@@ -82,46 +83,51 @@
             </div>
             
             <div class="form-group full-width">
-                <label>Điểm danh Kỹ thuật viên hôm nay:</label>
+                <label>Trạng thái Kỹ thuật viên hôm nay:</label>
                 <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
                     <div class="ktv-row">
-                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Vũ" checked onchange="toggleKtvStatus('Vũ')"> Vũ</label>
+                        <span class="ktv-name">Vũ</span>
                         <select id="status_Vũ" class="ktv-select-status" onchange="render8h()">
-                            <option value="Cả ngày">Cả ngày</option>
-                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
-                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
                         </select>
                     </div>
                     <div class="ktv-row">
-                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Hậu" checked onchange="toggleKtvStatus('Hậu')"> Hậu</label>
+                        <span class="ktv-name">Hậu</span>
                         <select id="status_Hậu" class="ktv-select-status" onchange="render8h()">
-                            <option value="Cả ngày">Cả ngày</option>
-                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
-                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
                         </select>
                     </div>
                     <div class="ktv-row">
-                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Hoàng" checked onchange="toggleKtvStatus('Hoàng')"> Hoàng</label>
+                        <span class="ktv-name">Hoàng</span>
                         <select id="status_Hoàng" class="ktv-select-status" onchange="render8h()">
-                            <option value="Cả ngày">Cả ngày</option>
-                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
-                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
                         </select>
                     </div>
                     <div class="ktv-row">
-                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Tùng" checked onchange="toggleKtvStatus('Tùng')"> Tùng</label>
+                        <span class="ktv-name">Tùng</span>
                         <select id="status_Tùng" class="ktv-select-status" onchange="render8h()">
-                            <option value="Cả ngày">Cả ngày</option>
-                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
-                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
                         </select>
                     </div>
                     <div class="ktv-row">
-                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Thịnh" checked onchange="toggleKtvStatus('Thịnh')"> Thịnh</label>
+                        <span class="ktv-name">Thịnh</span>
                         <select id="status_Thịnh" class="ktv-select-status" onchange="render8h()">
-                            <option value="Cả ngày">Cả ngày</option>
-                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
-                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
                         </select>
                     </div>
                 </div>
@@ -242,7 +248,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzegIiVnxsOkxLtbU-r-Oy7bwM4LxccEMwRs7wXKpasXfnPPc9ZEtafrrap45FweIS8/exec";
+    const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
 
@@ -273,39 +279,26 @@
         if (tabId === 'tab18h') render18h();
     }
 
-    function toggleKtvStatus(ten) {
-        const cb = document.querySelector(`.ktv-8h-checkbox[value="${ten}"]`);
-        const select = document.getElementById(`status_${ten}`);
-        select.disabled = !cb.checked;
-        render8h();
-    }
-
     function render8h() {
         const coSo = "Tam Trinh";
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
         
-        let dsDiLamText = [];
         let dsNghiText = [];
         let countDiLam = 0;
 
         ALL_KTV.forEach(ten => {
-            const cb = document.querySelector(`.ktv-8h-checkbox[value="${ten}"]`);
-            if (cb && cb.checked) {
+            const status = document.getElementById(`status_${ten}`).value;
+            if (status === "Đi làm") {
                 countDiLam++;
-                const status = document.getElementById(`status_${ten}`).value;
-                if (status === "Cả ngày") {
-                    dsDiLamText.push(ten);
-                } else if (status === "Buổi sáng") {
-                    dsDiLamText.push(`${ten} (Nửa buổi sáng)`);
-                    dsNghiText.push(`${ten} nghỉ buổi chiều`);
-                } else if (status === "Buổi chiều") {
-                    dsDiLamText.push(`${ten} (Nửa buổi chiều)`);
-                    dsNghiText.push(`${ten} nghỉ buổi sáng`);
-                }
-            } else {
-                // Trường hợp không chọn checkbox -> Nghỉ cả ngày
+            } else if (status === "Nghỉ") {
                 dsNghiText.push(`${ten} nghỉ`);
+            } else if (status === "Nghỉ sáng") {
+                countDiLam++; // Vẫn tính có đi làm nửa buổi
+                dsNghiText.push(`${ten} nghỉ sáng`);
+            } else if (status === "Nghỉ chiều") {
+                countDiLam++; // Vẫn tính có đi làm nửa buổi
+                dsNghiText.push(`${ten} nghỉ chiều`);
             }
         });
 
@@ -315,7 +308,7 @@
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
         const diMuon = document.getElementById('diMuon_8h').value.trim();
 
-        // Ghép danh sách nghỉ + ghi chú bổ sung vào mục 3
+        // Ghép thông tin nghỉ + ghi chú bổ sung vào mục Chi tiết
         let chiTietFull = [...dsNghiText];
         if (ghiChuBoSung !== "") {
             chiTietFull.push(ghiChuBoSung);
@@ -326,7 +319,7 @@
 Cơ sở: ${coSo}
 Ngày: ${ngay}
 Thời gian: ${thoiGian}
-1. Kỹ thuật viên đi làm (${fmt(countDiLam)} người): ${dsDiLamText.join(', ') || 'Không có'}
+1. Kỹ thuật viên đi làm (${fmt(countDiLam)} người)
 2. Dự kiến nghỉ ngày mai:
 • ${nghiMai}
 3. Chi tiết:
@@ -409,14 +402,13 @@ Em báo cáo ạ.`;
             let dsNghi = [];
 
             ALL_KTV.forEach(ten => {
-                const cb = document.querySelector(`.ktv-8h-checkbox[value="${ten}"]`);
-                if (cb && cb.checked) {
-                    const status = document.getElementById(`status_${ten}`).value;
-                    let strStatus = "Đi làm cả ngày";
-                    if (status === "Buổi sáng") strStatus = "Nghỉ buổi chiều";
-                    if (status === "Buổi chiều") strStatus = "Nghỉ buổi sáng";
-
-                    dsDiLam.push({ ten: ten, trangThai: strStatus });
+                const status = document.getElementById(`status_${ten}`).value;
+                if (status === "Đi làm") {
+                    dsDiLam.push({ ten: ten, trangThai: "Đi làm cả ngày" });
+                } else if (status === "Nghỉ sáng") {
+                    dsDiLam.push({ ten: ten, trangThai: "Nghỉ sáng" });
+                } else if (status === "Nghỉ chiều") {
+                    dsDiLam.push({ ten: ten, trangThai: "Nghỉ chiều" });
                 } else {
                     dsNghi.push(ten);
                 }
