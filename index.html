@@ -40,7 +40,7 @@
         /* Output Box */
         .output-box { margin-top: 20px; padding: 15px; background: #f9f9fb; border-radius: 8px; border: 1px solid #e5e5ea; }
         .output-header { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #1c1c1e; }
-        .output-content { white-space: pre-wrap; font-family: monospace, monospace; font-size: 13px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #d1d1d6; min-height: 120px; color: #000; }
+        .output-content { white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #d1d1d6; min-height: 120px; color: #000; line-height: 1.5; }
         
         .button-group { display: flex; gap: 10px; margin-top: 12px; }
         .btn { flex: 1; padding: 12px; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
@@ -134,20 +134,16 @@
             </div>
 
             <div class="form-group">
-                <label>Số KTV đi làm:</label>
-                <input type="text" id="diLam_8h" value="05 người" readonly>
-            </div>
-            <div class="form-group">
                 <label>Dự kiến nghỉ ngày mai:</label>
                 <input type="text" id="nghiMai_8h" value="Chưa có." oninput="render8h()">
             </div>
-            <div class="form-group full-width">
-                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
-                <input type="text" id="chiTiet_8h" value="" placeholder="Ví dụ: Xin nghỉ vì lý do cá nhân..." oninput="render8h()">
-            </div>
-            <div class="form-group full-width">
+            <div class="form-group">
                 <label>Đi muộn:</label>
                 <input type="text" id="diMuon_8h" value="Không có." oninput="render8h()">
+            </div>
+            <div class="form-group full-width">
+                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
+                <input type="text" id="chiTiet_8h" value="" placeholder="Nhập thêm ghi chú khác nếu cần..." oninput="render8h()">
             </div>
         </div>
     </div>
@@ -285,47 +281,60 @@
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
         
         let dsNghiText = [];
-        let countDiLam = 0;
+        let countKtvDiLam = 0;
 
         ALL_KTV.forEach(ten => {
             const status = document.getElementById(`status_${ten}`).value;
             if (status === "Đi làm") {
-                countDiLam++;
+                countKtvDiLam++;
             } else if (status === "Nghỉ") {
-                dsNghiText.push(`${ten} nghỉ`);
+                dsNghiText.push(`${ten} nghỉ.`);
             } else if (status === "Nghỉ sáng") {
-                countDiLam++; // Vẫn tính có đi làm nửa buổi
-                dsNghiText.push(`${ten} nghỉ sáng`);
+                countKtvDiLam++; // Vẫn tính làm chiều
+                dsNghiText.push(`${ten} nghỉ buổi sáng.`);
             } else if (status === "Nghỉ chiều") {
-                countDiLam++; // Vẫn tính có đi làm nửa buổi
-                dsNghiText.push(`${ten} nghỉ chiều`);
+                countKtvDiLam++; // Vẫn tính làm sáng
+                dsNghiText.push(`${ten} nghỉ buổi chiều.`);
             }
         });
 
-        document.getElementById('diLam_8h').value = fmt(countDiLam) + " người";
+        // Nhân sự đi làm = 1 Quản lý + 1 Kế toán + số KTV đi làm/nghỉ nửa buổi
+        const nhanSuDiLam = 1 + 1 + countKtvDiLam;
 
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
         const diMuon = document.getElementById('diMuon_8h').value.trim();
 
-        // Ghép thông tin nghỉ + ghi chú bổ sung vào mục Chi tiết
+        // Ghép danh sách nghỉ vào mục Chi tiết
         let chiTietFull = [...dsNghiText];
         if (ghiChuBoSung !== "") {
             chiTietFull.push(ghiChuBoSung);
         }
-        const chiTietString = chiTietFull.length > 0 ? chiTietFull.join('; ') : "Bình thường.";
+        
+        let chiTietFormatted = "Không có.";
+        if (chiTietFull.length > 0) {
+            chiTietFormatted = chiTietFull.map(item => `•  ${item}`).join('\n');
+        } else {
+            chiTietFormatted = `•  Khái quát ổn định.`;
+        }
 
+        // Định dạng BÁO CÁO ĐẦU GIỜ 8H chuẩn theo mẫu ảnh
         const text = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
 Cơ sở: ${coSo}
 Ngày: ${ngay}
 Thời gian: ${thoiGian}
-1. Kỹ thuật viên đi làm (${fmt(countDiLam)} người)
-2. Dự kiến nghỉ ngày mai:
-• ${nghiMai}
-3. Chi tiết:
-• ${chiTietString}
-4. Đi muộn:
-• ${diMuon}
+1. Tổng nhân lực: 07
+   •  Quản lý: 01
+   •  Sale Off: 00
+   •  Kỹ thuật viên cơ sở: 05
+   •  Kế toán văn phòng: 01
+2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
+3. Dự kiến nghỉ ngày mai:
+   •  ${nghiMai}
+4. Chi tiết:
+${chiTietFormatted}
+5. Đi muộn:
+   •  ${diMuon}
 
 Em xin cảm ơn ạ!`;
 
