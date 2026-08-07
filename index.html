@@ -75,9 +75,10 @@
         .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
         .sub-tab-btn.active { background: #007aff; color: #ffffff; }
 
-        .history-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .history-list { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .history-item { background: #f2f2f7; border-radius: 6px; border-left: 4px solid #007aff; overflow: hidden; }
-        .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .history-item-header { padding: 8px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; }
+        .history-header-left { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; }
         .history-item-header:hover { background: #e5e5ea; }
         .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.4; }
         .history-item.open .history-item-body { display: block; }
@@ -102,7 +103,7 @@
 <div class="container">
     <h1> BÁO CÁO F4 AUTO - TAM TRINH</h1>
 
-    <!-- Ô TỦY CHỈNH NGÀY BÁO CÁO (MẶC ĐỊNH MÁY THỜI GIAN THỰC) -->
+    <!-- Ô TÙY CHỈNH NGÀY BÁO CÁO (MẶC ĐỊNH MÁY THỜI GIAN THỰC) -->
     <div class="date-picker-box">
         <label>📅 Chọn Ngày Báo Cáo:</label>
         <input type="date" id="selectedDate" onchange="updateAllRenders()">
@@ -252,7 +253,7 @@
     <div class="history-box">
         <div class="history-title">
             <span>📋 Lịch Sử Báo Cáo</span>
-            <button onclick="clearHistoryTab()" style="border:none; background:transparent; color:#ff3b30; font-size:12px; cursor:pointer;">Xóa mục này</button>
+            <button onclick="deleteSelectedHistory()" style="border:1px solid #ff3b30; background:#fff; color:#ff3b30; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">Xóa mục đã chọn</button>
         </div>
         
         <div class="history-tabs">
@@ -277,6 +278,13 @@
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
     let currentHistoryTab = '8h';
+
+    window.onload = function() {
+        setDefaultDate();
+        render8h();
+        switchHistoryTab('8h');
+        calculateMonthlyStats();
+    };
 
     // Đặt ngày thời gian thực cho ô tùy chỉnh ngày
     function setDefaultDate() {
@@ -404,7 +412,6 @@ Em xin cảm ơn ạ!`;
         const congViec = document.getElementById('congViec_17h').value.trim();
         const endTime = document.getElementById('thoiGian_17h').value;
 
-        // Chỉ ghi ngắn gọn thời gian kết thúc (20:00, 21:00, 22:00) theo yêu cầu 2
         const text = `ĐĂNG KÝ TĂNG CA
 
 – Cơ sở: ${coSo}
@@ -597,7 +604,7 @@ Em báo cáo ạ.`;
     }
 
     function toggleHistoryItem(el) {
-        el.parentElement.classList.toggle('open');
+        el.closest('.history-item').classList.toggle('open');
     }
 
     function loadHistory() {
@@ -612,78 +619,91 @@ Em báo cáo ạ.`;
 
         listEl.innerHTML = history.map(item => `
             <div class="history-item">
-                <div class="history-item-header" onclick="toggleHistoryItem(this)">
-                    <span>📌 ${item.time} (${item.action})</span>
-                    <span class="arrow">▼</span>
+                <div class="history-item-header">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #3a3a3c;">
+                        <input type="checkbox" class="history-checkbox" value="${item.id}" style="width: 16px; height: 16px; cursor: pointer;">
+                    </label>
+                    <div class="history-header-left" onclick="toggleHistoryItem(this)">
+                        <span>📌 ${item.time} (${item.action})</span>
+                    </div>
+                    <span class="arrow" onclick="toggleHistoryItem(this)" style="cursor: pointer; padding: 0 5px;">▼</span>
                 </div>
                 <div class="history-item-body">${item.content}</div>
             </div>
         `).join('');
     }
 
-    function clearHistoryTab() {
-        if(confirm(`Xóa toàn bộ lịch sử ${currentHistoryTab.toUpperCase()}?`)) {
-            localStorage.removeItem(`f4_history_${currentHistoryTab}`);
+    function deleteSelectedHistory() {
+        const checkedBoxes = document.querySelectorAll('.history-checkbox:checked');
+        if (checkedBoxes.length === 0) {
+            alert("Vui lòng chọn ít nhất một mục lịch sử cần xóa bằng cách tích vào ô vuông!");
+            return;
+        }
+
+        if (confirm(`Bạn có chắc chắn muốn xóa ${checkedBoxes.length} mục lịch sử đã chọn không?`)) {
+            const storageKey = `f4_history_${currentHistoryTab}`;
+            let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            
+            const idsToDelete = Array.from(checkedBoxes).map(cb => Number(cb.value));
+            
+            // Lọc giữ lại những mục không bị xóa
+            history = history.filter(item => !idsToDelete.includes(item.id));
+
+            localStorage.setItem(storageKey, JSON.stringify(history));
             loadHistory();
             calculateMonthlyStats();
+            showSuccessPopup("Đã xóa các mục đã chọn!");
         }
     }
 
     // TÍNH TOÁN THỐNG KÊ THÁNG HIỂN THỊ LÊN GIAO DIỆN XANH TÍM
     function calculateMonthlyStats() {
         const selectedMonth = document.getElementById('statMonthPicker').value; // YYYY-MM
-        if (!selectedMonth) return;
+        let daysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
+        let hoursMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
 
-        let workDaysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
-        let overtimeMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
-
-        // 1. Tính công đi làm từ Lịch sử 8H
-        const list8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
-        list8h.forEach(item => {
+        // 1. Thống kê số ngày làm từ lịch sử 8H
+        const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
+        history8h.forEach(item => {
             if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
-                ALL_KTV.forEach(ktv => {
-                    const st = item.extraData[ktv];
-                    if (st === "Đi làm") workDaysMap[ktv] += 1;
-                    else if (st === "Nghỉ sáng" || st === "Nghỉ chiều") workDaysMap[ktv] += 0.5;
+                ALL_KTV.forEach(k => {
+                    const st = item.extraData[k];
+                    if (st === "Đi làm") daysMap[k] += 1;
+                    else if (st === "Nghỉ sáng" || st === "Nghỉ chiều") daysMap[k] += 0.5;
                 });
             }
         });
 
-        // 2. Tính giờ tăng ca từ Lịch sử 17H
-        const list17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
-        list17h.forEach(item => {
+        // 2. Thống kê số giờ tăng ca từ lịch sử 17H
+        const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
+        history17h.forEach(item => {
             if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
-                ALL_KTV.forEach(ktv => {
-                    const hrs = parseFloat(item.extraData[ktv]) || 0;
-                    overtimeMap[ktv] += hrs;
+                ALL_KTV.forEach(k => {
+                    if (item.extraData[k]) {
+                        hoursMap[k] += Number(item.extraData[k]) || 0;
+                    }
                 });
             }
         });
 
-        // Render ra giao diện
-        const gridWork = document.getElementById('gridWorkingDays');
-        gridWork.innerHTML = ALL_KTV.map(ktv => `
+        // 3. Render ra giao diện
+        const gridDays = document.getElementById('gridWorkingDays');
+        const gridHours = document.getElementById('gridOvertimeHours');
+
+        gridDays.innerHTML = ALL_KTV.map(k => `
             <div class="stat-item-box">
-                <div class="ktv-label">${ktv}</div>
-                <div class="ktv-val">${workDaysMap[ktv]} công</div>
+                <div class="ktv-label">${k}</div>
+                <div class="ktv-val">${daysMap[k]} ngày</div>
             </div>
         `).join('');
 
-        const gridOt = document.getElementById('gridOvertimeHours');
-        gridOt.innerHTML = ALL_KTV.map(ktv => `
+        gridHours.innerHTML = ALL_KTV.map(k => `
             <div class="stat-item-box">
-                <div class="ktv-label">${ktv}</div>
-                <div class="ktv-val">${overtimeMap[ktv]} giờ</div>
+                <div class="ktv-label">${k}</div>
+                <div class="ktv-val">${hoursMap[k]}h</div>
             </div>
         `).join('');
     }
-
-    window.onload = function() {
-        setDefaultDate();
-        render8h();
-        loadHistory();
-        calculateMonthlyStats();
-    };
 </script>
 
 </body>
