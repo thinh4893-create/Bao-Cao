@@ -130,7 +130,11 @@
             </div>
             <div class="form-group full-width">
                 <label>Thời gian tăng ca đến:</label>
-                <input type="text" id="thoiGian_17h" value="22:00" oninput="render17h()">
+                <select id="thoiGian_17h" onchange="render17h()">
+                    <option value="20:00">20:00</option>
+                    <option value="21:00">21:00</option>
+                    <option value="22:00" selected>22:00</option>
+                </select>
             </div>
         </div>
     </div>
@@ -157,6 +161,10 @@
             <div class="form-group full-width">
                 <label>Ghi chú:</label>
                 <input type="text" id="ghiChu_18h" value="" placeholder="Nhập ghi chú nếu có..." oninput="render18h()">
+            </div>
+            <div class="form-group full-width">
+                <label>Số lỗi:</label>
+                <input type="text" id="soLoi_18h" value="0" placeholder="Nhập số lỗi..." oninput="render18h()">
             </div>
             <div class="form-group">
                 <label>Lỗi chất lượng khi giao xe:</label>
@@ -276,7 +284,7 @@ Em xin cảm ơn ạ!`;
         const coSo = "Tam Trinh";
         const kyThuat = document.getElementById('kyThuat_17h').value.trim();
         const congViec = document.getElementById('congViec_17h').value.trim();
-        const thoiGian = document.getElementById('thoiGian_17h').value.trim();
+        const thoiGian = document.getElementById('thoiGian_17h').value;
 
         const text = `ĐĂNG KÝ TĂNG CA
 
@@ -298,6 +306,7 @@ Em gửi ạ.`;
         const ppf = document.getElementById('ppf_18h').value.trim();
         const wrap = document.getElementById('wrap_18h').value.trim();
         const ghiChu = document.getElementById('ghiChu_18h').value.trim();
+        const soLoi = document.getElementById('soLoi_18h').value.trim();
         const loi1 = document.getElementById('loi1_18h').value.trim();
         const loi2 = document.getElementById('loi2_18h').value.trim();
         const loi3 = document.getElementById('loi3_18h').value.trim();
@@ -313,7 +322,7 @@ Tiến độ công việc
 • PPF: ${ppf}
 • Wrap: ${wrap}
 • Ghi chú: ${ghiChu}
-• Số lỗi: 0
+• Số lỗi: ${soLoi}
 Kiểm soát chất lượng
 1. Lỗi chất lượng khi giao xe: ${loi1}
 2. Lỗi đồng phục không tuân thủ: ${loi2}
