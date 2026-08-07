@@ -23,8 +23,8 @@
         
         .form-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
-        input[type="text"], input[type="number"], textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
-        input:focus, textarea:focus { border-color: #007aff; background: #fff; }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
+        input:focus, select:focus, textarea:focus { border-color: #007aff; background: #fff; }
         input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
         textarea { height: 60px; resize: vertical; }
 
@@ -68,8 +68,8 @@
                 <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
             </div>
             <div class="form-group">
-                <label>Quản lý (Cố định):</label>
-                <input type="number" id="quanLy_8h" value="1" readonly>
+                <label>Quản lý:</label>
+                <input type="number" id="quanLy_8h" value="1" oninput="render8h()">
             </div>
             <div class="form-group">
                 <label>Sale Off (số người):</label>
@@ -77,11 +77,22 @@
             </div>
             <div class="form-group">
                 <label>Kỹ thuật viên cơ sở:</label>
-                <input type="number" id="kyThuat_8h" value="5" oninput="render8h()">
+                <select id="kyThuat_8h" onchange="render8h()">
+                    <option value="1">01 người</option>
+                    <option value="2">02 người</option>
+                    <option value="3">03 người</option>
+                    <option value="4">04 người</option>
+                    <option value="5" selected>05 người</option>
+                    <option value="6">06 người</option>
+                    <option value="7">07 người</option>
+                    <option value="8">08 người</option>
+                    <option value="9">09 người</option>
+                    <option value="10">10 người</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>Kế toán văn phòng (Cố định):</label>
-                <input type="number" id="keToan_8h" value="1" readonly>
+                <label>Kế toán văn phòng:</label>
+                <input type="number" id="keToan_8h" value="1" oninput="render8h()">
             </div>
             <div class="form-group">
                 <label>Nhân sự đi làm (Tự tính):</label>
@@ -215,10 +226,11 @@
         const coSo = "Tam Trinh";
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
-        const qlNum = 1; // Cố định 1 Quản lý
+        
+        const qlNum = parseInt(document.getElementById('quanLy_8h').value) || 0;
         const saleNum = parseInt(document.getElementById('saleOff_8h').value) || 0;
         const ktNum = parseInt(document.getElementById('kyThuat_8h').value) || 0;
-        const ktvpNum = 1; // Cố định 1 Kế toán
+        const ktvpNum = parseInt(document.getElementById('keToan_8h').value) || 0;
 
         const ql = fmt(qlNum);
         const sale = fmt(saleNum);
