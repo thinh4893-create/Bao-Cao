@@ -189,7 +189,6 @@
             </div>
             <div class="form-group full-width">
                 <label>Thời gian tăng ca đến:</label>
-                <!-- Giữ nguyên tùy chọn 20:00, 21:00, 22:00 -->
                 <select id="thoiGian_17h" onchange="render17h()">
                     <option value="20:00">20:00</option>
                     <option value="21:00">21:00</option>
@@ -270,7 +269,6 @@
 </div>
 
 <script>
-    // Nhúng trực tiếp URL Google Apps Script
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzegIiVnxsOkxLtbU-r-Oy7bwM4LxccEMwRs7wXKpasXfnPPc9ZEtafrrap45FweIS8/exec";
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
@@ -371,7 +369,6 @@ Em xin cảm ơn ạ!`;
     }
 
     function getFormattedOvertimePeriod(endTimeVal) {
-        // Tự động quy đổi thời gian tính bắt đầu từ 19h
         if (endTimeVal === "20:00") return "19:00 - 20:00 (1 giờ)";
         if (endTimeVal === "21:00") return "19:00 - 21:00 (2 giờ)";
         if (endTimeVal === "22:00") return "19:00 - 22:00 (3 giờ)";
@@ -385,7 +382,6 @@ Em xin cảm ơn ạ!`;
         const congViec = document.getElementById('congViec_17h').value.trim();
         const endTime = document.getElementById('thoiGian_17h').value;
         
-        // Thời gian tăng ca hiển thị tính bắt đầu từ 19:00
         const thoiGianFormatted = getFormattedOvertimePeriod(endTime);
 
         const text = `ĐĂNG KÝ TĂNG CA
@@ -473,29 +469,30 @@ Em báo cáo ạ.`;
                 date: getTodayString(),
                 selectedKTVs: selectedKTVs,
                 congViec: document.getElementById('congViec_17h').value.trim(),
-                thoiGian: getFormattedOvertimePeriod(endTime) // Tự động gửi mốc thời gian bắt đầu từ 19h
+                thoiGian: getFormattedOvertimePeriod(endTime)
             };
         } else {
             alert("Báo cáo 18H không đẩy dữ liệu lên Google Sheet.");
             return;
         }
 
+        // Đã sửa thành text/plain để tránh rào cản CORS của Google Apps Script
         fetch(WEB_APP_URL, {
             method: "POST",
             mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "text/plain;charset=utf-8" 
+            },
             body: JSON.stringify(payload)
         })
         .then(() => {
-            // Hiển thị Popup Đã tải lên thành công trong 3 giây
             showSuccessPopup("Đã tải lên thành công");
         })
         .catch(err => {
-            alert("Lỗi kết nối gửi dữ liệu!");
+            alert("Lỗi kết nối gửi dữ liệu: " + err);
         });
     }
 
-    // Hàm hiển thị Popup Modal tự ẩn sau 3 giây (3000ms)
     function showSuccessPopup(msg) {
         const overlay = document.getElementById('modalOverlay');
         const p = overlay.querySelector('p');
