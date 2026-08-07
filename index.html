@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Tạo Báo Cáo Tự Động - F4 AUTO</title>
+    <title>Báo Cáo Tự Động - F4 AUTO</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f2f2f7; padding: 15px; color: #1c1c1e; }
@@ -23,14 +23,18 @@
         
         .form-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
-        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
-        input:focus, select:focus, textarea:focus { border-color: #007aff; background: #fff; }
+        input[type="text"], select { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
+        input:focus, select:focus { border-color: #007aff; background: #fff; }
         input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
         
-        /* Checkbox group cho kỹ thuật viên */
+        /* Checkbox & List group */
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
         .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; cursor: pointer; color: #1c1c1e; }
         .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
+
+        .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5ea; background: #fafafa; }
+        .ktv-row:last-child { border-bottom: none; }
+        .ktv-select-status { width: auto; font-size: 13px; padding: 4px 8px; border-radius: 6px; border: 1px solid #c7c7cc; }
 
         /* Output Box */
         .output-box { margin-top: 20px; padding: 15px; background: #f9f9fb; border-radius: 8px; border: 1px solid #e5e5ea; }
@@ -76,40 +80,64 @@
                 <label>Thời gian:</label>
                 <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
             </div>
-            <div class="form-group">
-                <label>Quản lý:</label>
-                <input type="number" id="quanLy_8h" value="1" oninput="render8h()">
+            
+            <div class="form-group full-width">
+                <label>Điểm danh Kỹ thuật viên hôm nay:</label>
+                <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
+                    <div class="ktv-row">
+                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Vũ" checked onchange="toggleKtvStatus('Vũ')"> Vũ</label>
+                        <select id="status_Vũ" class="ktv-select-status" onchange="render8h()">
+                            <option value="Cả ngày">Cả ngày</option>
+                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
+                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                        </select>
+                    </div>
+                    <div class="ktv-row">
+                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Hậu" checked onchange="toggleKtvStatus('Hậu')"> Hậu</label>
+                        <select id="status_Hậu" class="ktv-select-status" onchange="render8h()">
+                            <option value="Cả ngày">Cả ngày</option>
+                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
+                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                        </select>
+                    </div>
+                    <div class="ktv-row">
+                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Hoàng" checked onchange="toggleKtvStatus('Hoàng')"> Hoàng</label>
+                        <select id="status_Hoàng" class="ktv-select-status" onchange="render8h()">
+                            <option value="Cả ngày">Cả ngày</option>
+                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
+                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                        </select>
+                    </div>
+                    <div class="ktv-row">
+                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Tùng" checked onchange="toggleKtvStatus('Tùng')"> Tùng</label>
+                        <select id="status_Tùng" class="ktv-select-status" onchange="render8h()">
+                            <option value="Cả ngày">Cả ngày</option>
+                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
+                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                        </select>
+                    </div>
+                    <div class="ktv-row">
+                        <label class="checkbox-item"><input type="checkbox" class="ktv-8h-checkbox" value="Thịnh" checked onchange="toggleKtvStatus('Thịnh')"> Thịnh</label>
+                        <select id="status_Thịnh" class="ktv-select-status" onchange="render8h()">
+                            <option value="Cả ngày">Cả ngày</option>
+                            <option value="Buổi sáng">Nửa buổi (Sáng)</option>
+                            <option value="Buổi chiều">Nửa buổi (Chiều)</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
             <div class="form-group">
-                <label>Sale Off (số người):</label>
-                <input type="number" id="saleOff_8h" value="0" oninput="render8h()">
-            </div>
-            <div class="form-group">
-                <label>Kỹ thuật viên cơ sở:</label>
-                <select id="kyThuat_8h" onchange="render8h()">
-                    <option value="1">01 người</option>
-                    <option value="2">02 người</option>
-                    <option value="3">03 người</option>
-                    <option value="4" selected>04 người</option>
-                    <option value="5">05 người</option>
-                    <option value="6">06 người</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Kế toán văn phòng:</label>
-                <input type="number" id="keToan_8h" value="1" oninput="render8h()">
-            </div>
-            <div class="form-group">
-                <label>Nhân sự đi làm (Tự tính):</label>
-                <input type="number" id="diLam_8h" value="6" readonly>
+                <label>Số KTV đi làm:</label>
+                <input type="text" id="diLam_8h" value="05 người" readonly>
             </div>
             <div class="form-group">
                 <label>Dự kiến nghỉ ngày mai:</label>
                 <input type="text" id="nghiMai_8h" value="Chưa có." oninput="render8h()">
             </div>
             <div class="form-group full-width">
-                <label>Chi tiết (nghỉ/vắng...):</label>
-                <input type="text" id="chiTiet_8h" value="" placeholder="Nhập chi tiết nếu có..." oninput="render8h()">
+                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
+                <input type="text" id="chiTiet_8h" value="" placeholder="Ví dụ: Xin nghỉ vì lý do cá nhân..." oninput="render8h()">
             </div>
             <div class="form-group full-width">
                 <label>Đi muộn:</label>
@@ -128,10 +156,11 @@
             <div class="form-group full-width">
                 <label>Chọn Kỹ thuật viên tăng ca:</label>
                 <div class="checkbox-group">
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-checkbox" value="Vũ" onchange="render17h()"> Vũ</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-checkbox" value="Hậu" onchange="render17h()"> Hậu</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-checkbox" value="Hoàng" onchange="render17h()"> Hoàng</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-checkbox" value="Tùng" onchange="render17h()"> Tùng</label>
+                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Vũ" onchange="render17h()"> Vũ</label>
+                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Hậu" onchange="render17h()"> Hậu</label>
+                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Hoàng" onchange="render17h()"> Hoàng</label>
+                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Tùng" onchange="render17h()"> Tùng</label>
+                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Thịnh" onchange="render17h()"> Thịnh</label>
                 </div>
             </div>
             <div class="form-group full-width">
@@ -199,7 +228,7 @@
         </div>
     </div>
 
-    <!-- KHUNG TẠO KẾT QUẢ & NÚT COPY / ĐỒNG BỘ -->
+    <!-- KHUNG XUẤT KẾT QUẢ -->
     <div class="output-box">
         <div class="output-header">Nội dung báo cáo copy:</div>
         <div id="reportOutput" class="output-content"></div>
@@ -213,13 +242,11 @@
 </div>
 
 <script>
-    // Dán URL Web App nhận được từ Google Apps Script vào đây
-    const WEB_APP_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
-
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzegIiVnxsOkxLtbU-r-Oy7bwM4LxccEMwRs7wXKpasXfnPPc9ZEtafrrap45FweIS8/exec";
+    const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
 
     function fmt(val) {
-        if (!val && val !== 0) return '00';
         let num = parseInt(val, 10);
         if (isNaN(num)) return val;
         return num < 10 && num >= 0 ? '0' + num : '' + num;
@@ -246,46 +273,65 @@
         if (tabId === 'tab18h') render18h();
     }
 
+    function toggleKtvStatus(ten) {
+        const cb = document.querySelector(`.ktv-8h-checkbox[value="${ten}"]`);
+        const select = document.getElementById(`status_${ten}`);
+        select.disabled = !cb.checked;
+        render8h();
+    }
+
     function render8h() {
         const coSo = "Tam Trinh";
         const ngay = getTodayString();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
         
-        const qlNum = parseInt(document.getElementById('quanLy_8h').value) || 0;
-        const saleNum = parseInt(document.getElementById('saleOff_8h').value) || 0;
-        const ktNum = parseInt(document.getElementById('kyThuat_8h').value) || 0;
-        const ktvpNum = parseInt(document.getElementById('keToan_8h').value) || 0;
+        let dsDiLamText = [];
+        let dsNghiText = [];
+        let countDiLam = 0;
 
-        const ql = fmt(qlNum);
-        const sale = fmt(saleNum);
-        const kt = fmt(ktNum);
-        const ktvp = fmt(ktvpNum);
-        
-        const tongVal = qlNum + saleNum + ktNum + ktvpNum;
-        const tong = fmt(tongVal);
-        
-        document.getElementById('diLam_8h').value = tongVal;
-        const diLam = fmt(tongVal);
+        ALL_KTV.forEach(ten => {
+            const cb = document.querySelector(`.ktv-8h-checkbox[value="${ten}"]`);
+            if (cb && cb.checked) {
+                countDiLam++;
+                const status = document.getElementById(`status_${ten}`).value;
+                if (status === "Cả ngày") {
+                    dsDiLamText.push(ten);
+                } else if (status === "Buổi sáng") {
+                    dsDiLamText.push(`${ten} (Nửa buổi sáng)`);
+                    dsNghiText.push(`${ten} nghỉ buổi chiều`);
+                } else if (status === "Buổi chiều") {
+                    dsDiLamText.push(`${ten} (Nửa buổi chiều)`);
+                    dsNghiText.push(`${ten} nghỉ buổi sáng`);
+                }
+            } else {
+                // Trường hợp không chọn checkbox -> Nghỉ cả ngày
+                dsNghiText.push(`${ten} nghỉ`);
+            }
+        });
+
+        document.getElementById('diLam_8h').value = fmt(countDiLam) + " người";
 
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
-        const chiTiet = document.getElementById('chiTiet_8h').value.trim();
+        const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
         const diMuon = document.getElementById('diMuon_8h').value.trim();
+
+        // Ghép danh sách nghỉ + ghi chú bổ sung vào mục 3
+        let chiTietFull = [...dsNghiText];
+        if (ghiChuBoSung !== "") {
+            chiTietFull.push(ghiChuBoSung);
+        }
+        const chiTietString = chiTietFull.length > 0 ? chiTietFull.join('; ') : "Bình thường.";
 
         const text = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
 Cơ sở: ${coSo}
 Ngày: ${ngay}
 Thời gian: ${thoiGian}
-1. Tổng nhân lực: ${tong}
-• Quản lý: ${ql}
-• Sale Off: ${sale}
-• Kỹ thuật viên cơ sở: ${kt}
-• Kế toán văn phòng: ${ktvp}
-2. Nhân sự đi làm: ${diLam}
-3. Dự kiến nghỉ ngày mai:
+1. Kỹ thuật viên đi làm (${fmt(countDiLam)} người): ${dsDiLamText.join(', ') || 'Không có'}
+2. Dự kiến nghỉ ngày mai:
 • ${nghiMai}
-4. Chi tiết:
-• ${chiTiet}
-5. Đi muộn:
+3. Chi tiết:
+• ${chiTietString}
+4. Đi muộn:
 • ${diMuon}
 
 Em xin cảm ơn ạ!`;
@@ -295,10 +341,8 @@ Em xin cảm ơn ạ!`;
 
     function render17h() {
         const coSo = "Tam Trinh";
-        
-        const checkedBoxes = document.querySelectorAll('.ktv-checkbox:checked');
+        const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
         const selectedKTV = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
-        
         const congViec = document.getElementById('congViec_17h').value.trim();
         const thoiGian = document.getElementById('thoiGian_17h').value;
 
@@ -358,27 +402,54 @@ Em báo cáo ạ.`;
     }
 
     function sendToGoogleSheet() {
-        if (currentTab !== 'tab17h') {
-            alert("Tính năng gửi Google Sheet hiện áp dụng cho Báo Cáo Tăng Ca (17H).");
+        let payload = {};
+
+        if (currentTab === 'tab8h') {
+            let dsDiLam = [];
+            let dsNghi = [];
+
+            ALL_KTV.forEach(ten => {
+                const cb = document.querySelector(`.ktv-8h-checkbox[value="${ten}"]`);
+                if (cb && cb.checked) {
+                    const status = document.getElementById(`status_${ten}`).value;
+                    let strStatus = "Đi làm cả ngày";
+                    if (status === "Buổi sáng") strStatus = "Nghỉ buổi chiều";
+                    if (status === "Buổi chiều") strStatus = "Nghỉ buổi sáng";
+
+                    dsDiLam.push({ ten: ten, trangThai: strStatus });
+                } else {
+                    dsNghi.push(ten);
+                }
+            });
+
+            payload = {
+                type: '8h',
+                date: getTodayString(),
+                dsDiLam: dsDiLam,
+                dsNghi: dsNghi,
+                chiTiet: document.getElementById('chiTiet_8h').value.trim(),
+                diMuon: document.getElementById('diMuon_8h').value.trim()
+            };
+        } else if (currentTab === 'tab17h') {
+            const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
+            const selectedKTV = Array.from(checkedBoxes).map(cb => cb.value).join(',');
+
+            if (!selectedKTV) {
+                alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
+                return;
+            }
+
+            payload = {
+                type: '17h',
+                date: getTodayString(),
+                kyThuatTangCa: selectedKTV,
+                congViec: document.getElementById('congViec_17h').value.trim(),
+                thoiGian: document.getElementById('thoiGian_17h').value
+            };
+        } else {
+            alert("Báo cáo 18H không đẩy dữ liệu lên Google Sheet.");
             return;
         }
-
-        const checkedBoxes = document.querySelectorAll('.ktv-checkbox:checked');
-        const selectedKTV = Array.from(checkedBoxes).map(cb => cb.value).join(',');
-
-        if (!selectedKTV) {
-            alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
-            return;
-        }
-
-        const data = {
-            type: '17h',
-            date: getTodayString(),
-            coSo: "Tam Trinh",
-            kyThuat: selectedKTV,
-            congViec: document.getElementById('congViec_17h').value.trim(),
-            thoiGian: document.getElementById('thoiGian_17h').value
-        };
 
         showToast("Đang gửi dữ liệu...");
 
@@ -386,10 +457,10 @@ Em báo cáo ạ.`;
             method: "POST",
             mode: "no-cors",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
+            body: JSON.stringify(payload)
         })
         .then(() => {
-            showToast("✓ Đã gửi dữ liệu tăng ca lên Google Sheet!");
+            showToast("✓ Đã đồng bộ dữ liệu lên Google Sheet!");
         })
         .catch(err => {
             alert("Lỗi kết nối gửi dữ liệu!");
