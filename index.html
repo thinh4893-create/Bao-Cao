@@ -55,7 +55,20 @@
         .btn-sync { background: #007aff; }
         .btn-sync:hover { background: #0056b3; }
 
-        /* LỊCH SỬ BÁO CÁO - KHUNG CUỘN HIỂN THỊ DỮ LIỆU TỪ GOOGLE SHEET */
+        /* GIAO DIỆN BẢNG THỐNG KÊ THEO THÁNG */
+        .stats-box { margin-top: 20px; background: linear-gradient(135deg, #2b56f5 0%, #1e3cc6 100%); border-radius: 18px; padding: 20px; color: #ffffff; box-shadow: 0 8px 20px rgba(30, 60, 198, 0.25); }
+        .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
+        .stats-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .month-selector-badge { background: #ffffff; color: #1c1c1e; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .month-selector-badge select { border: none; background: transparent; font-weight: bold; font-size: 13px; color: #1c1c1e; outline: none; cursor: pointer; padding: 0; width: auto; }
+        
+        .stats-section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin: 15px 0 10px 0; display: flex; align-items: center; gap: 6px; color: rgba(255, 255, 255, 0.9); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stat-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; padding: 12px 6px; text-align: center; }
+        .stat-card .ktv-label { font-size: 13px; font-weight: 800; color: #ffffff; margin-bottom: 4px; text-transform: uppercase; }
+        .stat-card .stat-val { font-size: 15px; font-weight: 800; color: #ffeb3b; }
+
+        /* LỊCH SỬ BÁO CÁO DÙNG DỮ LIỆU ĐỒNG BỘ */
         .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
@@ -212,11 +225,40 @@
         </div>
     </div>
 
-    <!-- LỊCH SỬ BÁO CÁO DÙNG DỮ LIỆU ĐỒNG BỘ TỪ GOOGLE SHEET -->
+    <!-- BẢNG THỐNG KÊ THEO THÁNG chuẩn giao diện ảnh -->
+    <div class="stats-box">
+        <div class="stats-header">
+            <div class="stats-title">📊 Thống Kê Theo Tháng</div>
+            <div class="month-selector-badge">
+                <span>CHỌN THÁNG:</span>
+                <select id="statsMonthSelect" onchange="loadMonthlyStats()"></select>
+            </div>
+        </div>
+
+        <div class="stats-section-title">👨‍🔧 TỔNG SỐ NGÀY ĐI LÀM TRONG THÁNG</div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="ktv-label">VŨ</div><div class="stat-val" id="days_Vũ">0 ngày</div></div>
+            <div class="stat-card"><div class="ktv-label">HẬU</div><div class="stat-val" id="days_Hậu">0 ngày</div></div>
+            <div class="stat-card"><div class="ktv-label">HOÀNG</div><div class="stat-val" id="days_Hoàng">0 ngày</div></div>
+            <div class="stat-card"><div class="ktv-label">TÙNG</div><div class="stat-val" id="days_Tùng">0 ngày</div></div>
+            <div class="stat-card"><div class="ktv-label">THỊNH</div><div class="stat-val" id="days_Thịnh">0 ngày</div></div>
+        </div>
+
+        <div class="stats-section-title">⏰ TỔNG SỐ GIỜ TĂNG CA TRONG THÁNG</div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="ktv-label">VŨ</div><div class="stat-val" id="hours_Vũ">0h</div></div>
+            <div class="stat-card"><div class="ktv-label">HẬU</div><div class="stat-val" id="hours_Hậu">0h</div></div>
+            <div class="stat-card"><div class="ktv-label">HOÀNG</div><div class="stat-val" id="hours_Hoàng">0h</div></div>
+            <div class="stat-card"><div class="ktv-label">TÙNG</div><div class="stat-val" id="hours_Tùng">0h</div></div>
+            <div class="stat-card"><div class="ktv-label">THỊNH</div><div class="stat-val" id="hours_Thịnh">0h</div></div>
+        </div>
+    </div>
+
+    <!-- LỊCH SỬ BÁO CÁO -->
     <div class="history-box">
         <div class="history-title">
             <span>📋 Lịch Sử Báo Cáo</span>
-            <button onclick="loadHistory()" style="border:1px solid #007aff; background:#fff; color:#007aff; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">🔄 Tải lại dữ liệu</button>
+            <button onclick="refreshAllData()" style="border:1px solid #007aff; background:#fff; color:#007aff; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">🔄 Tải lại dữ liệu</button>
         </div>
         
         <div class="history-tabs">
@@ -243,8 +285,10 @@
 
     window.onload = function() {
         setDefaultDate();
+        initMonthOptions();
         render8h();
         switchHistoryTab('8h');
+        loadMonthlyStats();
     };
 
     function setDefaultDate() {
@@ -253,6 +297,23 @@
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('selectedDate').value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    function initMonthOptions() {
+        const select = document.getElementById('statsMonthSelect');
+        select.innerHTML = '';
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
+
+        for (let m = 1; m <= 12; m++) {
+            const opt = document.createElement('option');
+            const mmStr = String(m).padStart(2, '0');
+            opt.value = `${mmStr}/${currentYear}`;
+            opt.text = `tháng ${m} năm ${currentYear}`;
+            if (m === currentMonth) opt.selected = true;
+            select.appendChild(opt);
+        }
     }
 
     function getSelectedDateFormatted() {
@@ -419,7 +480,6 @@ Em báo cáo ạ.`;
         document.getElementById('reportOutput').innerText = text;
     }
 
-    // SAO CHÉP BÁO CÁO CHỈ COPY NỘI DUNG (KHÔNG LƯU LỊCH SỬ)
     function copyReport() {
         const text = document.getElementById('reportOutput').innerText;
         navigator.clipboard.writeText(text).then(() => {
@@ -427,7 +487,40 @@ Em báo cáo ạ.`;
         });
     }
 
-    // GỬI LÊN GOOGLE SHEET (NƠI DUY NHẤT LƯU LỊCH SỬ DÙNG CHUNG)
+    // HÀM RESET CÁC Ô NHẬP VỀ MẶC ĐỊNH & VỀ NGÀY HIỆN TẠI
+    function resetFormToDefault() {
+        setDefaultDate();
+
+        // Reset Tab 8H
+        document.getElementById('thoiGian_8h').value = "08:00";
+        document.getElementById('saleOff_8h').value = "0";
+        ALL_KTV.forEach(ten => {
+            document.getElementById(`status_${ten}`).value = "Đi làm";
+        });
+        document.getElementById('nghiMai_8h').value = "Chưa có.";
+        document.getElementById('diMuon_8h').value = "Không có.";
+        document.getElementById('chiTiet_8h').value = "";
+
+        // Reset Tab 17H
+        document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('congViec_17h').value = "";
+        document.getElementById('thoiGian_17h').value = "22:00";
+
+        // Reset Tab 18H
+        document.getElementById('danPhim_18h').value = "";
+        document.getElementById('ppf_18h').value = "";
+        document.getElementById('wrap_18h').value = "";
+        document.getElementById('ghiChu_18h').value = "";
+        document.getElementById('soLoi_18h').value = "0";
+        document.getElementById('loi1_18h').value = "0";
+        document.getElementById('loi2_18h').value = "0";
+        document.getElementById('loi3_18h').value = "0";
+        document.getElementById('loi4_18h').value = "Không có";
+        document.getElementById('loi5_18h').value = "đã được tắt đầy đủ.";
+
+        updateAllRenders();
+    }
+
     function sendToGoogleSheet() {
         const btnSync = document.getElementById('btnSync');
         btnSync.disabled = true;
@@ -480,13 +573,15 @@ Em báo cáo ạ.`;
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
             showSuccessPopup(data.message || "Đã gửi báo cáo thành công!");
-            loadHistory();
+            resetFormToDefault(); // RESET VỀ MẶC ĐỊNH
+            refreshAllData();
         })
         .catch(err => {
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã gửi báo cáo lên Google Sheet!");
-            loadHistory();
+            showSuccessPopup("Đã gửi báo cáo thành công!");
+            resetFormToDefault(); // RESET VỀ MẶC ĐỊNH
+            refreshAllData();
         });
     }
 
@@ -516,15 +611,16 @@ Em báo cáo ạ.`;
         el.closest('.history-item').classList.toggle('open');
     }
 
-    // TẢI VÀ ĐỒNG BỘ LỊCH SỬ TRỰC TIẾP TỪ GOOGLE SHEET CHUNG
+    function refreshAllData() {
+        loadHistory();
+        loadMonthlyStats();
+    }
+
     function loadHistory() {
         const listEl = document.getElementById('historyList');
-        listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Đang tải lịch sử từ Google Sheet...</div>`;
+        listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Đang tải lịch sử...</div>`;
 
-        const now = new Date();
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const yyyy = now.getFullYear();
-        const monthStr = `${mm}/${yyyy}`;
+        const monthStr = document.getElementById('statsMonthSelect').value || "";
 
         fetch(`${WEB_APP_URL}?action=getHistory&month=${encodeURIComponent(monthStr)}`)
         .then(res => res.json())
@@ -537,7 +633,7 @@ Em báo cáo ạ.`;
             const historyData = (currentHistoryTab === '8h') ? data.history8h : data.history17h;
 
             if (!historyData || historyData.length === 0) {
-                listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử ${currentHistoryTab.toUpperCase()} trong tháng ${monthStr}.</div>`;
+                listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử ${currentHistoryTab.toUpperCase()} trong tháng này.</div>`;
                 return;
             }
 
@@ -565,6 +661,32 @@ Em báo cáo ạ.`;
         })
         .catch(err => {
             listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có dữ liệu lịch sử hoặc lỗi kết nối.</div>`;
+        });
+    }
+
+    // TẢI DỮ LIỆU BẢNG THỐNG KÊ THEO THÁNG DỰA TRÊN DÒNG TỔNG DƯỚI SHEET
+    function loadMonthlyStats() {
+        const monthStr = document.getElementById('statsMonthSelect').value;
+        if (!monthStr) return;
+
+        fetch(`${WEB_APP_URL}?action=getMonthlyStats&month=${encodeURIComponent(monthStr)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                ALL_KTV.forEach(ktv => {
+                    const daysVal = data.days[ktv] !== undefined ? data.days[ktv] : 0;
+                    const hoursVal = data.hours[ktv] !== undefined ? data.hours[ktv] : 0;
+
+                    document.getElementById(`days_${ktv}`).innerText = `${daysVal} ngày`;
+                    document.getElementById(`hours_${ktv}`).innerText = `${hoursVal}h`;
+                });
+            }
+        })
+        .catch(err => {
+            ALL_KTV.forEach(ktv => {
+                document.getElementById(`days_${ktv}`).innerText = `0 ngày`;
+                document.getElementById(`hours_${ktv}`).innerText = `0h`;
+            });
         });
     }
 </script>
