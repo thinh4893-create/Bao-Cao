@@ -119,7 +119,7 @@
     <div id="tab8h" class="form-section active">
         <div class="form-grid">
             <div class="form-group">
-                <label>Cơ sở (Cố định):</label>
+                <label>Cơ sở:</label>
                 <input type="text" id="coSo_8h" value="Tam Trinh" readonly>
             </div>
             <div class="form-group">
@@ -159,7 +159,7 @@
                 <input type="text" id="diMuon_8h" value="Không có." oninput="render8h()">
             </div>
             <div class="form-group full-width">
-                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
+                <label>Chi tiết:</label>
                 <input type="text" id="chiTiet_8h" value="" placeholder="Nhập thêm ghi chú khác nếu cần..." oninput="render8h()">
             </div>
         </div>
@@ -370,9 +370,11 @@
             chiTietFull.push(ghiChuBoSung);
         }
         
-        let chiTietFormatted = "   •  Khái quát ổn định.";
+        let chiTietFormatted = "";
         if (chiTietFull.length > 0) {
             chiTietFormatted = chiTietFull.map(item => `   •  ${item}`).join('\n');
+        } else {
+            chiTietFormatted = "   •  Không."; // Hoặc để trống "" nếu bạn không muốn hiện dòng nào
         }
 
         const text = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
