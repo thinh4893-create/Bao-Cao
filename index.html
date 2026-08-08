@@ -159,8 +159,8 @@
                 <input type="text" id="diMuon_8h" value="Không có." oninput="render8h()">
             </div>
             <div class="form-group full-width">
-                <label>Chi tiết (nếu có):</label>
-                <input type="text" id="chiTiet_8h" value="" placeholder="" oninput="render8h()">
+                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
+                <input type="text" id="chiTiet_8h" value="" placeholder="Nhập thêm ghi chú khác nếu cần..." oninput="render8h()">
             </div>
         </div>
     </div>
@@ -286,7 +286,6 @@
         calculateMonthlyStats();
     };
 
-    // Đặt ngày thời gian thực cho ô tùy chỉnh ngày
     function setDefaultDate() {
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -521,7 +520,11 @@ Em báo cáo ạ.`;
         .then(data => {
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã tải lên thành công");
+            if(data.status === "success") {
+                showSuccessPopup(data.message || "Đã tải lên thành công");
+            } else {
+                showSuccessPopup("Thao tác hoàn tất!");
+            }
             saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
         })
         .catch(err => {
@@ -569,19 +572,27 @@ Em báo cáo ạ.`;
         const category = getReportCategory();
         const storageKey = `f4_history_${category}`;
         let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const now = new Date();
         const dateVal = document.getElementById('selectedDate').value; // YYYY-MM-DD
+        const formattedDate = getSelectedDateFormatted(); // DD/MM/YYYY
+
+        const existingIndex = history.findIndex(item => item.dateFormatted === formattedDate || item.dateIso === dateVal);
 
         const newItem = {
             id: Date.now(),
             dateIso: dateVal,
-            time: `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} - ${getSelectedDateFormatted()}`,
+            dateFormatted: formattedDate,
+            time: formattedDate,
             action: actionType,
             content: content,
             extraData: extraData
         };
 
-        history.unshift(newItem);
+        if (existingIndex !== -1) {
+            history[existingIndex] = newItem;
+        } else {
+            history.unshift(newItem);
+        }
+
         localStorage.setItem(storageKey, JSON.stringify(history));
         switchHistoryTab(category);
         calculateMonthlyStats();
@@ -617,20 +628,28 @@ Em báo cáo ạ.`;
             return;
         }
 
-        listEl.innerHTML = history.map(item => `
+        listEl.innerHTML = history.map(item => {
+            let displayDate = item.dateFormatted || item.time || getSelectedDateFormatted();
+            if (displayDate.includes('-')) {
+                let p = displayDate.split('-');
+                if (p[0].length === 4) displayDate = `${p[2]}/${p[1]}/${p[0]}`;
+            }
+
+            return `
             <div class="history-item">
                 <div class="history-item-header">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #3a3a3c;">
                         <input type="checkbox" class="history-checkbox" value="${item.id}" style="width: 16px; height: 16px; cursor: pointer;">
                     </label>
                     <div class="history-header-left" onclick="toggleHistoryItem(this)">
-                        <span>📌 ${item.time} (${item.action})</span>
+                        <span>📌 Ngày ${displayDate} (${item.action})</span>
                     </div>
                     <span class="arrow" onclick="toggleHistoryItem(this)" style="cursor: pointer; padding: 0 5px;">▼</span>
                 </div>
                 <div class="history-item-body">${item.content}</div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function deleteSelectedHistory() {
@@ -646,7 +665,6 @@ Em báo cáo ạ.`;
             
             const idsToDelete = Array.from(checkedBoxes).map(cb => Number(cb.value));
             
-            // Lọc giữ lại những mục không bị xóa
             history = history.filter(item => !idsToDelete.includes(item.id));
 
             localStorage.setItem(storageKey, JSON.stringify(history));
@@ -656,16 +674,20 @@ Em báo cáo ạ.`;
         }
     }
 
-    // TÍNH TOÁN THỐNG KÊ THÁNG HIỂN THỊ LÊN GIAO DIỆN XANH TÍM
     function calculateMonthlyStats() {
-        const selectedMonth = document.getElementById('statMonthPicker').value; // YYYY-MM
+        const selectedMonth = document.getElementById('statMonthPicker').value;
         let daysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
         let hoursMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
 
-        // 1. Thống kê số ngày làm từ lịch sử 8H
         const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
         history8h.forEach(item => {
-            if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
+            let itemMonth = item.dateIso ? item.dateIso.substring(0, 7) : "";
+            if (!itemMonth && item.dateFormatted) {
+                let p = item.dateFormatted.split('/');
+                if (p.length === 3) itemMonth = `${p[2]}-${p[1]}`;
+            }
+
+            if (itemMonth === selectedMonth && item.extraData) {
                 ALL_KTV.forEach(k => {
                     const st = item.extraData[k];
                     if (st === "Đi làm") daysMap[k] += 1;
@@ -674,10 +696,15 @@ Em báo cáo ạ.`;
             }
         });
 
-        // 2. Thống kê số giờ tăng ca từ lịch sử 17H
         const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
         history17h.forEach(item => {
-            if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
+            let itemMonth = item.dateIso ? item.dateIso.substring(0, 7) : "";
+            if (!itemMonth && item.dateFormatted) {
+                let p = item.dateFormatted.split('/');
+                if (p.length === 3) itemMonth = `${p[2]}-${p[1]}`;
+            }
+
+            if (itemMonth === selectedMonth && item.extraData) {
                 ALL_KTV.forEach(k => {
                     if (item.extraData[k]) {
                         hoursMap[k] += Number(item.extraData[k]) || 0;
@@ -686,7 +713,6 @@ Em báo cáo ạ.`;
             }
         });
 
-        // 3. Render ra giao diện
         const gridDays = document.getElementById('gridWorkingDays');
         const gridHours = document.getElementById('gridOvertimeHours');
 
