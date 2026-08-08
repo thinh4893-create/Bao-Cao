@@ -72,15 +72,41 @@
         .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
         .sub-tab-btn.active { background: #007aff; color: #ffffff; }
 
-        .history-list { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .history-item { background: #f2f2f7; border-radius: 6px; border-left: 4px solid #007aff; overflow: hidden; }
-        .history-item-header { padding: 8px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; }
-        .history-header-left { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; }
-        .history-item-header:hover { background: #e5e5ea; }
-        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.4; }
-        .history-item.open .history-item-body { display: block; }
-        .history-item.open .arrow { transform: rotate(180deg); }
-        .arrow { transition: transform 0.2s ease; font-size: 10px; color: #8e8e93; }
+        .history-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: #f8f9fa; border-radius: 8px; border: 1px solid #e5e5ea; border-left: 4px solid #007aff; overflow: hidden; }
+        .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; background: #eef6ff; }
+        
+        /* Cấu hình hiển thị dạng rút gọn / mở rộng */
+        .history-item-body { 
+            padding: 10px 12px; 
+            color: #1c1c1e; 
+            font-size: 13px; 
+            white-space: pre-wrap; 
+            background: #ffffff; 
+            line-height: 1.5; 
+            border-top: 1px solid #e5e5ea; 
+            cursor: pointer;
+            position: relative;
+        }
+
+        .history-item-body.collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Rút gọn còn 2 dòng */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
+        .toggle-btn {
+            font-size: 12px;
+            color: #007aff;
+            background: none;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
@@ -283,6 +309,26 @@
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('selectedDate').value = `${yyyy}-${mm}-${dd}`;
         document.getElementById('statMonthPicker').value = `${yyyy}-${mm}`;
+    }
+
+    function resetFormToDefault() {
+        setDefaultDate();
+        document.getElementById('chiTiet_8h').value = "";
+        document.getElementById('diMuon_8h').value = "Không có.";
+        document.getElementById('nghiMai_8h').value = "Chưa có.";
+        ALL_KTV.forEach(ten => {
+            document.getElementById(`status_${ten}`).value = "Đi làm";
+        });
+
+        document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('congViec_17h').value = "";
+
+        document.getElementById('danPhim_18h').value = "";
+        document.getElementById('ppf_18h').value = "";
+        document.getElementById('wrap_18h').value = "";
+        document.getElementById('ghiChu_18h').value = "";
+
+        updateAllRenders();
     }
 
     function getSelectedDateFormatted() {
@@ -498,25 +544,22 @@ Em báo cáo ạ.`;
             params.append('content', reportText);
         }
 
+        const completeSave = () => {
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
+            showSuccessPopup("Đã tải lên thành công");
+            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
+            fetchHistoryFromSheet();
+            resetFormToDefault();
+        };
+
         fetch(WEB_APP_URL, {
             method: "POST",
             body: params
         })
         .then(res => res.json())
-        .then(data => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã tải lên thành công");
-            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
-            fetchHistoryFromSheet();
-        })
-        .catch(err => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã tải lên thành công");
-            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
-            fetchHistoryFromSheet();
-        });
+        .then(data => completeSave())
+        .catch(err => completeSave());
     }
 
     function statusMapStoreData() {
@@ -572,7 +615,6 @@ Em báo cáo ạ.`;
         calculateMonthlyStats();
     }
 
-    // TẢI TOÀN BỘ LỊCH SỬ TỪ GOOGLE SHEET VỀ WEB (GIÚP KHÔNG BỊ MẤT DỮ LIỆU KHI XÓA WEB APP)
     function fetchHistoryFromSheet() {
         fetch(`${WEB_APP_URL}?action=getHistory`)
         .then(res => res.json())
@@ -608,10 +650,7 @@ Em báo cáo ạ.`;
         loadHistory();
     }
 
-    function toggleHistoryItem(el) {
-        el.closest('.history-item').classList.toggle('open');
-    }
-
+    // Tải danh sách lịch sử với tính năng thu gọn / mở rộng
     function loadHistory() {
         const storageKey = `f4_history_${currentHistoryTab}`;
         let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -627,15 +666,27 @@ Em báo cáo ạ.`;
                 <div class="history-item-header">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #3a3a3c;">
                         <input type="checkbox" class="history-checkbox" value="${item.id}" style="width: 16px; height: 16px; cursor: pointer;">
+                        <span>📌 Ngày & Giờ gửi: ${item.time} (${item.action})</span>
                     </label>
-                    <div class="history-header-left" onclick="toggleHistoryItem(this)">
-                        <span>📌 ${item.time} (${item.action})</span>
-                    </div>
-                    <span class="arrow" onclick="toggleHistoryItem(this)" style="cursor: pointer; padding: 0 5px;">▼</span>
+                    <button class="toggle-btn" id="btn_toggle_${item.id}" onclick="toggleHistoryItem(${item.id})">Xem thêm ▼</button>
                 </div>
-                <div class="history-item-body">${item.content}</div>
+                <div class="history-item-body collapsed" id="body_${item.id}" onclick="toggleHistoryItem(${item.id})">${item.content}</div>
             </div>
         `).join('');
+    }
+
+    // Đóng/Mở chi tiết báo cáo
+    function toggleHistoryItem(id) {
+        const bodyEl = document.getElementById(`body_${id}`);
+        const btnEl = document.getElementById(`btn_toggle_${id}`);
+
+        if (bodyEl.classList.contains('collapsed')) {
+            bodyEl.classList.remove('collapsed');
+            btnEl.innerText = "Thu gọn ▲";
+        } else {
+            bodyEl.classList.add('collapsed');
+            btnEl.innerText = "Xem thêm ▼";
+        }
     }
 
     function deleteSelectedHistory() {
@@ -653,7 +704,6 @@ Em báo cáo ạ.`;
             history = history.filter(item => !idsToDelete.includes(item.id));
             localStorage.setItem(storageKey, JSON.stringify(history));
 
-            // Gửi yêu cầu xóa tới Google Sheet
             const params = new URLSearchParams();
             params.append('action', 'deleteHistory');
             params.append('type', currentHistoryTab);
