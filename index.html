@@ -66,24 +66,22 @@
         .stat-item-box .ktv-label { font-size: 12px; font-weight: 700; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; }
         .stat-item-box .ktv-val { font-size: 15px; font-weight: 800; color: #ffe600; }
 
-        /* LỊCH SỬ BÁO CÁO GỌN GÀNG */
-        .history-box { margin-top: 25px; padding: 15px; background: #ffffff; border-radius: 12px; border: 1px solid #d1d1d6; }
+        .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
-        .sub-tab-btn { flex: 1; padding: 8px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
+        .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
         .sub-tab-btn.active { background: #007aff; color: #ffffff; }
 
-        .history-list { display: flex; flex-direction: column; gap: 8px; }
-        .history-row-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #f8f9fa; border: 1px solid #e5e5ea; border-radius: 8px; }
-        .history-row-info { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: #1c1c1e; }
-        .btn-view-detail { background: #007aff; color: #fff; border: none; padding: 5px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .history-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item { background: #f8f9fa; border-radius: 8px; border: 1px solid #e5e5ea; border-left: 4px solid #007aff; overflow: hidden; }
+        .history-item-header { padding: 8px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; background: #eef6ff; }
+        /* Cấu hình hiển thị trực tiếp toàn bộ nội dung lịch sử */
+        .history-item-body { display: block; padding: 10px 12px; color: #1c1c1e; font-size: 13px; white-space: pre-wrap; background: #ffffff; line-height: 1.5; border-top: 1px solid #e5e5ea; }
 
-        /* POPUP XEM BÁO CÁO TOÀN MÀN HÌNH */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal-card { background: #fff; padding: 20px; border-radius: 14px; text-align: center; width: 100%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
         .modal-card .icon { font-size: 40px; color: #34c759; margin-bottom: 10px; }
         .modal-card p { font-size: 16px; font-weight: bold; color: #1c1c1e; }
-        .modal-detail-content { text-align: left; background: #f8f9fa; border: 1px solid #d1d1d6; padding: 12px; border-radius: 8px; font-size: 13px; line-height: 1.5; white-space: pre-wrap; overflow-y: auto; margin: 12px 0; flex: 1; }
 
         @media (max-width: 480px) {
             .form-grid { grid-template-columns: 1fr; }
@@ -238,7 +236,7 @@
         <div class="stat-grid" id="gridOvertimeHours"></div>
     </div>
 
-    <!-- LỊCH SỬ BÁO CÁO GỌN GÀNG -->
+    <!-- LỊCH SỬ BÁO CÁO -->
     <div class="history-box">
         <div class="history-title">
             <span>📋 Lịch Sử Báo Cáo</span>
@@ -255,16 +253,10 @@
     </div>
 </div>
 
-<!-- POPUP THÔNG BÁO / CHITIẾT -->
 <div id="modalOverlay" class="modal-overlay">
-    <div class="modal-card" id="modalCard">
-        <div class="icon" id="modalIcon">✓</div>
+    <div class="modal-card">
+        <div class="icon">✓</div>
         <p id="modalMsg">Đã tải lên thành công</p>
-        <div id="modalDetail" class="modal-detail-content" style="display:none;"></div>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn btn-copy" id="btnModalCopy" style="display:none;" onclick="copyModalContent()">Sao chép</button>
-            <button class="btn btn-sync" onclick="closeModal()">Đóng</button>
-        </div>
     </div>
 </div>
 
@@ -273,7 +265,6 @@
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
     let currentHistoryTab = '8h';
-    let currentModalText = "";
 
     window.onload = function() {
         setDefaultDate();
@@ -281,6 +272,7 @@
         fetchHistoryFromSheet();
     };
 
+    // Đặt lại thời gian mặc định ban đầu (Ngày thực tế)
     function setDefaultDate() {
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -290,8 +282,11 @@
         document.getElementById('statMonthPicker').value = `${yyyy}-${mm}`;
     }
 
+    // Đặt lại dữ liệu mặc định sau khi gửi hoàn tất
     function resetFormToDefault() {
         setDefaultDate();
+        
+        // Reset form 8h
         document.getElementById('chiTiet_8h').value = "";
         document.getElementById('diMuon_8h').value = "Không có.";
         document.getElementById('nghiMai_8h').value = "Chưa có.";
@@ -299,9 +294,11 @@
             document.getElementById(`status_${ten}`).value = "Đi làm";
         });
 
+        // Reset form 17h
         document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
         document.getElementById('congViec_17h').value = "";
 
+        // Reset form 18h
         document.getElementById('danPhim_18h').value = "";
         document.getElementById('ppf_18h').value = "";
         document.getElementById('wrap_18h').value = "";
@@ -523,27 +520,22 @@ Em báo cáo ạ.`;
             params.append('content', reportText);
         }
 
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            body: params
-        })
-        .then(res => res.json())
-        .then(data => {
+        const completeSave = () => {
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
             showSuccessPopup("Đã tải lên thành công");
             saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
             fetchHistoryFromSheet();
-            resetFormToDefault();
+            resetFormToDefault(); // Đưa giao diện & thời gian về thực tế mặc định ban đầu
+        };
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            body: params
         })
-        .catch(err => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã gửi báo cáo thành công");
-            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
-            fetchHistoryFromSheet();
-            resetFormToDefault();
-        });
+        .then(res => res.json())
+        .then(data => completeSave())
+        .catch(err => completeSave());
     }
 
     function statusMapStoreData() {
@@ -564,15 +556,10 @@ Em báo cáo ạ.`;
     }
 
     function showSuccessPopup(msg) {
-        document.getElementById('modalIcon').style.display = 'block';
-        document.getElementById('modalDetail').style.display = 'none';
-        document.getElementById('btnModalCopy').style.display = 'none';
+        const overlay = document.getElementById('modalOverlay');
         document.getElementById('modalMsg').innerText = msg;
-        document.getElementById('modalOverlay').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('modalOverlay').style.display = 'none';
+        overlay.style.display = 'flex';
+        setTimeout(() => { overlay.style.display = 'none'; }, 2500);
     }
 
     function getReportCategory() {
@@ -615,9 +602,6 @@ Em báo cáo ạ.`;
                 
                 loadHistory();
                 calculateMonthlyStats();
-            } else {
-                loadHistory();
-                calculateMonthlyStats();
             }
         })
         .catch(err => {
@@ -642,6 +626,7 @@ Em báo cáo ạ.`;
         loadHistory();
     }
 
+    // Hiển thị trực tiếp toàn bộ nội dung báo cáo ngày hôm đó khi xem lại
     function loadHistory() {
         const storageKey = `f4_history_${currentHistoryTab}`;
         let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -653,41 +638,16 @@ Em báo cáo ạ.`;
         }
 
         listEl.innerHTML = history.map(item => `
-            <div class="history-row-item">
-                <div class="history-row-info">
-                    <input type="checkbox" class="history-checkbox" value="${item.id}" style="width: 16px; height: 16px; cursor: pointer;">
-                    <span>📌 ${item.time} (${item.action})</span>
+            <div class="history-item">
+                <div class="history-item-header">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #3a3a3c;">
+                        <input type="checkbox" class="history-checkbox" value="${item.id}" style="width: 16px; height: 16px; cursor: pointer;">
+                        <span>📌 Ngày & Giờ gửi: ${item.time} (${item.action})</span>
+                    </label>
                 </div>
-                <button class="btn-view-detail" onclick="viewReportDetail(${item.id})">Xem</button>
+                <div class="history-item-body">${item.content}</div>
             </div>
         `).join('');
-    }
-
-    function viewReportDetail(id) {
-        const storageKey = `f4_history_${currentHistoryTab}`;
-        let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const item = history.find(x => x.id === id);
-
-        if (item) {
-            currentModalText = item.content;
-            document.getElementById('modalIcon').style.display = 'none';
-            document.getElementById('modalMsg').innerText = ` CHI TIẾT BÁO CÁO (${item.time})`;
-            
-            const detailEl = document.getElementById('modalDetail');
-            detailEl.innerText = item.content;
-            detailEl.style.display = 'block';
-
-            document.getElementById('btnModalCopy').style.display = 'block';
-            document.getElementById('modalOverlay').style.display = 'flex';
-        }
-    }
-
-    function copyModalContent() {
-        if (currentModalText) {
-            navigator.clipboard.writeText(currentModalText).then(() => {
-                alert("Đã sao chép nội dung báo cáo!");
-            });
-        }
     }
 
     function deleteSelectedHistory() {
