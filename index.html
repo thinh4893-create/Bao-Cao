@@ -575,22 +575,23 @@ Em báo cáo ạ.`;
         const dateVal = document.getElementById('selectedDate').value; // YYYY-MM-DD
         const formattedDate = getSelectedDateFormatted(); // DD/MM/YYYY
 
+        // Kiểm tra xem đã có bản ghi trùng ngày chưa để ghi đè lịch sử local
         const existingIndex = history.findIndex(item => item.dateFormatted === formattedDate || item.dateIso === dateVal);
 
         const newItem = {
             id: Date.now(),
             dateIso: dateVal,
             dateFormatted: formattedDate,
-            time: formattedDate,
+            time: formattedDate, // Chỉ lưu định dạng DD/MM/YYYY
             action: actionType,
             content: content,
             extraData: extraData
         };
 
         if (existingIndex !== -1) {
-            history[existingIndex] = newItem;
+            history[existingIndex] = newItem; // Ghi đè mục cũ
         } else {
-            history.unshift(newItem);
+            history.unshift(newItem); // Thêm mục mới
         }
 
         localStorage.setItem(storageKey, JSON.stringify(history));
@@ -629,6 +630,7 @@ Em báo cáo ạ.`;
         }
 
         listEl.innerHTML = history.map(item => {
+            // Định dạng hiển thị chuẩn ngày DD/MM/YYYY
             let displayDate = item.dateFormatted || item.time || getSelectedDateFormatted();
             if (displayDate.includes('-')) {
                 let p = displayDate.split('-');
@@ -674,11 +676,13 @@ Em báo cáo ạ.`;
         }
     }
 
+    // TÍNH TOÁN THỐNG KÊ THÁNG HIỂN THỊ LÊN GIAO DIỆN XANH TÍM
     function calculateMonthlyStats() {
-        const selectedMonth = document.getElementById('statMonthPicker').value;
+        const selectedMonth = document.getElementById('statMonthPicker').value; // YYYY-MM
         let daysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
         let hoursMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
 
+        // 1. Thống kê số ngày làm từ lịch sử 8H
         const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
         history8h.forEach(item => {
             let itemMonth = item.dateIso ? item.dateIso.substring(0, 7) : "";
@@ -696,6 +700,7 @@ Em báo cáo ạ.`;
             }
         });
 
+        // 2. Thống kê số giờ tăng ca từ lịch sử 17H
         const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
         history17h.forEach(item => {
             let itemMonth = item.dateIso ? item.dateIso.substring(0, 7) : "";
@@ -713,6 +718,7 @@ Em báo cáo ạ.`;
             }
         });
 
+        // 3. Render ra giao diện
         const gridDays = document.getElementById('gridWorkingDays');
         const gridHours = document.getElementById('gridOvertimeHours');
 
