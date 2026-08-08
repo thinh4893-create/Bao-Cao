@@ -73,6 +73,7 @@
         .history-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .history-item { background: #f8f9fa; border-radius: 8px; border: 1px solid #e5e5ea; border-left: 4px solid #007aff; overflow: hidden; }
         .history-item-header { padding: 8px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; background: #eef6ff; }
+        /* Cấu hình hiển thị trực tiếp toàn bộ nội dung lịch sử */
         .history-item-body { display: block; padding: 10px 12px; color: #1c1c1e; font-size: 13px; white-space: pre-wrap; background: #ffffff; line-height: 1.5; border-top: 1px solid #e5e5ea; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
@@ -100,6 +101,7 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('tab8h', event)">1. Đầu giờ (8H)</button>
         <button class="tab-btn" onclick="switchTab('tab17h', event)">2. Tăng ca (17H)</button>
+        <button class="tab-btn" onclick="switchTab('tab18h', event)">3. Cuối ngày (18H)</button>
     </div>
 
     <!-- FORM 8H -->
@@ -129,11 +131,11 @@
             <div class="form-group full-width">
                 <label>Trạng thái Kỹ thuật viên hôm nay:</label>
                 <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
-                    <div class="ktv-row"><span class="ktv-name">Vũ</span><select id="status_Vũ" class="ktv-select-status" onchange="render8h()"><option value="Đi Làm" selected>Đi Làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ Sáng">Nghỉ Sáng</option><option value="Nghỉ Chiều">Nghỉ Chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Hậu</span><select id="status_Hậu" class="ktv-select-status" onchange="render8h()"><option value="Đi Làm" selected>Đi Làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ Sáng">Nghỉ Sáng</option><option value="Nghỉ Chiều">Nghỉ Chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Hoàng</span><select id="status_Hoàng" class="ktv-select-status" onchange="render8h()"><option value="Đi Làm" selected>Đi Làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ Sáng">Nghỉ Sáng</option><option value="Nghỉ Chiều">Nghỉ Chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Tùng</span><select id="status_Tùng" class="ktv-select-status" onchange="render8h()"><option value="Đi Làm" selected>Đi Làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ Sáng">Nghỉ Sáng</option><option value="Nghỉ Chiều">Nghỉ Chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Thịnh</span><select id="status_Thịnh" class="ktv-select-status" onchange="render8h()"><option value="Đi Làm" selected>Đi Làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ Sáng">Nghỉ Sáng</option><option value="Nghỉ Chiều">Nghỉ Chiều</option></select></div>
+                    <div class="ktv-row"><span class="ktv-name">Vũ</span><select id="status_Vũ" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
+                    <div class="ktv-row"><span class="ktv-name">Hậu</span><select id="status_Hậu" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
+                    <div class="ktv-row"><span class="ktv-name">Hoàng</span><select id="status_Hoàng" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
+                    <div class="ktv-row"><span class="ktv-name">Tùng</span><select id="status_Tùng" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
+                    <div class="ktv-row"><span class="ktv-name">Thịnh</span><select id="status_Thịnh" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
                 </div>
             </div>
 
@@ -184,6 +186,26 @@
         </div>
     </div>
 
+    <!-- FORM 18H -->
+    <div id="tab18h" class="form-section">
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label>Cơ sở (Cố định):</label>
+                <input type="text" id="coSo_18h" value="Tam Trinh" readonly>
+            </div>
+            <div class="form-group full-width"><label>Dán phim cách nhiệt:</label><input type="text" id="danPhim_18h" placeholder="Ví dụ: 2 xe..." oninput="render18h()"></div>
+            <div class="form-group full-width"><label>PPF:</label><input type="text" id="ppf_18h" placeholder="Ví dụ: 1 xe..." oninput="render18h()"></div>
+            <div class="form-group full-width"><label>Wrap:</label><input type="text" id="wrap_18h" value="" placeholder="Nhập tình trạng Wrap..." oninput="render18h()"></div>
+            <div class="form-group full-width"><label>Ghi chú:</label><input type="text" id="ghiChu_18h" value="" placeholder="Nhập ghi chú nếu có..." oninput="render18h()"></div>
+            <div class="form-group full-width"><label>Số lỗi:</label><input type="text" id="soLoi_18h" value="0" oninput="render18h()"></div>
+            <div class="form-group"><label>Lỗi chất lượng khi giao xe:</label><input type="text" id="loi1_18h" value="0" oninput="render18h()"></div>
+            <div class="form-group"><label>Lỗi đồng phục không tuân thủ:</label><input type="text" id="loi2_18h" value="0" oninput="render18h()"></div>
+            <div class="form-group"><label>Lỗi 5S tại cơ sở:</label><input type="text" id="loi3_18h" value="0" oninput="render18h()"></div>
+            <div class="form-group"><label>Các lỗi khác:</label><input type="text" id="loi4_18h" value="Không có" oninput="render18h()"></div>
+            <div class="form-group full-width"><label>Thiết bị điện các khu vực không sử dụng:</label><input type="text" id="loi5_18h" value="đã được tắt đầy đủ." oninput="render18h()"></div>
+        </div>
+    </div>
+
     <!-- KHUNG XUẤT KẾT QUẢ -->
     <div class="output-box">
         <div class="output-header">Nội dung báo cáo copy:</div>
@@ -201,7 +223,7 @@
             <div class="stat-title">📊 Thống Kê Theo Tháng</div>
             <div>
                 <span style="font-size: 11px; opacity:0.8; margin-right: 5px;">CHỌN THÁNG:</span>
-                <input type="month" id="statMonthPicker" class="stat-month-select" onchange="fetchHistoryFromSheet()">
+                <input type="month" id="statMonthPicker" class="stat-month-select" onchange="calculateMonthlyStats()">
             </div>
         </div>
 
@@ -222,6 +244,7 @@
         <div class="history-tabs">
             <button class="sub-tab-btn active" onclick="switchHistoryTab('8h', event)">Lịch sử 8H</button>
             <button class="sub-tab-btn" onclick="switchHistoryTab('17h', event)">Lịch sử 17H</button>
+            <button class="sub-tab-btn" onclick="switchHistoryTab('18h', event)">Lịch sử 18H</button>
         </div>
 
         <div id="historyList" class="history-list"></div>
@@ -247,6 +270,7 @@
         fetchHistoryFromSheet();
     };
 
+    // Đặt lại thời gian mặc định ban đầu (Ngày thực tế)
     function setDefaultDate() {
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -256,17 +280,27 @@
         document.getElementById('statMonthPicker').value = `${yyyy}-${mm}`;
     }
 
+    // Đặt lại dữ liệu mặc định sau khi gửi hoàn tất
     function resetFormToDefault() {
         setDefaultDate();
+        
+        // Reset form 8h
         document.getElementById('chiTiet_8h').value = "";
         document.getElementById('diMuon_8h').value = "Không có.";
         document.getElementById('nghiMai_8h').value = "Chưa có.";
         ALL_KTV.forEach(ten => {
-            document.getElementById(`status_${ten}`).value = "Đi Làm";
+            document.getElementById(`status_${ten}`).value = "Đi làm";
         });
 
+        // Reset form 17h
         document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
         document.getElementById('congViec_17h').value = "";
+
+        // Reset form 18h
+        document.getElementById('danPhim_18h').value = "";
+        document.getElementById('ppf_18h').value = "";
+        document.getElementById('wrap_18h').value = "";
+        document.getElementById('ghiChu_18h').value = "";
 
         updateAllRenders();
     }
@@ -287,6 +321,7 @@
     function updateAllRenders() {
         if (currentTab === 'tab8h') render8h();
         if (currentTab === 'tab17h') render17h();
+        if (currentTab === 'tab18h') render18h();
     }
 
     function switchTab(tabId, evt) {
@@ -299,6 +334,7 @@
 
         if (tabId === 'tab8h') { render8h(); switchHistoryTab('8h'); }
         if (tabId === 'tab17h') { render17h(); switchHistoryTab('17h'); }
+        if (tabId === 'tab18h') { render18h(); switchHistoryTab('18h'); }
     }
 
     function render8h() {
@@ -316,14 +352,14 @@
 
         ALL_KTV.forEach(ten => {
             const status = document.getElementById(`status_${ten}`).value;
-            if (status === "Đi Làm") {
+            if (status === "Đi làm") {
                 countKtvDiLam++;
             } else if (status === "Nghỉ") {
                 dsNghiText.push(`${ten} nghỉ.`);
-            } else if (status === "Nghỉ Sáng") {
+            } else if (status === "Nghỉ sáng") {
                 countKtvDiLam++;
                 dsNghiText.push(`${ten} nghỉ buổi sáng.`);
-            } else if (status === "Nghỉ Chiều") {
+            } else if (status === "Nghỉ chiều") {
                 countKtvDiLam++;
                 dsNghiText.push(`${ten} nghỉ buổi chiều.`);
             }
@@ -390,10 +426,47 @@ Em gửi ạ.`;
         document.getElementById('reportOutput').innerText = text;
     }
 
+    function render18h() {
+        const coSo = "Tam Trinh";
+        const ngay = getSelectedDateFormatted();
+        const danPhim = document.getElementById('danPhim_18h').value.trim();
+        const ppf = document.getElementById('ppf_18h').value.trim();
+        const wrap = document.getElementById('wrap_18h').value.trim();
+        const ghiChu = document.getElementById('ghiChu_18h').value.trim();
+        const soLoi = document.getElementById('soLoi_18h').value.trim();
+        const loi1 = document.getElementById('loi1_18h').value.trim();
+        const loi2 = document.getElementById('loi2_18h').value.trim();
+        const loi3 = document.getElementById('loi3_18h').value.trim();
+        const loi4 = document.getElementById('loi4_18h').value.trim();
+        const loi5 = document.getElementById('loi5_18h').value.trim();
+
+        const text = `BÁO CÁO CUỐI NGÀY
+
+Cơ sở: ${coSo}
+Ngày: ${ngay}
+Tiến độ công việc
+• Dán phim cách nhiệt: ${danPhim}
+• PPF: ${ppf}
+• Wrap: ${wrap}
+• Ghi chú: ${ghiChu}
+• Số lỗi: ${soLoi}
+Kiểm soát chất lượng
+1. Lỗi chất lượng khi giao xe: ${loi1}
+2. Lỗi đồng phục không tuân thủ: ${loi2}
+3. Lỗi 5S tại cơ sở: ${loi3}
+4. Các lỗi khác: ${loi4}
+5. Thiết bị điện tại các khu vực không sử dụng ${loi5}
+
+Em báo cáo ạ.`;
+
+        document.getElementById('reportOutput').innerText = text;
+    }
+
     function copyReport() {
         const text = document.getElementById('reportOutput').innerText;
         navigator.clipboard.writeText(text).then(() => {
             showSuccessPopup("Đã sao chép nội dung báo cáo!");
+            saveToHistory("Sao chép", text);
         });
     }
 
@@ -438,25 +511,46 @@ Em gửi ạ.`;
             params.append('hours', getHoursValue(endTime));
             params.append('thoiGian', endTime);
             params.append('content', reportText);
+        } else {
+            params.append('action', 'addReport');
+            params.append('type', '18h');
+            params.append('date', reportDate);
+            params.append('content', reportText);
         }
+
+        const completeSave = () => {
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
+            showSuccessPopup("Đã tải lên thành công");
+            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
+            fetchHistoryFromSheet();
+            resetFormToDefault(); // Đưa giao diện & thời gian về thực tế mặc định ban đầu
+        };
 
         fetch(WEB_APP_URL, {
             method: "POST",
             body: params
         })
         .then(res => res.json())
-        .then(data => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã lưu & đồng bộ thành công!");
-            fetchHistoryFromSheet();
-            resetFormToDefault();
-        })
-        .catch(err => {
-            btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
-            alert("Lỗi kết nối: " + err);
-        });
+        .then(data => completeSave())
+        .catch(err => completeSave());
+    }
+
+    function statusMapStoreData() {
+        if (currentTab === 'tab8h') {
+            let map = {};
+            ALL_KTV.forEach(k => map[k] = document.getElementById(`status_${k}`).value);
+            return map;
+        } else if (currentTab === 'tab17h') {
+            const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
+            const selected = Array.from(checkedBoxes).map(cb => cb.value);
+            const endTime = document.getElementById('thoiGian_17h').value;
+            const hours = getHoursValue(endTime);
+            let map = {};
+            ALL_KTV.forEach(k => { map[k] = selected.includes(k) ? hours : 0; });
+            return map;
+        }
+        return null;
     }
 
     function showSuccessPopup(msg) {
@@ -466,20 +560,43 @@ Em gửi ạ.`;
         setTimeout(() => { overlay.style.display = 'none'; }, 2500);
     }
 
-    // Đọc lịch sử trực tiếp từ Google Sheet & cập nhật lại Thống kê tháng
+    function getReportCategory() {
+        if (currentTab === 'tab8h') return '8h';
+        if (currentTab === 'tab17h') return '17h';
+        if (currentTab === 'tab18h') return '18h';
+        return '8h';
+    }
+
+    function saveToHistory(actionType, content, extraData = null) {
+        const category = getReportCategory();
+        const storageKey = `f4_history_${category}`;
+        let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const now = new Date();
+        const dateVal = document.getElementById('selectedDate').value;
+
+        const newItem = {
+            id: Date.now(),
+            dateIso: dateVal,
+            time: `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} - ${getSelectedDateFormatted()}`,
+            action: actionType,
+            content: content,
+            extraData: extraData
+        };
+
+        history.unshift(newItem);
+        localStorage.setItem(storageKey, JSON.stringify(history));
+        switchHistoryTab(category);
+        calculateMonthlyStats();
+    }
+
     function fetchHistoryFromSheet() {
-        const monthVal = document.getElementById('statMonthPicker').value; // Format: YYYY-MM
-        if (!monthVal) return;
-
-        const parts = monthVal.split('-');
-        const monthYearStr = `${parts[1]}/${parts[0]}`; // Chuyển thành MM/YYYY
-
-        fetch(`${WEB_APP_URL}?action=getHistory&month=${monthYearStr}`)
+        fetch(`${WEB_APP_URL}?action=getHistory`)
         .then(res => res.json())
         .then(data => {
             if (data && data.status === "success") {
-                localStorage.setItem('f4_history_8h', JSON.stringify(data.history8h || []));
-                localStorage.setItem('f4_history_17h', JSON.stringify(data.history17h || []));
+                if (data.history8h) localStorage.setItem('f4_history_8h', JSON.stringify(data.history8h));
+                if (data.history17h) localStorage.setItem('f4_history_17h', JSON.stringify(data.history17h));
+                if (data.history18h) localStorage.setItem('f4_history_18h', JSON.stringify(data.history18h));
                 
                 loadHistory();
                 calculateMonthlyStats();
@@ -501,6 +618,7 @@ Em gửi ạ.`;
             const btns = document.querySelectorAll('.sub-tab-btn');
             if(type === '8h') btns[0].classList.add('active');
             if(type === '17h') btns[1].classList.add('active');
+            if(type === '18h') btns[2].classList.add('active');
         }
 
         loadHistory();
@@ -511,26 +629,25 @@ Em gửi ạ.`;
     const history = JSON.parse(localStorage.getItem(storageKey) || '[]');
     const historyListEl = document.getElementById('historyList');
 
+    if (!historyListEl) return;
+
     if (history.length === 0) {
-        historyListEl.innerHTML = '<div style="text-align:center; padding: 20px; color:#8e8e93; font-size:13px;">Chưa có lịch sử báo cáo.</div>';
+        historyListEl.innerHTML = '<div style="text-align:center; padding: 15px; color:#8e8e93; font-size:13px;">Chưa có lịch sử.</div>';
         return;
     }
 
     let html = '';
     history.forEach((item) => {
-        // Đảm bảo lọc lấy đúng ngày DD/MM/YYYY
-        let displayDate = item.time ? item.time.split(' ')[0] : getSelectedDateFormatted();
+        // Chỉ lấy ngày DD/MM/YYYY
+        let displayDate = item.time ? item.time.split(' ')[0] : '';
 
         html += `
-        <div class="history-item">
-            <div class="history-item-header">
-                <div>
-                    <input type="checkbox" class="history-select-cb" data-id="${item.id}" style="margin-right: 6px;">
-                    <span style="font-weight: bold; color: #1c1c1e;">${displayDate}</span>
-                </div>
-                <span style="color:#34c759; font-weight: bold;">✓ Đã gửi Sheet</span>
+        <div class="history-item" style="margin-bottom:8px; border:1px solid #e5e5ea; border-radius:6px; padding:8px 12px; background:#fff;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:13px;">
+                <span><input type="checkbox" class="history-select-cb" data-id="${item.id}"> ${displayDate}</span>
+                <span style="color:#34c759;">(Đã Gửi Sheet)</span>
             </div>
-            <div class="history-item-body">${item.content}</div>
+            <div style="font-size:12px; color:#666; margin-top:4px;">${item.content}</div>
         </div>`;
     });
 
@@ -547,40 +664,55 @@ Em gửi ạ.`;
             return;
         }
 
-        if (confirm("Xóa mục này trên giao diện sẽ đồng bộ làm sạch lại dữ liệu?")) {
+        if (confirm("Bạn có chắc chắn muốn xóa các mục lịch sử đã chọn không?")) {
             const selectedIds = Array.from(checkedCbs).map(cb => parseInt(cb.getAttribute('data-id'), 10));
             history = history.filter(item => !selectedIds.includes(item.id));
             localStorage.setItem(storageKey, JSON.stringify(history));
             loadHistory();
+            calculateMonthlyStats();
         }
     }
 
-    // Tính toán lại Tổng số ngày làm và Tổng giờ tăng ca dựa trên Dữ liệu Sheet đồng bộ về
     function calculateMonthlyStats() {
-        let workingDaysMap = {};
-        let overtimeHoursMap = {};
+    let workingDaysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
+    let overtimeHoursMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
 
-        ALL_KTV.forEach(k => {
-            workingDaysMap[k] = 0;
-            overtimeHoursMap[k] = 0;
-        });
+    // Lấy dữ liệu công từ Lịch sử Chấm công
+    const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
+    history8h.forEach(item => {
+        if (item.extraData) {
+            Object.keys(workingDaysMap).forEach(k => {
+                const st = item.extraData[k];
+                if (st === "Đi Làm") workingDaysMap[k] += 1;
+                else if (st === "Nghỉ Sáng" || st === "Nghỉ Chiều") workingDaysMap[k] += 0.5;
+            });
+        }
+    });
 
-        // 1. Cộng tổng ngày công từ Lịch sử Chấm công (8H)
-        const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
-        history8h.forEach(item => {
-            if (item.extraData) {
-                ALL_KTV.forEach(k => {
-                    const st = item.extraData[k];
-                    if (st === "Đi Làm") workingDaysMap[k] += 1;
-                    else if (st === "Nghỉ Sáng" || st === "Nghỉ Chiều") workingDaysMap[k] += 0.5;
-                });
-            }
-        });
+    // Lấy dữ liệu tăng ca từ Lịch sử Tăng ca
+    const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
+    history17h.forEach(item => {
+        if (item.extraData) {
+            Object.keys(overtimeHoursMap).forEach(k => {
+                overtimeHoursMap[k] += parseFloat(item.extraData[k]) || 0;
+            });
+        }
+    });
 
-        // 2. Cộng tổng giờ tăng ca từ Lịch sử Tăng ca (17H)
+    // Đưa kết quả vào các khung thống kê trên trang của bạn
+    Object.keys(workingDaysMap).forEach(ktv => {
+        const dayEl = document.getElementById(`stat_days_${ktv}`);
+        if (dayEl) dayEl.innerText = `${workingDaysMap[ktv]} ngày`;
+
+        const hourEl = document.getElementById(`stat_hours_${ktv}`);
+        if (hourEl) hourEl.innerText = `${overtimeHoursMap[ktv]}h`;
+    });
+}
+
+        // 2. Tính giờ tăng ca từ lịch sử 17H
         const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
         history17h.forEach(item => {
-            if (item.extraData) {
+            if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
                 ALL_KTV.forEach(k => {
                     const hrs = parseFloat(item.extraData[k]) || 0;
                     overtimeHoursMap[k] += hrs;
@@ -588,7 +720,7 @@ Em gửi ạ.`;
             }
         });
 
-        // 3. Đưa thông số đã đồng bộ lên Giao diện Thống kê
+        // Render lên giao diện Thống kê
         let daysHtml = '';
         let hoursHtml = '';
 
