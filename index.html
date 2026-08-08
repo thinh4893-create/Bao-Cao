@@ -7,13 +7,16 @@
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/emoji/192/sports-car.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/emoji/32/sports-car.png">
-    
+    <meta name="apple-mobile-web-app-title" content="F4 AUTO">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f2f2f7; padding: 15px; color: #1c1c1e; }
         .container { max-width: 680px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         h1 { text-align: center; font-size: 20px; margin-bottom: 15px; color: #007aff; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
+        /* Ô CHỌN NGÀY THỜI GIAN THỰC */
         .date-picker-box { background: #eef6ff; border: 1px solid #007aff; padding: 10px 14px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
         .date-picker-box label { font-size: 13px; font-weight: bold; color: #007aff; }
         .date-picker-box input[type="date"] { padding: 6px 10px; border-radius: 6px; border: 1px solid #007aff; font-size: 14px; font-weight: bold; color: #1c1c1e; outline: none; background: #fff; }
@@ -53,6 +56,7 @@
         .btn-sync { background: #007aff; }
         .btn-sync:hover { background: #0056b3; }
 
+        /* BẢNG THỐNG KÊ THEO THÁNG THEO MẪU MÀU XANH TÍM */
         .stat-card { margin-top: 25px; background: linear-gradient(135deg, #2557e0 0%, #3e33c7 100%); border-radius: 14px; padding: 20px; color: #ffffff; box-shadow: 0 8px 20px rgba(37, 87, 224, 0.25); }
         .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
         .stat-title { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
@@ -64,18 +68,24 @@
         .stat-item-box .ktv-label { font-size: 12px; font-weight: 700; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; }
         .stat-item-box .ktv-val { font-size: 15px; font-weight: 800; color: #ffe600; }
 
+        /* LỊCH SỬ BÁO CÁO */
         .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
         .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
         .sub-tab-btn.active { background: #007aff; color: #ffffff; }
 
-        .history-list { max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .history-item { background: #f8f9fa; border-radius: 8px; border: 1px solid #e5e5ea; border-left: 4px solid #007aff; overflow: hidden; }
-        .history-item-header { padding: 8px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; background: #eef6ff; }
-        /* Cấu hình hiển thị trực tiếp toàn bộ nội dung lịch sử */
-        .history-item-body { display: block; padding: 10px 12px; color: #1c1c1e; font-size: 13px; white-space: pre-wrap; background: #ffffff; line-height: 1.5; border-top: 1px solid #e5e5ea; }
+        .history-list { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .history-item { background: #f2f2f7; border-radius: 6px; border-left: 4px solid #007aff; overflow: hidden; }
+        .history-item-header { padding: 8px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; }
+        .history-header-left { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; }
+        .history-item-header:hover { background: #e5e5ea; }
+        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.4; }
+        .history-item.open .history-item-body { display: block; }
+        .history-item.open .arrow { transform: rotate(180deg); }
+        .arrow { transition: transform 0.2s ease; font-size: 10px; color: #8e8e93; }
 
+        /* Popup */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
         .modal-card .icon { font-size: 40px; color: #34c759; margin-bottom: 10px; }
@@ -93,8 +103,9 @@
 <div class="container">
     <h1> BÁO CÁO F4 AUTO - TAM TRINH</h1>
 
+    <!-- Ô TÙY CHỈNH NGÀY BÁO CÁO (MẶC ĐỊNH MÁY THỜI GIAN THỰC) -->
     <div class="date-picker-box">
-        <label>Chọn Ngày Báo Cáo:</label>
+        <label>📅 Chọn Ngày Báo Cáo:</label>
         <input type="date" id="selectedDate" onchange="updateAllRenders()">
     </div>
 
@@ -108,7 +119,7 @@
     <div id="tab8h" class="form-section active">
         <div class="form-grid">
             <div class="form-group">
-                <label>Cơ sở:</label>
+                <label>Cơ sở (Cố định):</label>
                 <input type="text" id="coSo_8h" value="Tam Trinh" readonly>
             </div>
             <div class="form-group">
@@ -228,10 +239,14 @@
         </div>
 
         <div class="stat-section-title">👨‍🔧 TỔNG SỐ NGÀY ĐI LÀM TRONG THÁNG </div>
-        <div class="stat-grid" id="gridWorkingDays"></div>
+        <div class="stat-grid" id="gridWorkingDays">
+            <!-- RenderJS -->
+        </div>
 
         <div class="stat-section-title" style="margin-top: 15px;">⏰ TỔNG SỐ GIỜ TĂNG CA TRONG THÁNG </div>
-        <div class="stat-grid" id="gridOvertimeHours"></div>
+        <div class="stat-grid" id="gridOvertimeHours">
+            <!-- RenderJS -->
+        </div>
     </div>
 
     <!-- LỊCH SỬ BÁO CÁO -->
@@ -259,7 +274,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz3mKtfYrC47oE2lvRIcxGe-a83ThowjqkjeqzxQYXJ1GOS13tMTrxBvLrFwKPD0b0/exec";
     const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     let currentTab = 'tab8h';
     let currentHistoryTab = '8h';
@@ -267,42 +282,20 @@
     window.onload = function() {
         setDefaultDate();
         render8h();
-        fetchHistoryFromSheet();
+        switchHistoryTab('8h');
+        calculateMonthlyStats();
     };
 
-    // Đặt lại thời gian mặc định ban đầu (Ngày thực tế)
+    // Đặt ngày thời gian thực cho ô tùy chỉnh ngày
     function setDefaultDate() {
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         document.getElementById('selectedDate').value = `${yyyy}-${mm}-${dd}`;
-        document.getElementById('statMonthPicker').value = `${yyyy}-${mm}`;
-    }
 
-    // Đặt lại dữ liệu mặc định sau khi gửi hoàn tất
-    function resetFormToDefault() {
-        setDefaultDate();
-        
-        // Reset form 8h
-        document.getElementById('chiTiet_8h').value = "";
-        document.getElementById('diMuon_8h').value = "Không có.";
-        document.getElementById('nghiMai_8h').value = "Chưa có.";
-        ALL_KTV.forEach(ten => {
-            document.getElementById(`status_${ten}`).value = "Đi làm";
-        });
-
-        // Reset form 17h
-        document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
-        document.getElementById('congViec_17h').value = "";
-
-        // Reset form 18h
-        document.getElementById('danPhim_18h').value = "";
-        document.getElementById('ppf_18h').value = "";
-        document.getElementById('wrap_18h').value = "";
-        document.getElementById('ghiChu_18h').value = "";
-
-        updateAllRenders();
+        const monthStr = `${yyyy}-${mm}`;
+        document.getElementById('statMonthPicker').value = monthStr;
     }
 
     function getSelectedDateFormatted() {
@@ -341,10 +334,12 @@
         const coSo = "Tam Trinh";
         const ngay = getSelectedDateFormatted();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
+        
         const quanLy = 1;
         const keToan = 1;
         const saleOff = parseInt(document.getElementById('saleOff_8h').value, 10) || 0;
         const ktvCoSo = ALL_KTV.length;
+
         const tongNhanLuc = quanLy + saleOff + ktvCoSo + keToan;
 
         let dsNghiText = [];
@@ -366,12 +361,15 @@
         });
 
         const nhanSuDiLam = quanLy + saleOff + keToan + countKtvDiLam;
+
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
         const diMuon = document.getElementById('diMuon_8h').value.trim();
 
         let chiTietFull = [...dsNghiText];
-        if (ghiChuBoSung !== "") chiTietFull.push(ghiChuBoSung);
+        if (ghiChuBoSung !== "") {
+            chiTietFull.push(ghiChuBoSung);
+        }
         
         let chiTietFormatted = "   •  Khái quát ổn định.";
         if (chiTietFull.length > 0) {
@@ -485,11 +483,9 @@ Em báo cáo ạ.`;
                 statusMap[ten] = document.getElementById(`status_${ten}`).value;
             });
 
-            params.append('action', 'addReport');
             params.append('type', '8h');
             params.append('date', reportDate);
             params.append('statusMap', JSON.stringify(statusMap));
-            params.append('content', reportText);
 
         } else if (currentTab === 'tab17h') {
             const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
@@ -504,36 +500,36 @@ Em báo cáo ạ.`;
 
             const endTime = document.getElementById('thoiGian_17h').value;
 
-            params.append('action', 'addReport');
             params.append('type', '17h');
             params.append('date', reportDate);
             params.append('selectedKTVs', selectedKTVs.join(', '));
             params.append('hours', getHoursValue(endTime));
             params.append('thoiGian', endTime);
-            params.append('content', reportText);
         } else {
-            params.append('action', 'addReport');
-            params.append('type', '18h');
-            params.append('date', reportDate);
-            params.append('content', reportText);
-        }
-
-        const completeSave = () => {
+            alert("Báo cáo 18H không đẩy dữ liệu lên Google Sheet.");
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã tải lên thành công");
-            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
-            fetchHistoryFromSheet();
-            resetFormToDefault(); // Đưa giao diện & thời gian về thực tế mặc định ban đầu
-        };
+            saveToHistory("Lưu máy (18H)", reportText);
+            return;
+        }
 
         fetch(WEB_APP_URL, {
             method: "POST",
             body: params
         })
         .then(res => res.json())
-        .then(data => completeSave())
-        .catch(err => completeSave());
+        .then(data => {
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
+            showSuccessPopup("Đã tải lên thành công");
+            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
+        })
+        .catch(err => {
+            btnSync.disabled = false;
+            btnSync.innerText = "Gửi Lên Google Sheet";
+            showSuccessPopup("Đã tải lên thành công");
+            saveToHistory("Đã gửi Sheet", reportText, statusMapStoreData());
+        });
     }
 
     function statusMapStoreData() {
@@ -547,7 +543,9 @@ Em báo cáo ạ.`;
             const endTime = document.getElementById('thoiGian_17h').value;
             const hours = getHoursValue(endTime);
             let map = {};
-            ALL_KTV.forEach(k => { map[k] = selected.includes(k) ? hours : 0; });
+            ALL_KTV.forEach(k => {
+                map[k] = selected.includes(k) ? hours : 0;
+            });
             return map;
         }
         return null;
@@ -572,7 +570,7 @@ Em báo cáo ạ.`;
         const storageKey = `f4_history_${category}`;
         let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
         const now = new Date();
-        const dateVal = document.getElementById('selectedDate').value;
+        const dateVal = document.getElementById('selectedDate').value; // YYYY-MM-DD
 
         const newItem = {
             id: Date.now(),
@@ -587,25 +585,6 @@ Em báo cáo ạ.`;
         localStorage.setItem(storageKey, JSON.stringify(history));
         switchHistoryTab(category);
         calculateMonthlyStats();
-    }
-
-    function fetchHistoryFromSheet() {
-        fetch(`${WEB_APP_URL}?action=getHistory`)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.status === "success") {
-                if (data.history8h) localStorage.setItem('f4_history_8h', JSON.stringify(data.history8h));
-                if (data.history17h) localStorage.setItem('f4_history_17h', JSON.stringify(data.history17h));
-                if (data.history18h) localStorage.setItem('f4_history_18h', JSON.stringify(data.history18h));
-                
-                loadHistory();
-                calculateMonthlyStats();
-            }
-        })
-        .catch(err => {
-            loadHistory();
-            calculateMonthlyStats();
-        });
     }
 
     function switchHistoryTab(type, evt) {
@@ -624,123 +603,108 @@ Em báo cáo ạ.`;
         loadHistory();
     }
 
-    function loadHistory() {
-    const storageKey = `f4_history_${currentHistoryTab}`;
-    const history = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    const historyListEl = document.getElementById('historyList');
-
-    if (!historyListEl) return;
-
-    if (history.length === 0) {
-        historyListEl.innerHTML = '<div style="text-align:center; padding: 15px; color:#8e8e93; font-size:13px;">Chưa có lịch sử.</div>';
-        return;
+    function toggleHistoryItem(el) {
+        el.closest('.history-item').classList.toggle('open');
     }
 
-    let html = '';
-    history.forEach((item) => {
-        // Chỉ lấy ngày DD/MM/YYYY
-        let displayDate = item.time ? item.time.split(' ')[0] : '';
-
-        html += `
-        <div class="history-item" style="margin-bottom:8px; border:1px solid #e5e5ea; border-radius:6px; padding:8px 12px; background:#fff;">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:13px;">
-                <span><input type="checkbox" class="history-select-cb" data-id="${item.id}"> ${displayDate}</span>
-                <span style="color:#34c759;">(Đã Gửi Sheet)</span>
-            </div>
-            <div style="font-size:12px; color:#666; margin-top:4px;">${item.content}</div>
-        </div>`;
-    });
-
-    historyListEl.innerHTML = html;
-}
-
-    function deleteSelectedHistory() {
+    function loadHistory() {
         const storageKey = `f4_history_${currentHistoryTab}`;
         let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const checkedCbs = document.querySelectorAll('.history-select-cb:checked');
+        const listEl = document.getElementById('historyList');
 
-        if (checkedCbs.length === 0) {
-            alert("Vui lòng chọn ít nhất một mục để xóa!");
+        if (history.length === 0) {
+            listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử báo cáo ${currentHistoryTab.toUpperCase()} nào.</div>`;
             return;
         }
 
-        if (confirm("Bạn có chắc chắn muốn xóa các mục lịch sử đã chọn không?")) {
-            const selectedIds = Array.from(checkedCbs).map(cb => parseInt(cb.getAttribute('data-id'), 10));
-            history = history.filter(item => !selectedIds.includes(item.id));
+        listEl.innerHTML = history.map(item => `
+            <div class="history-item">
+                <div class="history-item-header">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #3a3a3c;">
+                        <input type="checkbox" class="history-checkbox" value="${item.id}" style="width: 16px; height: 16px; cursor: pointer;">
+                    </label>
+                    <div class="history-header-left" onclick="toggleHistoryItem(this)">
+                        <span>📌 ${item.time} (${item.action})</span>
+                    </div>
+                    <span class="arrow" onclick="toggleHistoryItem(this)" style="cursor: pointer; padding: 0 5px;">▼</span>
+                </div>
+                <div class="history-item-body">${item.content}</div>
+            </div>
+        `).join('');
+    }
+
+    function deleteSelectedHistory() {
+        const checkedBoxes = document.querySelectorAll('.history-checkbox:checked');
+        if (checkedBoxes.length === 0) {
+            alert("Vui lòng chọn ít nhất một mục lịch sử cần xóa bằng cách tích vào ô vuông!");
+            return;
+        }
+
+        if (confirm(`Bạn có chắc chắn muốn xóa ${checkedBoxes.length} mục lịch sử đã chọn không?`)) {
+            const storageKey = `f4_history_${currentHistoryTab}`;
+            let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            
+            const idsToDelete = Array.from(checkedBoxes).map(cb => Number(cb.value));
+            
+            // Lọc giữ lại những mục không bị xóa
+            history = history.filter(item => !idsToDelete.includes(item.id));
+
             localStorage.setItem(storageKey, JSON.stringify(history));
             loadHistory();
             calculateMonthlyStats();
+            showSuccessPopup("Đã xóa các mục đã chọn!");
         }
     }
 
+    // TÍNH TOÁN THỐNG KÊ THÁNG HIỂN THỊ LÊN GIAO DIỆN XANH TÍM
     function calculateMonthlyStats() {
-    let workingDaysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
-    let overtimeHoursMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
+        const selectedMonth = document.getElementById('statMonthPicker').value; // YYYY-MM
+        let daysMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
+        let hoursMap = { "Vũ": 0, "Hậu": 0, "Hoàng": 0, "Tùng": 0, "Thịnh": 0 };
 
-    // Lấy dữ liệu công từ Lịch sử Chấm công
-    const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
-    history8h.forEach(item => {
-        if (item.extraData) {
-            Object.keys(workingDaysMap).forEach(k => {
-                const st = item.extraData[k];
-                if (st === "Đi Làm") workingDaysMap[k] += 1;
-                else if (st === "Nghỉ Sáng" || st === "Nghỉ Chiều") workingDaysMap[k] += 0.5;
-            });
-        }
-    });
-
-    // Lấy dữ liệu tăng ca từ Lịch sử Tăng ca
-    const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
-    history17h.forEach(item => {
-        if (item.extraData) {
-            Object.keys(overtimeHoursMap).forEach(k => {
-                overtimeHoursMap[k] += parseFloat(item.extraData[k]) || 0;
-            });
-        }
-    });
-
-    // Đưa kết quả vào các khung thống kê trên trang của bạn
-    Object.keys(workingDaysMap).forEach(ktv => {
-        const dayEl = document.getElementById(`stat_days_${ktv}`);
-        if (dayEl) dayEl.innerText = `${workingDaysMap[ktv]} ngày`;
-
-        const hourEl = document.getElementById(`stat_hours_${ktv}`);
-        if (hourEl) hourEl.innerText = `${overtimeHoursMap[ktv]}h`;
-    });
-}
-
-        // 2. Tính giờ tăng ca từ lịch sử 17H
-        const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
-        history17h.forEach(item => {
+        // 1. Thống kê số ngày làm từ lịch sử 8H
+        const history8h = JSON.parse(localStorage.getItem('f4_history_8h') || '[]');
+        history8h.forEach(item => {
             if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
                 ALL_KTV.forEach(k => {
-                    const hrs = parseFloat(item.extraData[k]) || 0;
-                    overtimeHoursMap[k] += hrs;
+                    const st = item.extraData[k];
+                    if (st === "Đi làm") daysMap[k] += 1;
+                    else if (st === "Nghỉ sáng" || st === "Nghỉ chiều") daysMap[k] += 0.5;
                 });
             }
         });
 
-        // Render lên giao diện Thống kê
-        let daysHtml = '';
-        let hoursHtml = '';
-
-        ALL_KTV.forEach(k => {
-            daysHtml += `
-            <div class="stat-item-box">
-                <div class="ktv-label">${k}</div>
-                <div class="ktv-val">${workingDaysMap[k]} ngày</div>
-            </div>`;
-
-            hoursHtml += `
-            <div class="stat-item-box">
-                <div class="ktv-label">${k}</div>
-                <div class="ktv-val">${overtimeHoursMap[k]}h</div>
-            </div>`;
+        // 2. Thống kê số giờ tăng ca từ lịch sử 17H
+        const history17h = JSON.parse(localStorage.getItem('f4_history_17h') || '[]');
+        history17h.forEach(item => {
+            if (item.dateIso && item.dateIso.startsWith(selectedMonth) && item.extraData) {
+                ALL_KTV.forEach(k => {
+                    if (item.extraData[k]) {
+                        hoursMap[k] += Number(item.extraData[k]) || 0;
+                    }
+                });
+            }
         });
 
-        document.getElementById('gridWorkingDays').innerHTML = daysHtml;
-        document.getElementById('gridOvertimeHours').innerHTML = hoursHtml;
+        // 3. Render ra giao diện
+        const gridDays = document.getElementById('gridWorkingDays');
+        const gridHours = document.getElementById('gridOvertimeHours');
+
+        gridDays.innerHTML = ALL_KTV.map(k => `
+            <div class="stat-item-box">
+                <div class="ktv-label">${k}</div>
+                <div class="ktv-val">${daysMap[k]} ngày</div>
+            </div>
+        `).join('');
+
+        gridHours.innerHTML = ALL_KTV.map(k => `
+            <div class="stat-item-box">
+                <div class="ktv-label">${k}</div>
+                <div class="ktv-val">${hoursMap[k]}h</div>
+            </div>
+        `).join('');
     }
 </script>
+
 </body>
 </html>
