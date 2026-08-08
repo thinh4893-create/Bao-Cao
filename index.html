@@ -76,7 +76,6 @@
         .history-item { background: #f8f9fa; border-radius: 8px; border: 1px solid #e5e5ea; border-left: 4px solid #007aff; overflow: hidden; }
         .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; background: #eef6ff; }
         
-        /* Cấu hình hiển thị dạng rút gọn / mở rộng */
         .history-item-body { 
             padding: 10px 12px; 
             color: #1c1c1e; 
@@ -91,7 +90,7 @@
 
         .history-item-body.collapsed {
             display: -webkit-box;
-            -webkit-line-clamp: 2; /* Rút gọn còn 2 dòng */
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -299,6 +298,7 @@
     window.onload = function() {
         setDefaultDate();
         render8h();
+        // Luôn ưu tiên đồng bộ dữ liệu Lịch sử mới nhất từ Google Sheet khi tải trang
         fetchHistoryFromSheet();
     };
 
@@ -615,6 +615,7 @@ Em báo cáo ạ.`;
         calculateMonthlyStats();
     }
 
+    // TẢI & ĐỒNG BỘ DỮ LIỆU TỪ GOOGLE SHEET VỀ THIẾT BỊ
     function fetchHistoryFromSheet() {
         fetch(`${WEB_APP_URL}?action=getHistory`)
         .then(res => res.json())
@@ -624,6 +625,9 @@ Em báo cáo ạ.`;
                 if (data.history17h) localStorage.setItem('f4_history_17h', JSON.stringify(data.history17h));
                 if (data.history18h) localStorage.setItem('f4_history_18h', JSON.stringify(data.history18h));
                 
+                loadHistory();
+                calculateMonthlyStats();
+            } else {
                 loadHistory();
                 calculateMonthlyStats();
             }
@@ -650,7 +654,6 @@ Em báo cáo ạ.`;
         loadHistory();
     }
 
-    // Tải danh sách lịch sử với tính năng thu gọn / mở rộng
     function loadHistory() {
         const storageKey = `f4_history_${currentHistoryTab}`;
         let history = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -675,7 +678,6 @@ Em báo cáo ạ.`;
         `).join('');
     }
 
-    // Đóng/Mở chi tiết báo cáo
     function toggleHistoryItem(id) {
         const bodyEl = document.getElementById(`body_${id}`);
         const btnEl = document.getElementById(`btn_toggle_${id}`);
