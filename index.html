@@ -165,6 +165,14 @@
     <!-- FORM 17H -->
     <div id="tab17h" class="form-section">
         <div class="form-grid">
+            <!-- THÊM TÙY CHỌN BÁO CÁO / ĐĂNG KÝ TĂNG CA -->
+            <div class="form-group full-width">
+                <label>Loại hình báo cáo:</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="radio" name="otMode" value="ĐĂNG KÝ TĂNG CA" checked onchange="render17h()"> Đăng Ký Tăng Ca</label>
+                    <label class="checkbox-item"><input type="radio" name="otMode" value="BÁO CÁO TĂNG CA" onchange="render17h()"> Báo Cáo Tăng Ca</label>
+                </div>
+            </div>
             <div class="form-group full-width">
                 <label>Cơ sở (Cố định):</label>
                 <input type="text" id="coSo_17h" value="Tam Trinh" readonly>
@@ -427,12 +435,16 @@ Em xin cảm ơn ạ!`;
 
     function render17h() {
         const coSo = "Tam Trinh";
+        // Lấy chế độ ĐĂNG KÝ TĂNG CA hoặc BÁO CÁO TĂNG CA
+        const modeRadio = document.querySelector('input[name="otMode"]:checked');
+        const otTitle = modeRadio ? modeRadio.value : 'ĐĂNG KÝ TĂNG CA';
+
         const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
         const selectedKTV = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
         const congViec = document.getElementById('congViec_17h').value.trim();
         const endTime = document.getElementById('thoiGian_17h').value;
 
-        const text = `ĐĂNG KÝ TĂNG CA
+        const text = `${otTitle}
 
 – Cơ sở: ${coSo}
 – Kỹ thuật viên: ${selectedKTV || 'Chưa chọn'}
@@ -505,6 +517,8 @@ Em báo cáo ạ.`;
         document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
         document.getElementById('congViec_17h').value = "";
         document.getElementById('thoiGian_17h').value = "22:00";
+        const defaultOtRadio = document.querySelector('input[name="otMode"][value="ĐĂNG KÝ TĂNG CA"]');
+        if (defaultOtRadio) defaultOtRadio.checked = true;
 
         // Reset Tab 18H
         document.getElementById('danPhim_18h').value = "";
