@@ -55,7 +55,6 @@
         .btn-sync { background: #007aff; }
         .btn-sync:hover { background: #0056b3; }
 
-        /* GIAO DIỆN BẢNG THỐNG KÊ THEO THÁNG */
         .stats-box { margin-top: 20px; background: linear-gradient(135deg, #2b56f5 0%, #1e3cc6 100%); border-radius: 18px; padding: 20px; color: #ffffff; box-shadow: 0 8px 20px rgba(30, 60, 198, 0.25); }
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
         .stats-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -68,7 +67,6 @@
         .stat-card .ktv-label { font-size: 13px; font-weight: 800; color: #ffffff; margin-bottom: 4px; text-transform: uppercase; }
         .stat-card .stat-val { font-size: 15px; font-weight: 800; color: #ffeb3b; }
 
-        /* LỊCH SỬ BÁO CÁO DÙNG DỮ LIỆU ĐỒNG BỘ */
         .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
@@ -115,14 +113,9 @@
     <!-- FORM 8H -->
     <div id="tab8h" class="form-section active">
         <div class="form-grid">
-            <div class="form-group">
-                <label>Cơ sở (Cố định):</label>
-                <input type="text" id="coSo_8h" value="Tam Trinh" readonly>
-            </div>
-            <div class="form-group">
-                <label>Thời gian:</label>
-                <input type="text" id="thoiGian_8h" value="08:00" oninput="render8h()">
-            </div>
+            <input type="hidden" id="coSo_8h" value="Tam Trinh">
+            <input type="hidden" id="thoiGian_8h" value="08:00">
+
             <div class="form-group">
                 <label>Số lượng Quản lý:</label>
                 <input type="text" id="quanLy_8h" value="01" readonly>
@@ -165,7 +158,6 @@
     <!-- FORM 17H -->
     <div id="tab17h" class="form-section">
         <div class="form-grid">
-            <!-- THÊM TÙY CHỌN BÁO CÁO / ĐĂNG KÝ TĂNG CA -->
             <div class="form-group full-width">
                 <label>Loại hình báo cáo:</label>
                 <div class="checkbox-group">
@@ -191,11 +183,25 @@
                 <label>Nội dung công việc:</label>
                 <input type="text" id="congViec_17h" placeholder="Nhập nội dung công việc..." oninput="render17h()">
             </div>
-            <div class="form-group full-width">
-                <label>Thời gian tăng ca đến:</label>
+            
+            <!-- Ô CHỌN GIỜ BẮT ĐẦU VÀ GIỜ KẾT THÚC DÙNG ĐỂ ĐỒNG BỘ NGUYÊN BẢN LÊN GOOGLE SHEET -->
+            <div class="form-group">
+                <label>Giờ bắt đầu tăng ca:</label>
+                <select id="thoiGianBatDau_17h" onchange="render17h()">
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00" selected>18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Giờ kết thúc tăng ca:</label>
                 <select id="thoiGian_17h" onchange="render17h()">
                     <option value="20:00">20:00</option>
+                    <option value="20:30">20:30</option>
                     <option value="21:00">21:00</option>
+                    <option value="21:30">21:30</option>
                     <option value="22:00" selected>22:00</option>
                 </select>
             </div>
@@ -233,7 +239,7 @@
         </div>
     </div>
 
-    <!-- BẢNG THỐNG KÊ THEO THÁNG chuẩn giao diện ảnh -->
+    <!-- BẢNG THỐNG KÊ THEO THÁNG -->
     <div class="stats-box">
         <div class="stats-header">
             <div class="stats-title">📊 Thống Kê Theo Tháng</div>
@@ -426,16 +432,21 @@ Em xin cảm ơn ạ!`;
         document.getElementById('reportOutput').innerText = text;
     }
 
-    function getHoursValue(endTimeVal) {
-        if (endTimeVal === "20:00") return 1;
-        if (endTimeVal === "21:00") return 2;
-        if (endTimeVal === "22:00") return 3;
-        return 0;
+    function calculateOtHours(startTimeVal, endTimeVal) {
+        const [startH, startM] = startTimeVal.split(':').map(Number);
+        const [endH, endM] = endTimeVal.split(':').map(Number);
+        
+        const startTotalMin = startH * 60 + startM;
+        const endTotalMin = endH * 60 + endM;
+
+        const diffMin = endTotalMin - startTotalMin;
+        if (diffMin <= 0) return 0;
+        return diffMin / 60;
     }
 
+    // GIỮ NGUYÊN NỘI DUNG VĂN BẢN ĐỂ COPY BÁO CÁO NHÓM
     function render17h() {
         const coSo = "Tam Trinh";
-        // Lấy chế độ ĐĂNG KÝ TĂNG CA hoặc BÁO CÁO TĂNG CA
         const modeRadio = document.querySelector('input[name="otMode"]:checked');
         const otTitle = modeRadio ? modeRadio.value : 'ĐĂNG KÝ TĂNG CA';
 
@@ -449,7 +460,7 @@ Em xin cảm ơn ạ!`;
 – Cơ sở: ${coSo}
 – Kỹ thuật viên: ${selectedKTV || 'Chưa chọn'}
 – Nội dung công việc: ${congViec}
-– Thời gian tăng ca: ${endTime}
+– Thời gian: ${endTime}
 
 Em gửi ạ.`;
 
@@ -499,12 +510,10 @@ Em báo cáo ạ.`;
         });
     }
 
-    // HÀM RESET CÁC Ô NHẬP VỀ MẶC ĐỊNH & VỀ NGÀY HIỆN TẠI
     function resetFormToDefault() {
         setDefaultDate();
 
         // Reset Tab 8H
-        document.getElementById('thoiGian_8h').value = "08:00";
         document.getElementById('saleOff_8h').value = "0";
         ALL_KTV.forEach(ten => {
             document.getElementById(`status_${ten}`).value = "Đi làm";
@@ -516,6 +525,7 @@ Em báo cáo ạ.`;
         // Reset Tab 17H
         document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
         document.getElementById('congViec_17h').value = "";
+        document.getElementById('thoiGianBatDau_17h').value = "18:00";
         document.getElementById('thoiGian_17h').value = "22:00";
         const defaultOtRadio = document.querySelector('input[name="otMode"][value="ĐĂNG KÝ TĂNG CA"]');
         if (defaultOtRadio) defaultOtRadio.checked = true;
@@ -535,6 +545,7 @@ Em báo cáo ạ.`;
         updateAllRenders();
     }
 
+    // ĐỒNG BỘ ĐẦY ĐỦ CÁC TRƯỜNG LÊN GOOGLE SHEET
     function sendToGoogleSheet() {
         const btnSync = document.getElementById('btnSync');
         btnSync.disabled = true;
@@ -564,13 +575,17 @@ Em báo cáo ạ.`;
                 return;
             }
 
+            const startTime = document.getElementById('thoiGianBatDau_17h').value;
             const endTime = document.getElementById('thoiGian_17h').value;
+            const calculatedHours = calculateOtHours(startTime, endTime);
 
             params.append('type', '17h');
             params.append('date', reportDate);
             params.append('selectedKTVs', selectedKTVs.join(', '));
-            params.append('hours', getHoursValue(endTime));
-            params.append('thoiGian', endTime);
+            params.append('startTime', startTime);
+            params.append('endTime', endTime);
+            params.append('hours', calculatedHours);
+            params.append('thoiGian', `${startTime} - ${endTime}`);
         } else {
             alert("Báo cáo 18H không gửi dữ liệu lên Google Sheet.");
             btnSync.disabled = false;
@@ -587,14 +602,14 @@ Em báo cáo ạ.`;
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
             showSuccessPopup(data.message || "Đã gửi báo cáo thành công!");
-            resetFormToDefault(); // RESET VỀ MẶC ĐỊNH
+            resetFormToDefault();
             refreshAllData();
         })
         .catch(err => {
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
             showSuccessPopup("Đã gửi báo cáo thành công!");
-            resetFormToDefault(); // RESET VỀ MẶC ĐỊNH
+            resetFormToDefault();
             refreshAllData();
         });
     }
@@ -678,7 +693,6 @@ Em báo cáo ạ.`;
         });
     }
 
-    // TẢI DỮ LIỆU BẢNG THỐNG KÊ THEO THÁNG DỰA TRÊN DÒNG TỔNG DƯỚI SHEET
     function loadMonthlyStats() {
         const monthStr = document.getElementById('statsMonthSelect').value;
         if (!monthStr) return;
