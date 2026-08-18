@@ -87,25 +87,22 @@
         .stat-card .ktv-label { font-size: 13px; font-weight: 800; color: #ffffff; margin-bottom: 4px; text-transform: uppercase; }
         .stat-card .stat-val { font-size: 15px; font-weight: 800; color: #ffeb3b; }
 
+        /* BẢNG LỊCH BÁO CÁO */
         .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-actions { display: flex; gap: 6px; }
-        .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
-        .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
-        .sub-tab-btn.active { background: #007aff; color: #ffffff; }
 
-        .history-list { max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
-        .history-item { background: #f2f2f7; border-radius: 6px; border-left: 4px solid #007aff; overflow: hidden; }
-        .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .history-header-left { display: flex; align-items: center; gap: 8px; flex: 1; }
-        .history-item-header:hover { background: #e5e5ea; }
-        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.5; }
-        .history-item.open .history-item-body { display: block; }
-        .history-item.open .arrow { transform: rotate(180deg); }
-        .arrow { transition: transform 0.2s ease; font-size: 10px; color: #8e8e93; }
+        .report-calendar-legend { display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px; font-weight: 600; color: #3a3a3c; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .dot-green { background-color: #34c759; }
+        .dot-red { background-color: #ff3b30; }
 
-        .btn-copy-history { margin-top: 8px; padding: 6px 12px; background: #34c759; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .btn-copy-history:hover { background: #28a745; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+        .calendar-day-head { font-size: 11px; font-weight: bold; color: #8e8e93; text-transform: uppercase; padding-bottom: 4px; }
+        .calendar-day-cell { background: #f2f2f7; border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; border: 1px solid #e5e5ea; }
+        .calendar-day-cell.empty { background: transparent; border: none; }
+        .calendar-day-number { font-size: 12px; font-weight: bold; color: #1c1c1e; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
@@ -121,7 +118,7 @@
 <body>
 
 <div class="container">
-    <h1>🚗 BÁO CÁO F4 AUTO - TAM TRINH</h1>
+    <h1> BÁO CÁO F4 AUTO - TAM TRINH</h1>
 
     <div class="date-picker-box">
         <label>📅 Chọn Ngày Báo Cáo:</label>
@@ -244,7 +241,7 @@
             <div class="stats-title">📊 Thống Kê Theo Tháng</div>
             <div class="month-selector-badge">
                 <span>CHỌN THÁNG:</span>
-                <select id="statsMonthSelect" onchange="loadMonthlyStats()"></select>
+                <select id="statsMonthSelect" onchange="onMonthChange()"></select>
             </div>
         </div>
 
@@ -255,22 +252,22 @@
         <div class="stats-grid" id="statsHoursGrid"></div>
     </div>
 
-    <!-- LỊCH SỬ BÁO CÁO -->
+    <!-- BẢNG LỊCH BÁO CÁO -->
     <div class="history-box">
         <div class="history-title">
-            <span>📋 Lịch Sử Báo Cáo</span>
+            <span>📅 Bảng Lịch Báo Cáo</span>
             <div class="history-actions">
                 <button onclick="exportToExcel()" style="border:1px solid #34c759; background:#fff; color:#34c759; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">📥 Xuất File Excel</button>
                 <button onclick="refreshAllData()" style="border:1px solid #007aff; background:#fff; color:#007aff; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">🔄 Tải lại dữ liệu</button>
             </div>
         </div>
-        
-        <div class="history-tabs">
-            <button class="sub-tab-btn active" onclick="switchHistoryTab('8h', event)">Lịch sử 8H</button>
-            <button class="sub-tab-btn" onclick="switchHistoryTab('17h', event)">Lịch sử 17H</button>
+
+        <div class="report-calendar-legend">
+            <div class="legend-item"><span class="dot dot-green"></span> Đã báo cáo</div>
+            <div class="legend-item"><span class="dot dot-red"></span> Thiếu báo cáo</div>
         </div>
 
-        <div id="historyList" class="history-list"></div>
+        <div id="calendarGrid" class="calendar-grid"></div>
     </div>
 </div>
 
@@ -293,15 +290,13 @@
     ];
 
     let currentTab = 'tab8h';
-    let currentHistoryTab = '8h';
 
     window.onload = function() {
         setDefaultDate();
         initMonthOptions();
         renderKTVUI();
         render8h();
-        switchHistoryTab('8h');
-        loadMonthlyStats();
+        refreshAllData();
     };
 
     function saveKTVList() {
@@ -459,9 +454,9 @@
         if(evt) evt.target.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
-        if (tabId === 'tab8h') { render8h(); switchHistoryTab('8h'); }
-        if (tabId === 'tab17h') { render17h(); switchHistoryTab('17h'); }
-        if (tabId === 'tab18h') { render18h(); switchHistoryTab('18h'); }
+        if (tabId === 'tab8h') render8h();
+        if (tabId === 'tab17h') render17h();
+        if (tabId === 'tab18h') render18h();
     }
 
     function render8h() {
@@ -645,12 +640,6 @@ Em báo cáo ạ.`;
         });
     }
 
-    function copyTextDirectly(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            showSuccessPopup("Đã sao chép nội dung báo cáo!");
-        });
-    }
-
     function exportToExcel() {
         fetch(`${WEB_APP_URL}?action=exportExcel`)
         .then(res => res.json())
@@ -795,174 +784,14 @@ Em báo cáo ạ.`;
         setTimeout(() => { overlay.style.display = 'none'; }, 2500);
     }
 
-    function switchHistoryTab(type, evt) {
-        currentHistoryTab = type;
-        document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
-
-        if(evt) {
-            evt.target.classList.add('active');
-        } else {
-            const btns = document.querySelectorAll('.sub-tab-btn');
-            if(type === '8h') btns[0].classList.add('active');
-            if(type === '17h') btns[1].classList.add('active');
-        }
-
-        loadHistory();
-    }
-
-    function toggleHistoryItem(el) {
-        el.closest('.history-item').classList.toggle('open');
+    function onMonthChange() {
+        loadMonthlyStats();
+        loadReportCalendar();
     }
 
     function refreshAllData() {
-        loadHistory();
         loadMonthlyStats();
-    }
-
-    function parseDateStr(str) {
-        if (!str) return new Date(0);
-        const match = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (match) {
-            return new Date(match[3], match[2] - 1, match[1]);
-        }
-        return new Date(0);
-    }
-
-    function loadHistory() {
-        const listEl = document.getElementById('historyList');
-        listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Đang tải lịch sử...</div>`;
-
-        const monthStr = document.getElementById('statsMonthSelect').value || "";
-
-        fetch(`${WEB_APP_URL}?action=getHistory&month=${encodeURIComponent(monthStr)}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.status !== "success") {
-                listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Không thể tải dữ liệu lịch sử.</div>`;
-                return;
-            }
-
-            let historyData = (currentHistoryTab === '8h') ? data.history8h : data.history17h;
-
-            if (!historyData || historyData.length === 0) {
-                listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử ${currentHistoryTab.toUpperCase()} trong tháng này.</div>`;
-                return;
-            }
-
-            historyData.sort((a, b) => parseDateStr(a.time) - parseDateStr(b.time));
-
-            listEl.innerHTML = historyData.map((item, idx) => {
-                let displayLines = [];
-                let fullReportText = "";
-                
-                if (currentHistoryTab === '8h') {
-                    let diLamCount = 0;
-                    let nghiList = [];
-                    
-                    if (item.extraData) {
-                        for (let ktv in item.extraData) {
-                            let status = String(item.extraData[ktv]).trim();
-                            if (status === "Đi làm") {
-                                diLamCount++;
-                            } else if (status === "Nghỉ") {
-                                nghiList.push(`${ktv} nghỉ.`);
-                            } else if (status === "Nghỉ sáng") {
-                                diLamCount++;
-                                nghiList.push(`${ktv} nghỉ buổi sáng.`);
-                            } else if (status === "Nghỉ chiều") {
-                                diLamCount++;
-                                nghiList.push(`${ktv} nghỉ buổi chiều.`);
-                            }
-                        }
-                    }
-
-                    let quanLy = 1, saleOff = 0, keToan = 1;
-                    let ktvCoSo = ALL_KTV.length;
-                    let tongNhanLuc = quanLy + saleOff + ktvCoSo + keToan;
-                    let nhanSuDiLam = quanLy + saleOff + keToan + diLamCount;
-
-                    displayLines.push(`• Tổng nhân lực đi làm: ${fmt(nhanSuDiLam)}/${fmt(tongNhanLuc)}`);
-                    if (nghiList.length > 0) {
-                        displayLines.push(`• Nghỉ: ${nghiList.join(', ')}`);
-                    } else {
-                        displayLines.push(`• Nghỉ: Không có.`);
-                    }
-
-                    let chiTietFormatted = nghiList.length > 0 ? nghiList.map(i => `   •  ${i}`).join('\n') : "   •";
-
-                    fullReportText = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
-Cơ sở: Tam Trinh
-Ngày: ${item.time}
-Thời gian: 08:00
-1. Tổng nhân lực: ${fmt(tongNhanLuc)}
-   •  Quản lý: 01
-   •  Sale Off: 00
-   •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
-   •  Kế toán văn phòng: 01
-2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
-3. Dự kiến nghỉ ngày mai:
-   •  Chưa có.
-4. Chi tiết:
-${chiTietFormatted}
-5. Đi muộn:
-   •  Không có.
-
-Em xin cảm ơn ạ!`;
-
-                } else {
-                    let otList = [];
-                    let otReportLines = [];
-                    
-                    if (item.extraData) {
-                        for (let ktv in item.extraData) {
-                            let hrs = parseFloat(item.extraData[ktv]);
-                            if (!isNaN(hrs) && hrs > 0) {
-                                otList.push(`${ktv} (${hrs}h)`);
-                                otReportLines.push(`+ ${ktv}: ${hrs} tiếng`);
-                            }
-                        }
-                    }
-
-                    if (otList.length > 0) {
-                        displayLines.push(`• Danh sách tăng ca: ${otList.join(', ')}`);
-                    } else {
-                        displayLines.push(`• Danh sách tăng ca: Không có`);
-                    }
-
-                    let ktvRenderText = otReportLines.length > 0 ? otReportLines.join('\n') : "+ Chưa chọn nhân sự nào";
-
-                    fullReportText = `BÁO CÁO TĂNG CA
-
-– Ngày: ${item.time}
-– Cơ sở: Tam Trinh
-– Kỹ thuật viên tăng ca:
-${ktvRenderText}
-– Nội dung công việc: Tăng ca công việc cơ sở.
-
-Em gửi ạ.`;
-                }
-
-                let encodedReportText = encodeURIComponent(fullReportText);
-
-                return `
-                    <div class="history-item">
-                        <div class="history-item-header" onclick="toggleHistoryItem(this)">
-                            <div class="history-header-left">
-                                <span>📌 ${item.content}</span>
-                            </div>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="history-item-body">
-                            <div>${displayLines.join('<br>')}</div>
-                            <button class="btn-copy-history" onclick="copyTextDirectly(decodeURIComponent('${encodedReportText}'))">📋 Copy lại báo cáo</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        })
-        .catch(err => {
-            listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có dữ liệu lịch sử hoặc lỗi kết nối.</div>`;
-        });
+        loadReportCalendar();
     }
 
     function loadMonthlyStats() {
@@ -992,6 +821,75 @@ Em gửi ạ.`;
                 if (hourEl) hourEl.innerText = `0h`;
             });
         });
+    }
+
+    function loadReportCalendar() {
+        const gridEl = document.getElementById('calendarGrid');
+        gridEl.innerHTML = `<div style="grid-column: span 7; text-align:center; color:#8e8e93; padding:15px;">Đang tải lịch báo cáo...</div>`;
+
+        const monthStr = document.getElementById('statsMonthSelect').value || "";
+        if (!monthStr) return;
+
+        const [mStr, yStr] = monthStr.split('/');
+        const month = parseInt(mStr, 10);
+        const year = parseInt(yStr, 10);
+
+        fetch(`${WEB_APP_URL}?action=getHistory&month=${encodeURIComponent(monthStr)}`)
+        .then(res => res.json())
+        .then(data => {
+            let reportedDates = new Set();
+            if (data.status === "success") {
+                let h8 = data.history8h || [];
+                let h17 = data.history17h || [];
+                [...h8, ...h17].forEach(item => {
+                    if (item && item.time) reportedDates.add(item.time.trim());
+                });
+            }
+
+            renderCalendarGrid(month, year, reportedDates);
+        })
+        .catch(err => {
+            renderCalendarGrid(month, year, new Set());
+        });
+    }
+
+    function renderCalendarGrid(month, year, reportedDates) {
+        const gridEl = document.getElementById('calendarGrid');
+        gridEl.innerHTML = '';
+
+        const headers = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+        headers.forEach(h => {
+            gridEl.innerHTML += `<div class="calendar-day-head">${h}</div>`;
+        });
+
+        const firstDay = new Date(year, month - 1, 1);
+        const daysInMonth = new Date(year, month, 0).getDate();
+
+        let startingDay = firstDay.getDay() - 1;
+        if (startingDay === -1) startingDay = 6;
+
+        for (let i = 0; i < startingDay; i++) {
+            gridEl.innerHTML += `<div class="calendar-day-cell empty"></div>`;
+        }
+
+        const today = new Date();
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+            const currentDate = new Date(year, month - 1, d);
+
+            let dotClass = '';
+            if (currentDate <= today) {
+                dotClass = reportedDates.has(dateStr) ? 'dot-green' : 'dot-red';
+            }
+
+            gridEl.innerHTML += `
+                <div class="calendar-day-cell">
+                    <span class="calendar-day-number">${d}</span>
+                    ${dotClass ? `<span class="dot ${dotClass}"></span>` : '<span class="dot" style="background:transparent;"></span>'}
+                </div>
+            `;
+        }
     }
 </script>
 
