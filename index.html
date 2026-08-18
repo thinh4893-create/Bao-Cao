@@ -40,9 +40,20 @@
         input:focus, select:focus { border-color: #007aff; background: #fff; }
         input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
         
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
-        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; cursor: pointer; color: #1c1c1e; }
-        .checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
+        
+        /* KTV OT Card Style */
+        .ktv-ot-item { background: #ffffff; border: 1px solid #d1d1d6; border-radius: 8px; padding: 10px 12px; transition: 0.2s; }
+        .ktv-ot-item.selected { border-color: #007aff; background: #f4f8ff; }
+        .ktv-ot-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .ktv-ot-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; color: #1c1c1e; cursor: pointer; }
+        .ktv-ot-label input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .ktv-ot-time-selects { display: none; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #c7c7cc; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .ktv-ot-item.selected .ktv-ot-time-selects { display: grid; }
+        .time-box-sub { display: flex; flex-direction: column; gap: 2px; }
+        .time-box-sub label { font-size: 11px; color: #636366; font-weight: normal; }
+        .time-box-sub select { padding: 4px 6px; font-size: 13px; font-weight: 600; }
+        .ot-hours-badge { font-size: 12px; font-weight: bold; color: #007aff; background: #eef6ff; padding: 2px 8px; border-radius: 12px; }
 
         .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5ea; background: #fafafa; }
         .ktv-row:last-child { border-bottom: none; }
@@ -182,42 +193,22 @@
         <div class="form-grid">
             <div class="form-group full-width">
                 <label>Loại hình báo cáo:</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-item"><input type="radio" name="otMode" value="ĐĂNG KÝ TĂNG CA" checked onchange="render17h()"> Đăng Ký Tăng Ca</label>
-                    <label class="checkbox-item"><input type="radio" name="otMode" value="BÁO CÁO TĂNG CA" onchange="render17h()"> Báo Cáo Tăng Ca</label>
+                <div class="checkbox-group" style="flex-direction: row;">
+                    <label class="checkbox-item" style="display:flex; align-items:center; gap:6px;"><input type="radio" name="otMode" value="ĐĂNG KÝ TĂNG CA" checked onchange="render17h()"> Đăng Ký Tăng Ca</label>
+                    <label class="checkbox-item" style="display:flex; align-items:center; gap:6px;"><input type="radio" name="otMode" value="BÁO CÁO TĂNG CA" onchange="render17h()"> Báo Cáo Tăng Ca</label>
                 </div>
             </div>
-            <div class="form-group full-width">
-                <label>Chọn Kỹ thuật viên tăng ca:</label>
-                <div class="checkbox-group" id="ktv17hContainer">
-                    <!-- Render tự động danh sách checkbox KTV ở đây -->
-                </div>
-            </div>
+
             <div class="form-group full-width">
                 <label>Nội dung công việc:</label>
                 <input type="text" id="congViec_17h" placeholder="Nhập nội dung công việc..." oninput="render17h()">
             </div>
-            
-            <div class="form-group">
-                <label>Giờ bắt đầu tăng ca:</label>
-                <select id="thoiGianBatDau_17h" onchange="render17h()">
-                    <option value="17:00">17:00</option>
-                    <option value="17:30">17:30</option>
-                    <option value="18:00" selected>18:00</option>
-                    <option value="18:30">18:30</option>
-                    <option value="19:00">19:00</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Giờ kết thúc tăng ca:</label>
-                <select id="thoiGian_17h" onchange="render17h()">
-                    <option value="19:00">19:00</option>
-                    <option value="20:00">20:00</option>
-                    <option value="20:30">20:30</option>
-                    <option value="21:00">21:00</option>
-                    <option value="21:30">21:30</option>
-                    <option value="22:00" selected>22:00</option>
-                </select>
+
+            <div class="form-group full-width">
+                <label>Chọn Kỹ thuật viên & Khung giờ tăng ca riêng:</label>
+                <div class="checkbox-group" id="ktv17hContainer">
+                    <!-- Render linh hoạt KTV + Chọn giờ riêng ở đây -->
+                </div>
             </div>
         </div>
     </div>
@@ -295,6 +286,12 @@
     // Khởi tạo danh sách KTV từ localStorage hoặc mặc định
     let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     
+    // Khung giờ hỗ trợ từ 18:00 đến 24:00
+    const TIME_OPTIONS = [
+        "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", 
+        "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "24:00"
+    ];
+
     let currentTab = 'tab8h';
     let currentHistoryTab = '8h';
 
@@ -357,12 +354,31 @@
             </div>
         `).join('');
 
-        // Render Checkbox KTV ở Form 17H
+        // Render Checkbox KTV + Chọn Giờ Tăng Ca ở Form 17H
         const otContainer = document.getElementById('ktv17hContainer');
+        const generateTimeOptions = (selectedVal) => {
+            return TIME_OPTIONS.map(t => `<option value="${t}" ${t === selectedVal ? 'selected' : ''}>${t}</option>`).join('');
+        };
+
         otContainer.innerHTML = ALL_KTV.map(ten => `
-            <label class="checkbox-item">
-                <input type="checkbox" class="ktv-17h-checkbox" value="${ten}" onchange="render17h()"> ${ten}
-            </label>
+            <div class="ktv-ot-item" id="card_ot_${ten}">
+                <div class="ktv-ot-header">
+                    <label class="ktv-ot-label">
+                        <input type="checkbox" class="ktv-17h-checkbox" value="${ten}" onchange="toggleKtvOt('${ten}')"> ${ten}
+                    </label>
+                    <span class="ot-hours-badge" id="badge_hours_${ten}">0 tiếng</span>
+                </div>
+                <div class="ktv-ot-time-selects">
+                    <div class="time-box-sub">
+                        <label>Giờ bắt đầu:</label>
+                        <select id="start_${ten}" onchange="render17h()">${generateTimeOptions("18:00")}</select>
+                    </div>
+                    <div class="time-box-sub">
+                        <label>Giờ kết thúc:</label>
+                        <select id="end_${ten}" onchange="render17h()">${generateTimeOptions("22:00")}</select>
+                    </div>
+                </div>
+            </div>
         `).join('');
 
         // Render Khung Thống Kê Theo Tháng
@@ -382,6 +398,17 @@
                 <div class="stat-val" id="hours_${ktv}">0h</div>
             </div>
         `).join('');
+    }
+
+    function toggleKtvOt(ten) {
+        const card = document.getElementById(`card_ot_${ten}`);
+        const cb = card.querySelector('.ktv-17h-checkbox');
+        if (cb.checked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+        render17h();
     }
 
     function setDefaultDate() {
@@ -514,9 +541,10 @@ Em xin cảm ơn ạ!`;
         document.getElementById('reportOutput').innerText = text;
     }
 
+    // Tính số giờ giữa 2 khung thời gian (Hỗ trợ định dạng 24:00)
     function calculateOtHours(startTimeVal, endTimeVal) {
-        const [startH, startM] = startTimeVal.split(':').map(Number);
-        const [endH, endM] = endTimeVal.split(':').map(Number);
+        let [startH, startM] = startTimeVal.split(':').map(Number);
+        let [endH, endM] = endTimeVal.split(':').map(Number);
         
         const startTotalMin = startH * 60 + startM;
         const endTotalMin = endH * 60 + endM;
@@ -531,20 +559,46 @@ Em xin cảm ơn ạ!`;
         const ngay = getSelectedDateFormatted();
         const modeRadio = document.querySelector('input[name="otMode"]:checked');
         const otTitle = modeRadio ? modeRadio.value : 'ĐĂNG KÝ TĂNG CA';
-
-        const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
-        const selectedKTV = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
         const congViec = document.getElementById('congViec_17h').value.trim();
-        const endTime = document.getElementById('thoiGian_17h').value;
 
-        // Đã bổ sung dòng "– Ngày: ${ngay}" theo yêu cầu 3
+        let ktvDetailsText = [];
+        
+        ALL_KTV.forEach(ten => {
+            const card = document.getElementById(`card_ot_${ten}`);
+            if (card) {
+                const cb = card.querySelector('.ktv-17h-checkbox');
+                const startSelect = document.getElementById(`start_${ten}`);
+                const endSelect = document.getElementById(`end_${ten}`);
+                const badge = document.getElementById(`badge_hours_${ten}`);
+
+                if (startSelect && endSelect) {
+                    const startVal = startSelect.value;
+                    const endVal = endSelect.value;
+                    const hours = calculateOtHours(startVal, endVal);
+
+                    if (badge) badge.innerText = `${hours} tiếng`;
+
+                    if (cb && cb.checked) {
+                        ktvDetailsText.push(`+ KTV ${ten}: từ ${startVal} đến ${endVal} (${hours} tiếng)`);
+                    }
+                }
+            }
+        });
+
+        let ktvRenderText = "";
+        if (ktvDetailsText.length > 0) {
+            ktvRenderText = ktvDetailsText.join('\n');
+        } else {
+            ktvRenderText = "+ Chưa chọn KTV nào";
+        }
+
         const text = `${otTitle}
 
 – Ngày: ${ngay}
 – Cơ sở: ${coSo}
-– Kỹ thuật viên: ${selectedKTV || 'Chưa chọn'}
+– Kỹ thuật viên tăng ca:
+${ktvRenderText}
 – Nội dung công việc: ${congViec}
-– Thời gian: ${endTime}
 
 Em gửi ạ.`;
 
@@ -608,10 +662,20 @@ Em báo cáo ạ.`;
         document.getElementById('chiTiet_8h').value = "";
 
         // Reset Tab 17H
-        document.querySelectorAll('.ktv-17h-checkbox').forEach(cb => cb.checked = false);
+        ALL_KTV.forEach(ten => {
+            const card = document.getElementById(`card_ot_${ten}`);
+            if (card) {
+                const cb = card.querySelector('.ktv-17h-checkbox');
+                if (cb) cb.checked = false;
+                card.classList.remove('selected');
+            }
+            const startSelect = document.getElementById(`start_${ten}`);
+            const endSelect = document.getElementById(`end_${ten}`);
+            if (startSelect) startSelect.value = "18:00";
+            if (endSelect) endSelect.value = "22:00";
+        });
+
         document.getElementById('congViec_17h').value = "";
-        document.getElementById('thoiGianBatDau_17h').value = "18:00";
-        document.getElementById('thoiGian_17h').value = "22:00";
         const defaultOtRadio = document.querySelector('input[name="otMode"][value="ĐĂNG KÝ TĂNG CA"]');
         if (defaultOtRadio) defaultOtRadio.checked = true;
 
@@ -650,8 +714,30 @@ Em báo cáo ạ.`;
             params.append('statusMap', JSON.stringify(statusMap));
 
         } else if (currentTab === 'tab17h') {
-            const checkedBoxes = document.querySelectorAll('.ktv-17h-checkbox:checked');
-            const selectedKTVs = Array.from(checkedBoxes).map(cb => cb.value);
+            let selectedKTVs = [];
+            let ktvDetails = [];
+            let totalOtHours = 0;
+
+            ALL_KTV.forEach(ten => {
+                const card = document.getElementById(`card_ot_${ten}`);
+                if (card) {
+                    const cb = card.querySelector('.ktv-17h-checkbox');
+                    if (cb && cb.checked) {
+                        const startVal = document.getElementById(`start_${ten}`).value;
+                        const endVal = document.getElementById(`end_${ten}`).value;
+                        const hours = calculateOtHours(startVal, endVal);
+
+                        selectedKTVs.push(ten);
+                        ktvDetails.push({
+                            name: ten,
+                            startTime: startVal,
+                            endTime: endVal,
+                            hours: hours
+                        });
+                        totalOtHours += hours;
+                    }
+                }
+            });
 
             if (selectedKTVs.length === 0) {
                 alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
@@ -660,17 +746,12 @@ Em báo cáo ạ.`;
                 return;
             }
 
-            const startTime = document.getElementById('thoiGianBatDau_17h').value;
-            const endTime = document.getElementById('thoiGian_17h').value;
-            const calculatedHours = calculateOtHours(startTime, endTime);
-
             params.append('type', '17h');
             params.append('date', reportDate);
             params.append('selectedKTVs', selectedKTVs.join(', '));
-            params.append('startTime', startTime);
-            params.append('endTime', endTime);
-            params.append('hours', calculatedHours);
-            params.append('thoiGian', `${startTime} - ${endTime}`);
+            params.append('ktvDetails', JSON.stringify(ktvDetails));
+            params.append('hours', totalOtHours);
+
         } else {
             alert("Báo cáo 18H không gửi dữ liệu lên Google Sheet.");
             btnSync.disabled = false;
@@ -730,7 +811,6 @@ Em báo cáo ạ.`;
         loadMonthlyStats();
     }
 
-    // Hàm chuyển đổi chuỗi Ngày "DD/MM/YYYY" sang đối tượng Date để sắp xếp
     function parseDateStr(str) {
         if (!str) return new Date(0);
         const match = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
@@ -761,12 +841,7 @@ Em báo cáo ạ.`;
                 return;
             }
 
-            // XỬ LÝ SẮP XẾP NGÀY GIỜ THEO THỨ TỰ TĂNG DẦN
-            historyData.sort((a, b) => {
-                const dateA = parseDateStr(a.content);
-                const dateB = parseDateStr(b.content);
-                return dateA - dateB;
-            });
+            historyData.sort((a, b) => parseDateStr(a.content) - parseDateStr(b.content));
 
             listEl.innerHTML = historyData.map(item => {
                 let details = [];
