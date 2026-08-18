@@ -719,9 +719,8 @@ Em báo cáo ạ.`;
             params.append('statusMap', JSON.stringify(statusMap));
 
         } else if (currentTab === 'tab17h') {
-            let selectedKTVs = [];
-            let ktvDetails = [];
             let ktvHoursMap = {};
+            let selectedCount = 0;
 
             ALL_KTV.forEach(ten => {
                 const card = document.getElementById(`card_ot_${ten}`);
@@ -732,21 +731,13 @@ Em báo cáo ạ.`;
                         const endVal = document.getElementById(`end_${ten}`).value;
                         const hours = calculateOtHours(startVal, endVal);
 
-                        selectedKTVs.push(ten);
-                        ktvDetails.push({
-                            name: ten,
-                            startTime: startVal,
-                            endTime: endVal,
-                            hours: hours
-                        });
-                        
-                        // SỬA LỖI: Gán chính xác giờ riêng cho từng KTV
                         ktvHoursMap[ten] = hours;
+                        selectedCount++;
                     }
                 }
             });
 
-            if (selectedKTVs.length === 0) {
+            if (selectedCount === 0) {
                 alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
                 btnSync.disabled = false;
                 btnSync.innerText = "Gửi Lên Google Sheet";
@@ -755,8 +746,6 @@ Em báo cáo ạ.`;
 
             params.append('type', '17h');
             params.append('date', reportDate);
-            params.append('selectedKTVs', selectedKTVs.join(', '));
-            params.append('ktvDetails', JSON.stringify(ktvDetails));
             params.append('ktvHoursMap', JSON.stringify(ktvHoursMap));
 
         } else {
