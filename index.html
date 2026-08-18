@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Báo Cáo Tự Động - F4 AUTO</title>
 
-    <!-- Biểu tượng cho iOS (iPhone/iPad) khi thêm vào màn hình chính -->
     <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/ios-filled/180/000000/car.png">
-    
-    <!-- Biểu tượng Favicon trên trình duyệt web -->
     <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/ios-filled/32/000000/car.png">
     
     <meta name="apple-mobile-web-app-title" content="F4 AUTO">
@@ -36,8 +33,8 @@
         
         .form-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
-        input[type="text"], input[type="number"], select { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
-        input:focus, select:focus { border-color: #007aff; background: #fff; }
+        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
+        input:focus, select:focus, textarea:focus { border-color: #007aff; background: #fff; }
         input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
         
         .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
@@ -61,7 +58,7 @@
         .ktv-select-status { width: auto; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; background: #ffffff; }
 
         /* Quản lý KTV UI */
-        .ktv-manage-box { background: #f8f9fa; border: 1px dashed #007aff; padding: 10px; border-radius: 8px; margin-bottom: 12px; }
+        .ktv-manage-box { background: #f8f9fa; border: 1px dashed #007aff; padding: 12px; border-radius: 8px; margin-top: 20px; }
         .ktv-manage-inputs { display: flex; gap: 8px; margin-bottom: 8px; }
         .ktv-manage-inputs input { flex: 1; }
         .btn-add-ktv { background: #007aff; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
@@ -154,22 +151,10 @@
                 <input type="text" id="keToan_8h" value="01" readonly>
             </div>
 
-            <!-- MỤC QUẢN LÝ KTV TRỰC TIẾP -->
-            <div class="form-group full-width">
-                <label>🛠 Quản lý danh sách Kỹ thuật viên (Thêm / Xóa):</label>
-                <div class="ktv-manage-box">
-                    <div class="ktv-manage-inputs">
-                        <input type="text" id="newKtvName" placeholder="Nhập tên KTV mới...">
-                        <button class="btn-add-ktv" onclick="addNewKTV()">+ Thêm</button>
-                    </div>
-                    <div class="ktv-tags" id="ktvTagsList"></div>
-                </div>
-            </div>
-
             <div class="form-group full-width">
                 <label>Trạng thái Kỹ thuật viên hôm nay:</label>
                 <div id="ktvStatusContainer" style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
-                    <!-- Render tự động danh sách KTV ở đây -->
+                    <!-- Render tự động danh sách KTV -->
                 </div>
             </div>
 
@@ -201,13 +186,13 @@
 
             <div class="form-group full-width">
                 <label>Nội dung công việc:</label>
-                <input type="text" id="congViec_17h" placeholder="Nhập nội dung công việc..." oninput="render17h()">
+                <textarea id="congViec_17h" rows="3" placeholder="Nhập nội dung công việc..." oninput="render17h()"></textarea>
             </div>
 
             <div class="form-group full-width">
                 <label>Chọn Kỹ thuật viên & Khung giờ tăng ca riêng:</label>
                 <div class="checkbox-group" id="ktv17hContainer">
-                    <!-- Render linh hoạt KTV + Chọn giờ riêng ở đây -->
+                    <!-- Render linh hoạt KTV + Chọn giờ riêng -->
                 </div>
             </div>
         </div>
@@ -219,7 +204,12 @@
             <div class="form-group full-width"><label>Dán phim cách nhiệt:</label><input type="text" id="danPhim_18h" placeholder="Ví dụ: 2 xe..." oninput="render18h()"></div>
             <div class="form-group full-width"><label>PPF:</label><input type="text" id="ppf_18h" placeholder="Ví dụ: 1 xe..." oninput="render18h()"></div>
             <div class="form-group full-width"><label>Wrap:</label><input type="text" id="wrap_18h" value="" placeholder="Nhập tình trạng Wrap..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Ghi chú:</label><input type="text" id="ghiChu_18h" value="" placeholder="Nhập ghi chú nếu có..." oninput="render18h()"></div>
+            
+            <div class="form-group full-width">
+                <label>Ghi chú:</label>
+                <textarea id="ghiChu_18h" rows="5" placeholder="Nhập ghi chú chi tiết tại đây..." oninput="render18h()"></textarea>
+            </div>
+
             <div class="form-group full-width"><label>Số lỗi:</label><input type="text" id="soLoi_18h" value="0" oninput="render18h()"></div>
             <div class="form-group"><label>Lỗi chất lượng khi giao xe:</label><input type="text" id="loi1_18h" value="0" oninput="render18h()"></div>
             <div class="form-group"><label>Lỗi đồng phục không tuân thủ:</label><input type="text" id="loi2_18h" value="0" oninput="render18h()"></div>
@@ -233,11 +223,21 @@
     <div class="output-box">
         <div class="output-header">Nội dung báo cáo copy:</div>
         <div id="reportOutput" class="output-content"></div>
-        
+
         <div class="button-group">
             <button class="btn btn-copy" onclick="copyReport()">Sao Chép Báo Cáo</button>
             <button class="btn btn-sync" id="btnSync" onclick="sendToGoogleSheet()">Gửi Lên Google Sheet</button>
         </div>
+    </div>
+
+    <!-- KHUNG QUẢN LÝ KTV -->
+    <div class="ktv-manage-box">
+        <label>🛠 Quản lý danh sách Kỹ thuật viên (Thêm / Xóa):</label>
+        <div class="ktv-manage-inputs" style="margin-top: 6px;">
+            <input type="text" id="newKtvName" placeholder="Nhập tên KTV mới...">
+            <button class="btn-add-ktv" onclick="addNewKTV()">+ Thêm</button>
+        </div>
+        <div class="ktv-tags" id="ktvTagsList"></div>
     </div>
 
     <!-- BẢNG THỐNG KÊ THEO THÁNG -->
@@ -283,12 +283,17 @@
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
     
-    // Khởi tạo danh sách KTV từ localStorage hoặc mặc định
     let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     
-    // Khung giờ hỗ trợ từ 18:00 đến 24:00
-    const TIME_OPTIONS = [
+    // Mốc thời gian Bắt đầu
+    const START_TIME_OPTIONS = [
         "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", 
+        "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "24:00"
+    ];
+
+    // Mốc thời gian Kết thúc (đã bỏ 18:00 và 18:30)
+    const END_TIME_OPTIONS = [
+        "19:00", "19:30", "20:00", "20:30", 
         "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "24:00"
     ];
 
@@ -331,7 +336,6 @@
     }
 
     function renderKTVUI() {
-        // Render Thẻ Quản Lý KTV
         const tagsContainer = document.getElementById('ktvTagsList');
         tagsContainer.innerHTML = ALL_KTV.map(name => 
             `<div class="ktv-tag">
@@ -340,7 +344,6 @@
              </div>`
         ).join('');
 
-        // Render Trạng Thái KTV ở Form 8H
         const statusContainer = document.getElementById('ktvStatusContainer');
         statusContainer.innerHTML = ALL_KTV.map(ten => `
             <div class="ktv-row">
@@ -354,10 +357,10 @@
             </div>
         `).join('');
 
-        // Render Checkbox KTV + Chọn Giờ Tăng Ca ở Form 17H
         const otContainer = document.getElementById('ktv17hContainer');
-        const generateTimeOptions = (selectedVal) => {
-            return TIME_OPTIONS.map(t => `<option value="${t}" ${t === selectedVal ? 'selected' : ''}>${t}</option>`).join('');
+        
+        const generateOptions = (arrOptions, selectedVal) => {
+            return arrOptions.map(t => `<option value="${t}" ${t === selectedVal ? 'selected' : ''}>${t}</option>`).join('');
         };
 
         otContainer.innerHTML = ALL_KTV.map(ten => `
@@ -371,17 +374,16 @@
                 <div class="ktv-ot-time-selects">
                     <div class="time-box-sub">
                         <label>Giờ bắt đầu:</label>
-                        <select id="start_${ten}" onchange="render17h()">${generateTimeOptions("18:00")}</select>
+                        <select id="start_${ten}" onchange="render17h()">${generateOptions(START_TIME_OPTIONS, "18:00")}</select>
                     </div>
                     <div class="time-box-sub">
                         <label>Giờ kết thúc:</label>
-                        <select id="end_${ten}" onchange="render17h()">${generateTimeOptions("22:00")}</select>
+                        <select id="end_${ten}" onchange="render17h()">${generateOptions(END_TIME_OPTIONS, "22:00")}</select>
                     </div>
                 </div>
             </div>
         `).join('');
 
-        // Render Khung Thống Kê Theo Tháng
         const daysGrid = document.getElementById('statsDaysGrid');
         const hoursGrid = document.getElementById('statsHoursGrid');
         
@@ -541,7 +543,6 @@ Em xin cảm ơn ạ!`;
         document.getElementById('reportOutput').innerText = text;
     }
 
-    // Tính số giờ giữa 2 khung thời gian (Hỗ trợ định dạng 24:00)
     function calculateOtHours(startTimeVal, endTimeVal) {
         let [startH, startM] = startTimeVal.split(':').map(Number);
         let [endH, endM] = endTimeVal.split(':').map(Number);
@@ -579,7 +580,8 @@ Em xin cảm ơn ạ!`;
                     if (badge) badge.innerText = `${hours} tiếng`;
 
                     if (cb && cb.checked) {
-                        ktvDetailsText.push(`+ KTV ${ten}: từ ${startVal} đến ${endVal} (${hours} tiếng)`);
+                        // Bỏ chữ KTV, chỉ giữ lại tên
+                        ktvDetailsText.push(`+ ${ten}: từ ${startVal} đến ${endVal} (${hours} tiếng)`);
                     }
                 }
             }
@@ -589,7 +591,7 @@ Em xin cảm ơn ạ!`;
         if (ktvDetailsText.length > 0) {
             ktvRenderText = ktvDetailsText.join('\n');
         } else {
-            ktvRenderText = "+ Chưa chọn KTV nào";
+            ktvRenderText = "+ Chưa chọn nhân sự nào";
         }
 
         const text = `${otTitle}
@@ -641,10 +643,12 @@ Em báo cáo ạ.`;
         document.getElementById('reportOutput').innerText = text;
     }
 
-    function copyReport() {
+    function copyReport(silent = false) {
         const text = document.getElementById('reportOutput').innerText;
         navigator.clipboard.writeText(text).then(() => {
-            showSuccessPopup("Đã sao chép nội dung báo cáo!");
+            if (!silent) {
+                showSuccessPopup("Đã sao chép nội dung báo cáo!");
+            }
         });
     }
 
@@ -695,9 +699,11 @@ Em báo cáo ạ.`;
     }
 
     function sendToGoogleSheet() {
+        copyReport(true);
+
         const btnSync = document.getElementById('btnSync');
         btnSync.disabled = true;
-        btnSync.innerText = "Đang gửi...";
+        btnSync.innerText = "Đang gửi & copy...";
 
         const params = new URLSearchParams();
         const reportDate = getSelectedDateFormatted();
@@ -767,14 +773,14 @@ Em báo cáo ạ.`;
         .then(data => {
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup(data.message || "Đã gửi báo cáo thành công!");
+            showSuccessPopup("Đã gửi Google Sheet & Sao chép báo cáo!");
             resetFormToDefault();
             refreshAllData();
         })
         .catch(err => {
             btnSync.disabled = false;
             btnSync.innerText = "Gửi Lên Google Sheet";
-            showSuccessPopup("Đã gửi báo cáo thành công!");
+            showSuccessPopup("Đã gửi Google Sheet & Sao chép báo cáo!");
             resetFormToDefault();
             refreshAllData();
         });
@@ -901,4 +907,4 @@ Em báo cáo ạ.`;
 </script>
 
 </body>
-</html> 
+</html>
