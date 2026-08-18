@@ -721,7 +721,7 @@ Em báo cáo ạ.`;
         } else if (currentTab === 'tab17h') {
             let selectedKTVs = [];
             let ktvDetails = [];
-            let totalOtHours = 0;
+            let ktvHoursMap = {};
 
             ALL_KTV.forEach(ten => {
                 const card = document.getElementById(`card_ot_${ten}`);
@@ -739,7 +739,9 @@ Em báo cáo ạ.`;
                             endTime: endVal,
                             hours: hours
                         });
-                        totalOtHours += hours;
+                        
+                        // SỬA LỖI: Gán chính xác giờ riêng cho từng KTV
+                        ktvHoursMap[ten] = hours;
                     }
                 }
             });
@@ -755,7 +757,7 @@ Em báo cáo ạ.`;
             params.append('date', reportDate);
             params.append('selectedKTVs', selectedKTVs.join(', '));
             params.append('ktvDetails', JSON.stringify(ktvDetails));
-            params.append('hours', totalOtHours);
+            params.append('ktvHoursMap', JSON.stringify(ktvHoursMap));
 
         } else {
             alert("Báo cáo 18H không gửi dữ liệu lên Google Sheet.");
