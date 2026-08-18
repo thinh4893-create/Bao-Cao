@@ -49,6 +49,15 @@
         .ktv-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
         .ktv-select-status { width: auto; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; background: #ffffff; }
 
+        /* Quản lý KTV UI */
+        .ktv-manage-box { background: #f8f9fa; border: 1px dashed #007aff; padding: 10px; border-radius: 8px; margin-bottom: 12px; }
+        .ktv-manage-inputs { display: flex; gap: 8px; margin-bottom: 8px; }
+        .ktv-manage-inputs input { flex: 1; }
+        .btn-add-ktv { background: #007aff; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .ktv-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ktv-tag { background: #e5e5ea; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+        .ktv-tag .remove-btn { color: #ff3b30; cursor: pointer; font-weight: bold; font-size: 14px; margin-left: 2px; }
+
         .output-box { margin-top: 20px; padding: 15px; background: #f9f9fb; border-radius: 8px; border: 1px solid #e5e5ea; }
         .output-header { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #1c1c1e; }
         .output-content { white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #d1d1d6; min-height: 120px; color: #000; line-height: 1.5; }
@@ -134,14 +143,22 @@
                 <input type="text" id="keToan_8h" value="01" readonly>
             </div>
 
+            <!-- MỤC QUẢN LÝ KTV TRỰC TIẾP -->
+            <div class="form-group full-width">
+                <label>🛠 Quản lý danh sách Kỹ thuật viên (Thêm / Xóa):</label>
+                <div class="ktv-manage-box">
+                    <div class="ktv-manage-inputs">
+                        <input type="text" id="newKtvName" placeholder="Nhập tên KTV mới...">
+                        <button class="btn-add-ktv" onclick="addNewKTV()">+ Thêm</button>
+                    </div>
+                    <div class="ktv-tags" id="ktvTagsList"></div>
+                </div>
+            </div>
+
             <div class="form-group full-width">
                 <label>Trạng thái Kỹ thuật viên hôm nay:</label>
-                <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
-                    <div class="ktv-row"><span class="ktv-name">Vũ</span><select id="status_Vũ" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Hậu</span><select id="status_Hậu" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Hoàng</span><select id="status_Hoàng" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Tùng</span><select id="status_Tùng" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
-                    <div class="ktv-row"><span class="ktv-name">Thịnh</span><select id="status_Thịnh" class="ktv-select-status" onchange="render8h()"><option value="Đi làm" selected>Đi làm</option><option value="Nghỉ">Nghỉ</option><option value="Nghỉ sáng">Nghỉ sáng</option><option value="Nghỉ chiều">Nghỉ chiều</option></select></div>
+                <div id="ktvStatusContainer" style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
+                    <!-- Render tự động danh sách KTV ở đây -->
                 </div>
             </div>
 
@@ -172,12 +189,8 @@
             </div>
             <div class="form-group full-width">
                 <label>Chọn Kỹ thuật viên tăng ca:</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Vũ" onchange="render17h()"> Vũ</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Hậu" onchange="render17h()"> Hậu</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Hoàng" onchange="render17h()"> Hoàng</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Tùng" onchange="render17h()"> Tùng</label>
-                    <label class="checkbox-item"><input type="checkbox" class="ktv-17h-checkbox" value="Thịnh" onchange="render17h()"> Thịnh</label>
+                <div class="checkbox-group" id="ktv17hContainer">
+                    <!-- Render tự động danh sách checkbox KTV ở đây -->
                 </div>
             </div>
             <div class="form-group full-width">
@@ -247,22 +260,10 @@
         </div>
 
         <div class="stats-section-title">👨‍🔧 TỔNG SỐ NGÀY ĐI LÀM TRONG THÁNG</div>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="ktv-label">VŨ</div><div class="stat-val" id="days_Vũ">0 ngày</div></div>
-            <div class="stat-card"><div class="ktv-label">HẬU</div><div class="stat-val" id="days_Hậu">0 ngày</div></div>
-            <div class="stat-card"><div class="ktv-label">HOÀNG</div><div class="stat-val" id="days_Hoàng">0 ngày</div></div>
-            <div class="stat-card"><div class="ktv-label">TÙNG</div><div class="stat-val" id="days_Tùng">0 ngày</div></div>
-            <div class="stat-card"><div class="ktv-label">THỊNH</div><div class="stat-val" id="days_Thịnh">0 ngày</div></div>
-        </div>
+        <div class="stats-grid" id="statsDaysGrid"></div>
 
         <div class="stats-section-title">⏰ TỔNG SỐ GIỜ TĂNG CA TRONG THÁNG</div>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="ktv-label">VŨ</div><div class="stat-val" id="hours_Vũ">0h</div></div>
-            <div class="stat-card"><div class="ktv-label">HẬU</div><div class="stat-val" id="hours_Hậu">0h</div></div>
-            <div class="stat-card"><div class="ktv-label">HOÀNG</div><div class="stat-val" id="hours_Hoàng">0h</div></div>
-            <div class="stat-card"><div class="ktv-label">TÙNG</div><div class="stat-val" id="hours_Tùng">0h</div></div>
-            <div class="stat-card"><div class="ktv-label">THỊNH</div><div class="stat-val" id="hours_Thịnh">0h</div></div>
-        </div>
+        <div class="stats-grid" id="statsHoursGrid"></div>
     </div>
 
     <!-- LỊCH SỬ BÁO CÁO -->
@@ -290,17 +291,98 @@
 
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
-    const ALL_KTV = ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
+    
+    // Khởi tạo danh sách KTV từ localStorage hoặc mặc định
+    let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
+    
     let currentTab = 'tab8h';
     let currentHistoryTab = '8h';
 
     window.onload = function() {
         setDefaultDate();
         initMonthOptions();
+        renderKTVUI();
         render8h();
         switchHistoryTab('8h');
         loadMonthlyStats();
     };
+
+    function saveKTVList() {
+        localStorage.setItem('F4_ALL_KTV', JSON.stringify(ALL_KTV));
+        renderKTVUI();
+        updateAllRenders();
+        loadMonthlyStats();
+    }
+
+    function addNewKTV() {
+        const input = document.getElementById('newKtvName');
+        const name = input.value.trim();
+        if (name && !ALL_KTV.includes(name)) {
+            ALL_KTV.push(name);
+            input.value = '';
+            saveKTVList();
+        } else if (ALL_KTV.includes(name)) {
+            alert('Tên KTV này đã có trong danh sách!');
+        }
+    }
+
+    function removeKTV(name) {
+        if (confirm(`Bạn có chắc chắn muốn xóa KTV "${name}" không?`)) {
+            ALL_KTV = ALL_KTV.filter(item => item !== name);
+            saveKTVList();
+        }
+    }
+
+    function renderKTVUI() {
+        // Render Thẻ Quản Lý KTV
+        const tagsContainer = document.getElementById('ktvTagsList');
+        tagsContainer.innerHTML = ALL_KTV.map(name => 
+            `<div class="ktv-tag">
+                <span>${name}</span>
+                <span class="remove-btn" onclick="removeKTV('${name}')">&times;</span>
+             </div>`
+        ).join('');
+
+        // Render Trạng Thái KTV ở Form 8H
+        const statusContainer = document.getElementById('ktvStatusContainer');
+        statusContainer.innerHTML = ALL_KTV.map(ten => `
+            <div class="ktv-row">
+                <span class="ktv-name">${ten}</span>
+                <select id="status_${ten}" class="ktv-select-status" onchange="render8h()">
+                    <option value="Đi làm" selected>Đi làm</option>
+                    <option value="Nghỉ">Nghỉ</option>
+                    <option value="Nghỉ sáng">Nghỉ sáng</option>
+                    <option value="Nghỉ chiều">Nghỉ chiều</option>
+                </select>
+            </div>
+        `).join('');
+
+        // Render Checkbox KTV ở Form 17H
+        const otContainer = document.getElementById('ktv17hContainer');
+        otContainer.innerHTML = ALL_KTV.map(ten => `
+            <label class="checkbox-item">
+                <input type="checkbox" class="ktv-17h-checkbox" value="${ten}" onchange="render17h()"> ${ten}
+            </label>
+        `).join('');
+
+        // Render Khung Thống Kê Theo Tháng
+        const daysGrid = document.getElementById('statsDaysGrid');
+        const hoursGrid = document.getElementById('statsHoursGrid');
+        
+        daysGrid.innerHTML = ALL_KTV.map(ktv => `
+            <div class="stat-card">
+                <div class="ktv-label">${ktv.toUpperCase()}</div>
+                <div class="stat-val" id="days_${ktv}">0 ngày</div>
+            </div>
+        `).join('');
+
+        hoursGrid.innerHTML = ALL_KTV.map(ktv => `
+            <div class="stat-card">
+                <div class="ktv-label">${ktv.toUpperCase()}</div>
+                <div class="stat-val" id="hours_${ktv}">0h</div>
+            </div>
+        `).join('');
+    }
 
     function setDefaultDate() {
         const today = new Date();
@@ -375,17 +457,20 @@
         let countKtvDiLam = 0;
 
         ALL_KTV.forEach(ten => {
-            const status = document.getElementById(`status_${ten}`).value;
-            if (status === "Đi làm") {
-                countKtvDiLam++;
-            } else if (status === "Nghỉ") {
-                dsNghiText.push(`${ten} nghỉ.`);
-            } else if (status === "Nghỉ sáng") {
-                countKtvDiLam++;
-                dsNghiText.push(`${ten} nghỉ buổi sáng.`);
-            } else if (status === "Nghỉ chiều") {
-                countKtvDiLam++;
-                dsNghiText.push(`${ten} nghỉ buổi chiều.`);
+            const el = document.getElementById(`status_${ten}`);
+            if (el) {
+                const status = el.value;
+                if (status === "Đi làm") {
+                    countKtvDiLam++;
+                } else if (status === "Nghỉ") {
+                    dsNghiText.push(`${ten} nghỉ.`);
+                } else if (status === "Nghỉ sáng") {
+                    countKtvDiLam++;
+                    dsNghiText.push(`${ten} nghỉ buổi sáng.`);
+                } else if (status === "Nghỉ chiều") {
+                    countKtvDiLam++;
+                    dsNghiText.push(`${ten} nghỉ buổi chiều.`);
+                }
             }
         });
 
@@ -443,6 +528,7 @@ Em xin cảm ơn ạ!`;
 
     function render17h() {
         const coSo = "Tam Trinh";
+        const ngay = getSelectedDateFormatted();
         const modeRadio = document.querySelector('input[name="otMode"]:checked');
         const otTitle = modeRadio ? modeRadio.value : 'ĐĂNG KÝ TĂNG CA';
 
@@ -451,8 +537,10 @@ Em xin cảm ơn ạ!`;
         const congViec = document.getElementById('congViec_17h').value.trim();
         const endTime = document.getElementById('thoiGian_17h').value;
 
+        // Đã bổ sung dòng "– Ngày: ${ngay}" theo yêu cầu 3
         const text = `${otTitle}
 
+– Ngày: ${ngay}
 – Cơ sở: ${coSo}
 – Kỹ thuật viên: ${selectedKTV || 'Chưa chọn'}
 – Nội dung công việc: ${congViec}
@@ -512,7 +600,8 @@ Em báo cáo ạ.`;
         // Reset Tab 8H
         document.getElementById('saleOff_8h').value = "0";
         ALL_KTV.forEach(ten => {
-            document.getElementById(`status_${ten}`).value = "Đi làm";
+            const el = document.getElementById(`status_${ten}`);
+            if (el) el.value = "Đi làm";
         });
         document.getElementById('nghiMai_8h').value = "Chưa có.";
         document.getElementById('diMuon_8h').value = "Không có.";
@@ -552,7 +641,8 @@ Em báo cáo ạ.`;
         if (currentTab === 'tab8h') {
             let statusMap = {};
             ALL_KTV.forEach(ten => {
-                statusMap[ten] = document.getElementById(`status_${ten}`).value;
+                const el = document.getElementById(`status_${ten}`);
+                if (el) statusMap[ten] = el.value;
             });
 
             params.append('type', '8h');
@@ -640,6 +730,16 @@ Em báo cáo ạ.`;
         loadMonthlyStats();
     }
 
+    // Hàm chuyển đổi chuỗi Ngày "DD/MM/YYYY" sang đối tượng Date để sắp xếp
+    function parseDateStr(str) {
+        if (!str) return new Date(0);
+        const match = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (match) {
+            return new Date(match[3], match[2] - 1, match[1]);
+        }
+        return new Date(0);
+    }
+
     function loadHistory() {
         const listEl = document.getElementById('historyList');
         listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Đang tải lịch sử...</div>`;
@@ -654,12 +754,19 @@ Em báo cáo ạ.`;
                 return;
             }
 
-            const historyData = (currentHistoryTab === '8h') ? data.history8h : data.history17h;
+            let historyData = (currentHistoryTab === '8h') ? data.history8h : data.history17h;
 
             if (!historyData || historyData.length === 0) {
                 listEl.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:15px;">Chưa có lịch sử ${currentHistoryTab.toUpperCase()} trong tháng này.</div>`;
                 return;
             }
+
+            // XỬ LÝ SẮP XẾP NGÀY GIỜ THEO THỨ TỰ TĂNG DẦN
+            historyData.sort((a, b) => {
+                const dateA = parseDateStr(a.content);
+                const dateB = parseDateStr(b.content);
+                return dateA - dateB;
+            });
 
             listEl.innerHTML = historyData.map(item => {
                 let details = [];
@@ -697,18 +804,22 @@ Em báo cáo ạ.`;
         .then(data => {
             if (data.status === "success") {
                 ALL_KTV.forEach(ktv => {
-                    const daysVal = data.days[ktv] !== undefined ? data.days[ktv] : 0;
-                    const hoursVal = data.hours[ktv] !== undefined ? data.hours[ktv] : 0;
+                    const daysVal = data.days && data.days[ktv] !== undefined ? data.days[ktv] : 0;
+                    const hoursVal = data.hours && data.hours[ktv] !== undefined ? data.hours[ktv] : 0;
 
-                    document.getElementById(`days_${ktv}`).innerText = `${daysVal} ngày`;
-                    document.getElementById(`hours_${ktv}`).innerText = `${hoursVal}h`;
+                    const dayEl = document.getElementById(`days_${ktv}`);
+                    const hourEl = document.getElementById(`hours_${ktv}`);
+                    if (dayEl) dayEl.innerText = `${daysVal} ngày`;
+                    if (hourEl) hourEl.innerText = `${hoursVal}h`;
                 });
             }
         })
         .catch(err => {
             ALL_KTV.forEach(ktv => {
-                document.getElementById(`days_${ktv}`).innerText = `0 ngày`;
-                document.getElementById(`hours_${ktv}`).innerText = `0h`;
+                const dayEl = document.getElementById(`days_${ktv}`);
+                const hourEl = document.getElementById(`hours_${ktv}`);
+                if (dayEl) dayEl.innerText = `0 ngày`;
+                if (hourEl) hourEl.innerText = `0h`;
             });
         });
     }
