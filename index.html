@@ -39,7 +39,6 @@
         
         .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
         
-        /* KTV OT Card Style */
         .ktv-ot-item { background: #ffffff; border: 1px solid #d1d1d6; border-radius: 8px; padding: 10px 12px; transition: 0.2s; }
         .ktv-ot-item.selected { border-color: #007aff; background: #f4f8ff; }
         .ktv-ot-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
@@ -57,7 +56,6 @@
         .ktv-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
         .ktv-select-status { width: auto; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; background: #ffffff; }
 
-        /* Quản lý KTV UI */
         .ktv-manage-box { background: #f8f9fa; border: 1px dashed #007aff; padding: 12px; border-radius: 8px; margin-top: 20px; }
         .ktv-manage-inputs { display: flex; gap: 8px; margin-bottom: 8px; }
         .ktv-manage-inputs input { flex: 1; }
@@ -91,6 +89,7 @@
 
         .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .history-actions { display: flex; gap: 6px; }
         .history-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
         .sub-tab-btn { flex: 1; padding: 6px; border: none; background: #f2f2f7; font-size: 12px; font-weight: bold; color: #636366; border-radius: 6px; cursor: pointer; }
         .sub-tab-btn.active { background: #007aff; color: #ffffff; }
@@ -100,10 +99,13 @@
         .history-item-header { padding: 10px 12px; font-size: 13px; font-weight: bold; color: #3a3a3c; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .history-header-left { display: flex; align-items: center; gap: 8px; flex: 1; }
         .history-item-header:hover { background: #e5e5ea; }
-        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.4; }
+        .history-item-body { display: none; padding: 10px 12px; color: #3a3a3c; font-size: 13px; white-space: pre-wrap; border-top: 1px solid #e5e5ea; background: #ffffff; line-height: 1.5; }
         .history-item.open .history-item-body { display: block; }
         .history-item.open .arrow { transform: rotate(180deg); }
         .arrow { transition: transform 0.2s ease; font-size: 10px; color: #8e8e93; }
+
+        .btn-copy-history { margin-top: 8px; padding: 6px 12px; background: #34c759; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .btn-copy-history:hover { background: #28a745; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
@@ -153,9 +155,7 @@
 
             <div class="form-group full-width">
                 <label>Trạng thái Kỹ thuật viên hôm nay:</label>
-                <div id="ktvStatusContainer" style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;">
-                    <!-- Render tự động danh sách KTV -->
-                </div>
+                <div id="ktvStatusContainer" style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;"></div>
             </div>
 
             <div class="form-group">
@@ -191,9 +191,7 @@
 
             <div class="form-group full-width">
                 <label>Chọn Kỹ thuật viên & Khung giờ tăng ca riêng:</label>
-                <div class="checkbox-group" id="ktv17hContainer">
-                    <!-- Render linh hoạt KTV + Chọn giờ riêng -->
-                </div>
+                <div class="checkbox-group" id="ktv17hContainer"></div>
             </div>
         </div>
     </div>
@@ -261,7 +259,10 @@
     <div class="history-box">
         <div class="history-title">
             <span>📋 Lịch Sử Báo Cáo</span>
-            <button onclick="refreshAllData()" style="border:1px solid #007aff; background:#fff; color:#007aff; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">🔄 Tải lại dữ liệu</button>
+            <div class="history-actions">
+                <button onclick="exportToExcel()" style="border:1px solid #34c759; background:#fff; color:#34c759; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">📥 Xuất File Excel</button>
+                <button onclick="refreshAllData()" style="border:1px solid #007aff; background:#fff; color:#007aff; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">🔄 Tải lại dữ liệu</button>
+            </div>
         </div>
         
         <div class="history-tabs">
@@ -285,12 +286,7 @@
     
     let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Thịnh"];
     
-    // Mốc thời gian Bắt đầu
-    const START_TIME_OPTIONS = [
-        "18:00", "19:00" 
-    ];
-
-    // Mốc thời gian Kết thúc (đã bỏ 18:00 và 18:30)
+    const START_TIME_OPTIONS = ["18:00", "19:00"];
     const END_TIME_OPTIONS = [
         "19:00", "19:30", "20:00", "20:30", 
         "21:00", "21:30", "22:00", "22:30", "23:00", "23:30", "24:00"
@@ -357,7 +353,6 @@
         `).join('');
 
         const otContainer = document.getElementById('ktv17hContainer');
-        
         const generateOptions = (arrOptions, selectedVal) => {
             return arrOptions.map(t => `<option value="${t}" ${t === selectedVal ? 'selected' : ''}>${t}</option>`).join('');
         };
@@ -579,7 +574,6 @@ Em xin cảm ơn ạ!`;
                     if (badge) badge.innerText = `${hours} tiếng`;
 
                     if (cb && cb.checked) {
-                        // Bỏ chữ KTV, chỉ giữ lại tên
                         ktvDetailsText.push(`+ ${ten}: từ ${startVal} đến ${endVal} (${hours} tiếng)`);
                     }
                 }
@@ -651,10 +645,30 @@ Em báo cáo ạ.`;
         });
     }
 
+    function copyTextDirectly(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showSuccessPopup("Đã sao chép nội dung báo cáo!");
+        });
+    }
+
+    function exportToExcel() {
+        fetch(`${WEB_APP_URL}?action=exportExcel`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success" && data.exportUrl) {
+                window.open(data.exportUrl, '_blank');
+            } else {
+                alert("Không thể tải file Excel. Vui lòng thử lại!");
+            }
+        })
+        .catch(err => {
+            alert("Lỗi kết nối khi tải file Excel!");
+        });
+    }
+
     function resetFormToDefault() {
         setDefaultDate();
 
-        // Reset Tab 8H
         document.getElementById('saleOff_8h').value = "0";
         ALL_KTV.forEach(ten => {
             const el = document.getElementById(`status_${ten}`);
@@ -664,7 +678,6 @@ Em báo cáo ạ.`;
         document.getElementById('diMuon_8h').value = "Không có.";
         document.getElementById('chiTiet_8h').value = "";
 
-        // Reset Tab 17H
         ALL_KTV.forEach(ten => {
             const card = document.getElementById(`card_ot_${ten}`);
             if (card) {
@@ -682,7 +695,6 @@ Em báo cáo ạ.`;
         const defaultOtRadio = document.querySelector('input[name="otMode"][value="ĐĂNG KÝ TĂNG CA"]');
         if (defaultOtRadio) defaultOtRadio.checked = true;
 
-        // Reset Tab 18H
         document.getElementById('danPhim_18h').value = "";
         document.getElementById('ppf_18h').value = "";
         document.getElementById('wrap_18h').value = "";
@@ -837,16 +849,100 @@ Em báo cáo ạ.`;
                 return;
             }
 
-            historyData.sort((a, b) => parseDateStr(a.content) - parseDateStr(b.content));
+            historyData.sort((a, b) => parseDateStr(a.time) - parseDateStr(b.time));
 
-            listEl.innerHTML = historyData.map(item => {
-                let details = [];
-                if (item.extraData) {
-                    for (let ktv in item.extraData) {
-                        details.push(`${ktv}: ${item.extraData[ktv]}`);
+            listEl.innerHTML = historyData.map((item, idx) => {
+                let displayLines = [];
+                let fullReportText = "";
+                
+                if (currentHistoryTab === '8h') {
+                    let diLamCount = 0;
+                    let nghiList = [];
+                    
+                    if (item.extraData) {
+                        for (let ktv in item.extraData) {
+                            let status = String(item.extraData[ktv]).trim();
+                            if (status === "Đi làm") {
+                                diLamCount++;
+                            } else if (status === "Nghỉ") {
+                                nghiList.push(`${ktv} nghỉ.`);
+                            } else if (status === "Nghỉ sáng") {
+                                diLamCount++;
+                                nghiList.push(`${ktv} nghỉ buổi sáng.`);
+                            } else if (status === "Nghỉ chiều") {
+                                diLamCount++;
+                                nghiList.push(`${ktv} nghỉ buổi chiều.`);
+                            }
+                        }
                     }
+
+                    let quanLy = 1, saleOff = 0, keToan = 1;
+                    let ktvCoSo = ALL_KTV.length;
+                    let tongNhanLuc = quanLy + saleOff + ktvCoSo + keToan;
+                    let nhanSuDiLam = quanLy + saleOff + keToan + diLamCount;
+
+                    displayLines.push(`• Tổng nhân lực đi làm: ${fmt(nhanSuDiLam)}/${fmt(tongNhanLuc)}`);
+                    if (nghiList.length > 0) {
+                        displayLines.push(`• Nghỉ: ${nghiList.join(', ')}`);
+                    } else {
+                        displayLines.push(`• Nghỉ: Không có.`);
+                    }
+
+                    let chiTietFormatted = nghiList.length > 0 ? nghiList.map(i => `   •  ${i}`).join('\n') : "   •";
+
+                    fullReportText = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
+Cơ sở: Tam Trinh
+Ngày: ${item.time}
+Thời gian: 08:00
+1. Tổng nhân lực: ${fmt(tongNhanLuc)}
+   •  Quản lý: 01
+   •  Sale Off: 00
+   •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
+   •  Kế toán văn phòng: 01
+2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
+3. Dự kiến nghỉ ngày mai:
+   •  Chưa có.
+4. Chi tiết:
+${chiTietFormatted}
+5. Đi muộn:
+   •  Không có.
+
+Em xin cảm ơn ạ!`;
+
+                } else {
+                    let otList = [];
+                    let otReportLines = [];
+                    
+                    if (item.extraData) {
+                        for (let ktv in item.extraData) {
+                            let hrs = parseFloat(item.extraData[ktv]);
+                            if (!isNaN(hrs) && hrs > 0) {
+                                otList.push(`${ktv} (${hrs}h)`);
+                                otReportLines.push(`+ ${ktv}: ${hrs} tiếng`);
+                            }
+                        }
+                    }
+
+                    if (otList.length > 0) {
+                        displayLines.push(`• Danh sách tăng ca: ${otList.join(', ')}`);
+                    } else {
+                        displayLines.push(`• Danh sách tăng ca: Không có`);
+                    }
+
+                    let ktvRenderText = otReportLines.length > 0 ? otReportLines.join('\n') : "+ Chưa chọn nhân sự nào";
+
+                    fullReportText = `BÁO CÁO TĂNG CA
+
+– Ngày: ${item.time}
+– Cơ sở: Tam Trinh
+– Kỹ thuật viên tăng ca:
+${ktvRenderText}
+– Nội dung công việc: Tăng ca công việc cơ sở.
+
+Em gửi ạ.`;
                 }
-                const detailStr = details.length > 0 ? details.join(' | ') : item.content;
+
+                let encodedReportText = encodeURIComponent(fullReportText);
 
                 return `
                     <div class="history-item">
@@ -856,7 +952,10 @@ Em báo cáo ạ.`;
                             </div>
                             <span class="arrow">▼</span>
                         </div>
-                        <div class="history-item-body">${detailStr}</div>
+                        <div class="history-item-body">
+                            <div>${displayLines.join('<br>')}</div>
+                            <button class="btn-copy-history" onclick="copyTextDirectly(decodeURIComponent('${encodedReportText}'))">📋 Copy lại báo cáo</button>
+                        </div>
                     </div>
                 `;
             }).join('');
