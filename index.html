@@ -512,11 +512,9 @@
         const ngay = getSelectedDateFormatted();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
 
-        // Thịnh
         const qlStatus = document.getElementById('status_QuanLy').value;
         let qlDiLam = (qlStatus === "Nghỉ") ? 0 : 1;
 
-        // Quân
         const saleStatus = document.getElementById('status_SaleOff').value;
         let saleDiLam = (saleStatus === "Nghỉ") ? 0 : 1;
 
@@ -526,7 +524,6 @@
 
         let dsNghiText = [];
 
-        // Kiểm tra Thịnh
         if (qlStatus === "Nghỉ") {
             dsNghiText.push("Thịnh (Quản lý) nghỉ.");
         } else if (qlStatus === "Nghỉ sáng") {
@@ -535,7 +532,6 @@
             dsNghiText.push("Thịnh (Quản lý) nghỉ buổi chiều.");
         }
 
-        // Kiểm tra Quân
         if (saleStatus === "Nghỉ") {
             dsNghiText.push("Quân (Sale Off) nghỉ.");
         } else if (saleStatus === "Nghỉ sáng") {
@@ -544,7 +540,6 @@
             dsNghiText.push("Quân (Sale Off) nghỉ buổi chiều.");
         }
 
-        // Kiểm tra KTV đi làm/nghỉ
         let countKtvDiLam = 0;
         ALL_KTV.forEach(ten => {
             const el = document.getElementById(`status_${ten}`);
@@ -616,6 +611,19 @@ Em xin cảm ơn ạ!`;
         return diffMin / 60;
     }
 
+    function formatHourStr(timeStr) {
+        if (!timeStr) return "18h";
+        let parts = timeStr.split(':');
+        if (parts.length === 2) {
+            if (parts[1] === "00") {
+                return parseInt(parts[0], 10) + "h";
+            } else {
+                return parseInt(parts[0], 10) + "h" + parts[1];
+            }
+        }
+        return timeStr;
+    }
+
     function render17h() {
         const coSo = "Tam Trinh";
         const ngay = getSelectedDateFormatted();
@@ -623,33 +631,66 @@ Em xin cảm ơn ạ!`;
         const otTitle = modeRadio ? modeRadio.value : 'ĐĂNG KÝ TĂNG CA';
         const congViec = document.getElementById('congViec_17h').value.trim();
 
-        let ktvDetailsText = [];
+        const filmGroup = ["Vũ", "Tùng", "Tú"];
+        const ppfGroup = ["Hậu", "Hoàng", "Khánh"];
+
+        let filmSelected = [];
+        let filmTimeRange = "";
         
+        let ppfSelected = [];
+        let ppfTimeRange = "";
+
+        let otherSelected = [];
+
         ALL_KTV.forEach(ten => {
             const card = document.getElementById(`card_ot_${ten}`);
             if (card) {
                 const cb = card.querySelector('.ktv-17h-checkbox');
                 const startSelect = document.getElementById(`start_${ten}`);
                 const endSelect = document.getElementById(`end_${ten}`);
-                const badge = document.getElementById(`badge_hours_${ten}`);
-
+                
                 if (startSelect && endSelect) {
                     const startVal = startSelect.value;
                     const endVal = endSelect.value;
                     const hours = calculateOtHours(startVal, endVal);
-
+                    const badge = document.getElementById(`badge_hours_${ten}`);
                     if (badge) badge.innerText = `${hours} tiếng`;
 
                     if (cb && cb.checked) {
-                        ktvDetailsText.push(`+ ${ten}: từ ${startVal} đến ${endVal} (${hours} tiếng)`);
+                        const timeStr = `từ ${formatHourStr(startVal)} đến ${formatHourStr(endVal)}`;
+                        if (filmGroup.includes(ten)) {
+                            filmSelected.push(ten);
+                            if (!filmTimeRange) filmTimeRange = timeStr;
+                        } else if (ppfGroup.includes(ten)) {
+                            ppfSelected.push(ten);
+                            if (!ppfTimeRange) ppfTimeRange = timeStr;
+                        } else {
+                            otherSelected.push({ name: ten, time: timeStr });
+                        }
                     }
                 }
             }
         });
 
+        let sections = [];
+
+        if (filmSelected.length > 0) {
+            let names = filmSelected.join(" - ");
+            sections.push(`Dán Film\n+ ${names}: ${filmTimeRange || "từ 18h đến 21h"}`);
+        }
+
+        if (ppfSelected.length > 0) {
+            let names = ppfSelected.join(" - ");
+            sections.push(`Dán PPF\n+ ${names}: ${ppfTimeRange || "từ 18h đến 21h"}`);
+        }
+
+        otherSelected.forEach(item => {
+            sections.push(`Khác\n+ ${item.name}: ${item.time}`);
+        });
+
         let ktvRenderText = "";
-        if (ktvDetailsText.length > 0) {
-            ktvRenderText = ktvDetailsText.join('\n');
+        if (sections.length > 0) {
+            ktvRenderText = sections.join('\n\n');
         } else {
             ktvRenderText = "+ Chưa chọn nhân sự nào";
         }
