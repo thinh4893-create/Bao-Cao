@@ -109,6 +109,8 @@
         .modal-card .icon { font-size: 40px; color: #34c759; margin-bottom: 10px; }
         .modal-card p { font-size: 16px; font-weight: bold; color: #1c1c1e; }
 
+        .section-subtitle { font-size: 12px; font-weight: bold; color: #007aff; background: #eef6ff; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; }
+
         @media (max-width: 480px) {
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
@@ -137,22 +139,36 @@
             <input type="hidden" id="coSo_8h" value="Tam Trinh">
             <input type="hidden" id="thoiGian_8h" value="08:00">
 
-            <div class="form-group">
-                <label>Số lượng Quản lý:</label>
-                <input type="text" id="quanLy_8h" value="01" readonly>
-            </div>
-            <div class="form-group">
-                <label>Số lượng Sale Off:</label>
-                <input type="number" id="saleOff_8h" value="0" min="0" oninput="render8h()">
-            </div>
             <div class="form-group full-width">
-                <label>Số Kế toán văn phòng:</label>
-                <input type="text" id="keToan_8h" value="01" readonly>
-            </div>
+                <label>Trạng thái Nhân sự hôm nay:</label>
+                <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden; background: #fafafa;">
+                    <div class="section-subtitle">👔 BỘ PHẬN SẢN XUẤT / QUẢN LÝ / SALE</div>
+                    
+                    <!-- Quản lý Thịnh -->
+                    <div class="ktv-row">
+                        <span class="ktv-name">Quản lý (Thịnh)</span>
+                        <select id="status_QuanLy" class="ktv-select-status" onchange="render8h()">
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sale Off Quân -->
+                    <div class="ktv-row">
+                        <span class="ktv-name">Sale Off (Quân)</span>
+                        <select id="status_SaleOff" class="ktv-select-status" onchange="render8h()">
+                            <option value="Đi làm" selected>Đi làm</option>
+                            <option value="Nghỉ">Nghỉ</option>
+                            <option value="Nghỉ sáng">Nghỉ sáng</option>
+                            <option value="Nghỉ chiều">Nghỉ chiều</option>
+                        </select>
+                    </div>
 
-            <div class="form-group full-width">
-                <label>Trạng thái Kỹ thuật viên hôm nay:</label>
-                <div id="ktvStatusContainer" style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden;"></div>
+                    <div class="section-subtitle" style="margin-top: 10px;">🛠 ĐỘI NGŨ KỸ THUẬT VIÊN</div>
+                    <div id="ktvStatusContainer"></div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -281,7 +297,8 @@
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
     
-    let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", " Tú", " Khánh"," Thịnh"];
+    // Đã bỏ Thịnh khỏi danh sách KTV, Thịnh lên làm Quản lý
+    let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Tú", "Khánh"];
     
     const START_TIME_OPTIONS = ["18:00", "19:00"];
     const END_TIME_OPTIONS = [
@@ -463,17 +480,41 @@
         const coSo = "Tam Trinh";
         const ngay = getSelectedDateFormatted();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
-        
-        const quanLy = 1;
-        const keToan = 1;
-        const saleOff = parseInt(document.getElementById('saleOff_8h').value, 10) || 0;
-        const ktvCoSo = ALL_KTV.length;
 
-        const tongNhanLuc = quanLy + saleOff + ktvCoSo + keToan;
+        // Xử lý Quản lý (Thịnh)
+        const qlStatus = document.getElementById('status_QuanLy').value;
+        let qlDiLam = (qlStatus === "Nghỉ") ? 0 : 1;
+
+        // Xử lý Sale Off (Quân)
+        const saleStatus = document.getElementById('status_SaleOff').value;
+        let saleDiLam = (saleStatus === "Nghỉ") ? 0 : 1;
+
+        const keToan = 1;
+        const ktvCoSo = ALL_KTV.length;
+        const tongNhanLuc = 1 + 1 + ktvCoSo + keToan; // 1 Quản lý + 1 Sale + KTV + 1 Kế toán
 
         let dsNghiText = [];
-        let countKtvDiLam = 0;
 
+        // Kiểm tra nghỉ Quản lý
+        if (qlStatus === "Nghỉ") {
+            dsNghiText.push("Thịnh (Quản lý) nghỉ.");
+        } else if (qlStatus === "Nghỉ sáng") {
+            dsNghiText.push("Thịnh (Quản lý) nghỉ buổi sáng.");
+        } else if (qlStatus === "Nghỉ chiều") {
+            dsNghiText.push("Thịnh (Quản lý) nghỉ buổi chiều.");
+        }
+
+        // Kiểm tra nghỉ Sale Off
+        if (saleStatus === "Nghỉ") {
+            dsNghiText.push("Quân (Sale Off) nghỉ.");
+        } else if (saleStatus === "Nghỉ sáng") {
+            dsNghiText.push("Quân (Sale Off) nghỉ buổi sáng.");
+        } else if (saleStatus === "Nghỉ chiều") {
+            dsNghiText.push("Quân (Sale Off) nghỉ buổi chiều.");
+        }
+
+        // Kiểm tra KTV đi làm/nghỉ
+        let countKtvDiLam = 0;
         ALL_KTV.forEach(ten => {
             const el = document.getElementById(`status_${ten}`);
             if (el) {
@@ -492,7 +533,7 @@
             }
         });
 
-        const nhanSuDiLam = quanLy + saleOff + keToan + countKtvDiLam;
+        const nhanSuDiLam = qlDiLam + saleDiLam + keToan + countKtvDiLam;
 
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
@@ -516,7 +557,7 @@ Ngày: ${ngay}
 Thời gian: ${thoiGian}
 1. Tổng nhân lực: ${fmt(tongNhanLuc)}
    •  Quản lý: 01
-   •  Sale Off: ${fmt(saleOff)}
+   •  Sale Off: 01
    •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
    •  Kế toán văn phòng: 01
 2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
@@ -658,7 +699,9 @@ Em báo cáo ạ.`;
     function resetFormToDefault() {
         setDefaultDate();
 
-        document.getElementById('saleOff_8h').value = "0";
+        document.getElementById('status_QuanLy').value = "Đi làm";
+        document.getElementById('status_SaleOff').value = "Đi làm";
+
         ALL_KTV.forEach(ten => {
             const el = document.getElementById(`status_${ten}`);
             if (el) el.value = "Đi làm";
@@ -710,6 +753,9 @@ Em báo cáo ạ.`;
 
         if (currentTab === 'tab8h') {
             let statusMap = {};
+            statusMap["Quản lý (Thịnh)"] = document.getElementById('status_QuanLy').value;
+            statusMap["Sale Off (Quân)"] = document.getElementById('status_SaleOff').value;
+
             ALL_KTV.forEach(ten => {
                 const el = document.getElementById(`status_${ten}`);
                 if (el) statusMap[ten] = el.value;
