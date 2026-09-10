@@ -54,7 +54,12 @@
         .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5ea; background: #fafafa; }
         .ktv-row:last-child { border-bottom: none; }
         .ktv-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
-        .ktv-select-status { width: auto; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; background: #ffffff; }
+        
+        /* CSS MÀU NỀN TRẠNG THÁI */
+        .ktv-select-status { width: auto; font-size: 13px; font-weight: bold; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; transition: all 0.2s ease; outline: none; }
+        .ktv-select-status.status-dilam { background-color: #e6f4ea !important; color: #137333 !important; border-color: #ceedd5 !important; }
+        .ktv-select-status.status-nghisang, .ktv-select-status.status-nghichieu { background-color: #fef7e0 !important; color: #b06000 !important; border-color: #fce8b2 !important; }
+        .ktv-select-status.status-nghi { background-color: #fce8e6 !important; color: #c5221f !important; border-color: #f8c2c0 !important; }
 
         .ktv-manage-box { background: #f8f9fa; border: 1px dashed #007aff; padding: 12px; border-radius: 8px; margin-top: 20px; }
         .ktv-manage-inputs { display: flex; gap: 8px; margin-bottom: 8px; }
@@ -87,7 +92,6 @@
         .stat-card .ktv-label { font-size: 13px; font-weight: 800; color: #ffffff; margin-bottom: 4px; text-transform: uppercase; }
         .stat-card .stat-val { font-size: 15px; font-weight: 800; color: #ffeb3b; }
 
-        /* BẢNG LỊCH BÁO CÁO */
         .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
         .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-actions { display: flex; gap: 6px; }
@@ -142,12 +146,12 @@
             <div class="form-group full-width">
                 <label>Trạng thái Nhân sự hôm nay:</label>
                 <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden; background: #fafafa;">
-                    <div class="section-subtitle">👔 BỘ PHẬN SẢN XUẤT / QUẢN LÝ / SALE</div>
+                    <div class="section-subtitle">👔 BỘ PHẬN QUẢN LÝ / SALE</div>
                     
-                    <!-- Quản lý Thịnh -->
+                    <!-- Thịnh -->
                     <div class="ktv-row">
-                        <span class="ktv-name">Quản lý (Thịnh)</span>
-                        <select id="status_QuanLy" class="ktv-select-status" onchange="render8h()">
+                        <span class="ktv-name">Thịnh</span>
+                        <select id="status_QuanLy" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
                             <option value="Đi làm" selected>Đi làm</option>
                             <option value="Nghỉ">Nghỉ</option>
                             <option value="Nghỉ sáng">Nghỉ sáng</option>
@@ -155,10 +159,10 @@
                         </select>
                     </div>
                     
-                    <!-- Sale Off Quân -->
+                    <!-- Quân -->
                     <div class="ktv-row">
-                        <span class="ktv-name">Sale Off (Quân)</span>
-                        <select id="status_SaleOff" class="ktv-select-status" onchange="render8h()">
+                        <span class="ktv-name">Quân</span>
+                        <select id="status_SaleOff" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
                             <option value="Đi làm" selected>Đi làm</option>
                             <option value="Nghỉ">Nghỉ</option>
                             <option value="Nghỉ sáng">Nghỉ sáng</option>
@@ -297,7 +301,6 @@
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
     
-    // Đã bỏ Thịnh khỏi danh sách KTV, Thịnh lên làm Quản lý
     let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Tú", "Khánh"];
     
     const START_TIME_OPTIONS = ["18:00", "19:00"];
@@ -312,13 +315,39 @@
         setDefaultDate();
         initMonthOptions();
         renderKTVUI();
+        updateAllSelectColors();
         render8h();
         refreshAllData();
     };
 
+    function onStatusChange(selectEl) {
+        updateSelectColor(selectEl);
+    }
+
+    function updateSelectColor(selectEl) {
+        selectEl.classList.remove('status-dilam', 'status-nghisang', 'status-nghichieu', 'status-nghi');
+        const val = selectEl.value;
+        if (val === 'Đi làm') {
+            selectEl.classList.add('status-dilam');
+        } else if (val === 'Nghỉ sáng') {
+            selectEl.classList.add('status-nghisang');
+        } else if (val === 'Nghỉ chiều') {
+            selectEl.classList.add('status-nghichieu');
+        } else if (val === 'Nghỉ') {
+            selectEl.classList.add('status-nghi');
+        }
+    }
+
+    function updateAllSelectColors() {
+        document.querySelectorAll('.ktv-select-status').forEach(selectEl => {
+            updateSelectColor(selectEl);
+        });
+    }
+
     function saveKTVList() {
         localStorage.setItem('F4_ALL_KTV', JSON.stringify(ALL_KTV));
         renderKTVUI();
+        updateAllSelectColors();
         updateAllRenders();
         loadMonthlyStats();
     }
@@ -355,7 +384,7 @@
         statusContainer.innerHTML = ALL_KTV.map(ten => `
             <div class="ktv-row">
                 <span class="ktv-name">${ten}</span>
-                <select id="status_${ten}" class="ktv-select-status" onchange="render8h()">
+                <select id="status_${ten}" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
                     <option value="Đi làm" selected>Đi làm</option>
                     <option value="Nghỉ">Nghỉ</option>
                     <option value="Nghỉ sáng">Nghỉ sáng</option>
@@ -406,6 +435,8 @@
                 <div class="stat-val" id="hours_${ktv}">0h</div>
             </div>
         `).join('');
+
+        updateAllSelectColors();
     }
 
     function toggleKtvOt(ten) {
@@ -481,21 +512,21 @@
         const ngay = getSelectedDateFormatted();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
 
-        // Xử lý Quản lý (Thịnh)
+        // Thịnh
         const qlStatus = document.getElementById('status_QuanLy').value;
         let qlDiLam = (qlStatus === "Nghỉ") ? 0 : 1;
 
-        // Xử lý Sale Off (Quân)
+        // Quân
         const saleStatus = document.getElementById('status_SaleOff').value;
         let saleDiLam = (saleStatus === "Nghỉ") ? 0 : 1;
 
         const keToan = 1;
         const ktvCoSo = ALL_KTV.length;
-        const tongNhanLuc = 1 + 1 + ktvCoSo + keToan; // 1 Quản lý + 1 Sale + KTV + 1 Kế toán
+        const tongNhanLuc = 1 + 1 + ktvCoSo + keToan;
 
         let dsNghiText = [];
 
-        // Kiểm tra nghỉ Quản lý
+        // Kiểm tra Thịnh
         if (qlStatus === "Nghỉ") {
             dsNghiText.push("Thịnh (Quản lý) nghỉ.");
         } else if (qlStatus === "Nghỉ sáng") {
@@ -504,7 +535,7 @@
             dsNghiText.push("Thịnh (Quản lý) nghỉ buổi chiều.");
         }
 
-        // Kiểm tra nghỉ Sale Off
+        // Kiểm tra Quân
         if (saleStatus === "Nghỉ") {
             dsNghiText.push("Quân (Sale Off) nghỉ.");
         } else if (saleStatus === "Nghỉ sáng") {
@@ -706,6 +737,9 @@ Em báo cáo ạ.`;
             const el = document.getElementById(`status_${ten}`);
             if (el) el.value = "Đi làm";
         });
+
+        updateAllSelectColors();
+
         document.getElementById('nghiMai_8h').value = "Chưa có.";
         document.getElementById('diMuon_8h').value = "Không có.";
         document.getElementById('chiTiet_8h').value = "";
@@ -753,8 +787,8 @@ Em báo cáo ạ.`;
 
         if (currentTab === 'tab8h') {
             let statusMap = {};
-            statusMap["Quản lý (Thịnh)"] = document.getElementById('status_QuanLy').value;
-            statusMap["Sale Off (Quân)"] = document.getElementById('status_SaleOff').value;
+            statusMap["Thịnh"] = document.getElementById('status_QuanLy').value;
+            statusMap["Quân"] = document.getElementById('status_SaleOff').value;
 
             ALL_KTV.forEach(ten => {
                 const el = document.getElementById(`status_${ten}`);
