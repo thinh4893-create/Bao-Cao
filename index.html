@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Báo Cáo Tự Động - F4 AUTO</title>
+    <title>F4 AUTO - Management Dashboard</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/ios-filled/180/000000/car.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/ios-filled/32/000000/car.png">
@@ -11,245 +11,335 @@
     <meta name="apple-mobile-web-app-title" content="F4 AUTO">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f2f2f7; padding: 15px; color: #1c1c1e; }
-        .container { max-width: 680px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        h1 { text-align: center; font-size: 20px; margin-bottom: 15px; color: #007aff; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(37, 99, 235, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+        body { background-color: var(--bg-body); padding: 24px 12px; color: var(--text-main); -webkit-font-smoothing: antialiased; }
+        .container { max-width: 720px; margin: 0 auto; }
         
-        .date-picker-box { background: #eef6ff; border: 1px solid #007aff; padding: 10px 14px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .date-picker-box label { font-size: 13px; font-weight: bold; color: #007aff; }
-        .date-picker-box input[type="date"] { padding: 6px 10px; border-radius: 6px; border: 1px solid #007aff; font-size: 14px; font-weight: bold; color: #1c1c1e; outline: none; background: #fff; }
+        /* HEADER PRO */
+        .app-header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            color: #fff;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand-info h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+        .brand-info p { font-size: 13px; color: #94a3b8; margin-top: 4px; font-weight: 500; }
+        .branch-badge { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #38bdf8; text-transform: uppercase; }
 
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #e5e5ea; padding: 4px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 10px 5px; border: none; background: transparent; font-size: 13px; font-weight: 600; color: #8e8e93; border-radius: 6px; cursor: pointer; transition: 0.2s; text-align: center; }
-        .tab-btn.active { background: #ffffff; color: #007aff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* CARD WRAPPER */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
 
+        /* DATE PICKER */
+        .date-picker-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--primary-light);
+            border: 1px solid #bfdbfe;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+        .date-picker-box label { font-size: 13px; font-weight: 700; color: var(--primary-dark); }
+        .date-picker-box input[type="date"] {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #93c5fd;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            outline: none;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        /* TABS MODERN */
+        .tabs { display: flex; gap: 6px; background: #f1f5f9; padding: 6px; border-radius: var(--radius-md); margin-bottom: 20px; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 12px 8px; border: none; background: transparent; font-size: 13px; font-weight: 700; color: var(--text-muted); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+        /* FORM STYLES */
         .form-section { display: none; }
         .form-section.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .full-width { grid-column: span 2; }
         
         .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: #3a3a3c; }
-        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
-        input:focus, select:focus, textarea:focus { border-color: #007aff; background: #fff; }
-        input[readonly] { background-color: #e5e5ea; color: #636366; cursor: not-allowed; border-color: #d1d1d6; }
+        label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.3px; }
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #ffffff;
+            color: var(--text-main);
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        input[readonly] { background-color: #f1f5f9; color: var(--text-muted); cursor: not-allowed; }
         
-        .checkbox-group { display: flex; flex-direction: column; gap: 8px; background: #fafafa; padding: 12px; border: 1px solid #d1d1d6; border-radius: 6px; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; background: #f8fafc; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-md); }
         
-        .ktv-ot-item { background: #ffffff; border: 1px solid #d1d1d6; border-radius: 8px; padding: 10px 12px; transition: 0.2s; }
-        .ktv-ot-item.selected { border-color: #007aff; background: #f4f8ff; }
-        .ktv-ot-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .ktv-ot-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; color: #1c1c1e; cursor: pointer; }
-        .ktv-ot-label input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-        .ktv-ot-time-selects { display: none; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #c7c7cc; grid-template-columns: 1fr 1fr; gap: 8px; }
+        /* KTV OT ITEM */
+        .ktv-ot-item { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; transition: 0.2s; }
+        .ktv-ot-item.selected { border-color: var(--primary); background: var(--primary-light); }
+        .ktv-ot-header { display: flex; align-items: center; justify-content: space-between; }
+        .ktv-ot-label { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; }
+        .ktv-ot-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+        .ktv-ot-time-selects { display: none; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); grid-template-columns: 1fr 1fr; gap: 10px; }
         .ktv-ot-item.selected .ktv-ot-time-selects { display: grid; }
-        .time-box-sub { display: flex; flex-direction: column; gap: 2px; }
-        .time-box-sub label { font-size: 11px; color: #636366; font-weight: normal; }
-        .time-box-sub select { padding: 4px 6px; font-size: 13px; font-weight: 600; }
-        .ot-hours-badge { font-size: 12px; font-weight: bold; color: #007aff; background: #eef6ff; padding: 2px 8px; border-radius: 12px; }
+        .time-box-sub label { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 3px; }
+        .time-box-sub select { padding: 6px; font-size: 13px; font-weight: 700; }
+        .ot-hours-badge { font-size: 12px; font-weight: 800; color: var(--primary-dark); background: #dbeafe; padding: 4px 10px; border-radius: 20px; }
 
-        .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #e5e5ea; background: #fafafa; }
+        /* KTV ROW STATUS */
+        .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); background: #ffffff; }
         .ktv-row:last-child { border-bottom: none; }
-        .ktv-name { font-size: 14px; font-weight: 600; color: #1c1c1e; }
+        .ktv-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
         
-        /* CSS MÀU NỀN TRẠNG THÁI */
-        .ktv-select-status { width: auto; font-size: 13px; font-weight: bold; padding: 6px 10px; border-radius: 6px; border: 1px solid #c7c7cc; transition: all 0.2s ease; outline: none; }
-        .ktv-select-status.status-dilam { background-color: #e6f4ea !important; color: #137333 !important; border-color: #ceedd5 !important; }
-        .ktv-select-status.status-nghisang, .ktv-select-status.status-nghichieu { background-color: #fef7e0 !important; color: #b06000 !important; border-color: #fce8b2 !important; }
-        .ktv-select-status.status-nghi { background-color: #fce8e6 !important; color: #c5221f !important; border-color: #f8c2c0 !important; }
+        .ktv-select-status { width: auto; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); transition: all 0.2s ease; outline: none; }
+        .ktv-select-status.status-dilam { background-color: #d1fae5 !important; color: #065f46 !important; border-color: #a7f3d0 !important; }
+        .ktv-select-status.status-nghisang, .ktv-select-status.status-nghichieu { background-color: #fef3c7 !important; color: #92400e !important; border-color: #fde68a !important; }
+        .ktv-select-status.status-nghi { background-color: #fee2e2 !important; color: #991b1b !important; border-color: #fca5a5 !important; }
 
-        .ktv-manage-box { background: #f8f9fa; border: 1px dashed #007aff; padding: 12px; border-radius: 8px; margin-top: 20px; }
-        .ktv-manage-inputs { display: flex; gap: 8px; margin-bottom: 8px; }
+        /* MANAGE KTV */
+        .ktv-manage-box { background: #ffffff; border: 1px dashed var(--primary); padding: 16px; border-radius: var(--radius-md); margin-top: 20px; }
+        .ktv-manage-inputs { display: flex; gap: 8px; margin-top: 8px; margin-bottom: 12px; }
         .ktv-manage-inputs input { flex: 1; }
-        .btn-add-ktv { background: #007aff; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-add-ktv { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-add-ktv:hover { background: var(--primary-dark); }
         .ktv-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .ktv-tag { background: #e5e5ea; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
-        .ktv-tag .remove-btn { color: #ff3b30; cursor: pointer; font-weight: bold; font-size: 14px; margin-left: 2px; }
+        .ktv-tag { background: #f1f5f9; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .ktv-tag .remove-btn { color: var(--danger); cursor: pointer; font-weight: 800; font-size: 14px; }
 
-        .output-box { margin-top: 20px; padding: 15px; background: #f9f9fb; border-radius: 8px; border: 1px solid #e5e5ea; }
-        .output-header { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #1c1c1e; }
-        .output-content { white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #d1d1d6; min-height: 120px; color: #000; line-height: 1.5; }
+        /* OUTPUT BOX */
+        .output-box { margin-top: 20px; }
+        .output-header { font-size: 13px; font-weight: 800; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .output-content { white-space: pre-wrap; font-size: 13px; background: #0f172a; color: #38bdf8; padding: 16px; border-radius: var(--radius-md); font-family: 'Courier New', Courier, monospace; line-height: 1.6; border: 1px solid #1e293b; min-height: 120px; }
         
-        .button-group { display: flex; gap: 10px; margin-top: 12px; }
-        .btn { flex: 1; padding: 12px; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; }
-        .btn-copy { background: #34c759; }
-        .btn-copy:hover { background: #28a745; }
-        .btn-sync { background: #007aff; }
-        .btn-sync:hover { background: #0056b3; }
+        .button-group { display: flex; gap: 10px; margin-top: 14px; }
+        .btn { flex: 1; padding: 12px; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-copy { background: #10b981; }
+        .btn-copy:hover { background: #059669; }
+        .btn-sync { background: var(--primary); }
+        .btn-sync:hover { background: var(--primary-dark); }
 
-        .stats-box { margin-top: 20px; background: linear-gradient(135deg, #2b56f5 0%, #1e3cc6 100%); border-radius: 18px; padding: 20px; color: #ffffff; box-shadow: 0 8px 20px rgba(30, 60, 198, 0.25); }
-        .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
-        .stats-title { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .month-selector-badge { background: #ffffff; color: #1c1c1e; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
-        .month-selector-badge select { border: none; background: transparent; font-weight: bold; font-size: 13px; color: #1c1c1e; outline: none; cursor: pointer; padding: 0; width: auto; }
+        /* STATS DASHBOARD */
+        .stats-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 20px; color: #ffffff; box-shadow: var(--shadow-lg); margin-top: 24px; }
+        .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; }
+        .stats-title { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; color: #38bdf8; }
+        .month-selector-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #ffffff; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .month-selector-badge select { border: none; background: transparent; font-weight: 700; font-size: 12px; color: #ffffff; outline: none; cursor: pointer; padding: 0; width: auto; }
+        .month-selector-badge select option { color: #000; }
         
-        .stats-section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin: 15px 0 10px 0; display: flex; align-items: center; gap: 6px; color: rgba(255, 255, 255, 0.9); }
+        .stats-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin: 16px 0 10px 0; color: #94a3b8; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .stat-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; padding: 12px 6px; text-align: center; }
-        .stat-card .ktv-label { font-size: 13px; font-weight: 800; color: #ffffff; margin-bottom: 4px; text-transform: uppercase; }
-        .stat-card .stat-val { font-size: 15px; font-weight: 800; color: #ffeb3b; }
+        .stat-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 12px 8px; text-align: center; }
+        .stat-card .ktv-label { font-size: 12px; font-weight: 800; color: #cbd5e1; margin-bottom: 4px; }
+        .stat-card .stat-val { font-size: 15px; font-weight: 800; color: #facc15; }
 
-        .history-box { margin-top: 20px; padding: 15px; background: #ffffff; border-radius: 8px; border: 1px solid #d1d1d6; }
-        .history-title { font-size: 15px; font-weight: bold; color: #1c1c1e; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        /* CALENDAR */
+        .history-box { margin-top: 24px; }
+        .history-title { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
         .history-actions { display: flex; gap: 6px; }
+        .history-actions button { border: 1px solid var(--border); background: #fff; color: var(--text-main); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .history-actions button:hover { background: #f8fafc; border-color: #cbd5e1; }
 
-        .report-calendar-legend { display: flex; gap: 15px; margin-bottom: 12px; font-size: 12px; font-weight: 600; color: #3a3a3c; border-bottom: 1px solid #e5e5ea; padding-bottom: 8px; }
+        .report-calendar-legend { display: flex; gap: 16px; margin-bottom: 12px; font-size: 12px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-        .dot-green { background-color: #34c759; }
-        .dot-red { background-color: #ff3b30; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot-green { background-color: #10b981; }
+        .dot-red { background-color: #ef4444; }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
-        .calendar-day-head { font-size: 11px; font-weight: bold; color: #8e8e93; text-transform: uppercase; padding-bottom: 4px; }
-        .calendar-day-cell { background: #f2f2f7; border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; border: 1px solid #e5e5ea; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+        .calendar-day-head { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; padding-bottom: 6px; }
+        .calendar-day-cell { background: #ffffff; border-radius: 8px; padding: 10px 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; border: 1px solid var(--border); }
         .calendar-day-cell.empty { background: transparent; border: none; }
-        .calendar-day-number { font-size: 12px; font-weight: bold; color: #1c1c1e; }
+        .calendar-day-number { font-size: 12px; font-weight: 700; color: var(--text-main); }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-card { background: #fff; padding: 25px 30px; border-radius: 14px; text-align: center; }
-        .modal-card .icon { font-size: 40px; color: #34c759; margin-bottom: 10px; }
-        .modal-card p { font-size: 16px; font-weight: bold; color: #1c1c1e; }
+        /* MODAL POPUP */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: #fff; padding: 28px 36px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-lg); }
+        .modal-card .icon { font-size: 36px; color: #10b981; margin-bottom: 8px; }
+        .modal-card p { font-size: 15px; font-weight: 800; color: var(--text-main); }
 
-        .section-subtitle { font-size: 12px; font-weight: bold; color: #007aff; background: #eef6ff; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; }
+        .section-subtitle { font-size: 11px; font-weight: 800; color: var(--primary); background: var(--primary-light); padding: 6px 12px; margin-bottom: 4px; letter-spacing: 0.5px; }
 
         @media (max-width: 480px) {
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
+            .app-header { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1> BÁO CÁO F4 AUTO - TAM TRINH</h1>
-
-    <div class="date-picker-box">
-        <label>📅 Chọn Ngày Báo Cáo:</label>
-        <input type="date" id="selectedDate" onchange="updateAllRenders()">
+    <!-- PRO HEADER -->
+    <div class="app-header">
+        <div class="brand-info">
+            <h1>🚗 F4 AUTO SYSTEM</h1>
+            <p>Hệ thống Quản lý & Báo cáo Tự động</p>
+        </div>
+        <div class="branch-badge">📍 CƠ SỞ TAM TRINH</div>
     </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('tab8h', event)">1. Đầu giờ (8H)</button>
-        <button class="tab-btn" onclick="switchTab('tab17h', event)">2. Tăng ca (17H)</button>
-        <button class="tab-btn" onclick="switchTab('tab18h', event)">3. Cuối ngày (18H)</button>
-    </div>
+    <!-- MAIN CONTROL CARD -->
+    <div class="card">
+        <div class="date-picker-box">
+            <label>📅 CHỌN NGÀY BÁO CÁO:</label>
+            <input type="date" id="selectedDate" onchange="updateAllRenders()">
+        </div>
 
-    <!-- FORM 8H -->
-    <div id="tab8h" class="form-section active">
-        <div class="form-grid">
-            <input type="hidden" id="coSo_8h" value="Tam Trinh">
-            <input type="hidden" id="thoiGian_8h" value="08:00">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('tab8h', event)">1. Đầu giờ (8H)</button>
+            <button class="tab-btn" onclick="switchTab('tab17h', event)">2. Tăng ca (17H)</button>
+            <button class="tab-btn" onclick="switchTab('tab18h', event)">3. Cuối ngày (18H)</button>
+        </div>
 
-            <div class="form-group full-width">
-                <label>Trạng thái Nhân sự hôm nay:</label>
-                <div style="border: 1px solid #d1d1d6; border-radius: 6px; overflow: hidden; background: #fafafa;">
-                    <div class="section-subtitle">👔 BỘ PHẬN QUẢN LÝ / SALE</div>
-                    
-                    <!-- Thịnh -->
-                    <div class="ktv-row">
-                        <span class="ktv-name">Thịnh</span>
-                        <select id="status_QuanLy" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
-                            <option value="Đi làm" selected>Đi làm</option>
-                            <option value="Nghỉ">Nghỉ</option>
-                            <option value="Nghỉ sáng">Nghỉ sáng</option>
-                            <option value="Nghỉ chiều">Nghỉ chiều</option>
-                        </select>
+        <!-- FORM 8H -->
+        <div id="tab8h" class="form-section active">
+            <div class="form-grid">
+                <input type="hidden" id="coSo_8h" value="Tam Trinh">
+                <input type="hidden" id="thoiGian_8h" value="08:00">
+
+                <div class="form-group full-width">
+                    <label>Trạng thái Nhân sự hôm nay:</label>
+                    <div style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: #ffffff;">
+                        <div class="section-subtitle">👔 BỘ PHẬN QUẢN LÝ / SALE</div>
+                        
+                        <!-- Thịnh -->
+                        <div class="ktv-row">
+                            <span class="ktv-name">Thịnh</span>
+                            <select id="status_QuanLy" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
+                                <option value="Đi làm" selected>Đi làm</option>
+                                <option value="Nghỉ">Nghỉ</option>
+                                <option value="Nghỉ sáng">Nghỉ sáng</option>
+                                <option value="Nghỉ chiều">Nghỉ chiều</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Quân -->
+                        <div class="ktv-row">
+                            <span class="ktv-name">Quân</span>
+                            <select id="status_SaleOff" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
+                                <option value="Đi làm" selected>Đi làm</option>
+                                <option value="Nghỉ">Nghỉ</option>
+                                <option value="Nghỉ sáng">Nghỉ sáng</option>
+                                <option value="Nghỉ chiều">Nghỉ chiều</option>
+                            </select>
+                        </div>
+
+                        <div class="section-subtitle" style="margin-top: 4px;">🛠 ĐỘI NGŨ KỸ THUẬT VIÊN</div>
+                        <div id="ktvStatusContainer"></div>
                     </div>
-                    
-                    <!-- Quân -->
-                    <div class="ktv-row">
-                        <span class="ktv-name">Quân</span>
-                        <select id="status_SaleOff" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
-                            <option value="Đi làm" selected>Đi làm</option>
-                            <option value="Nghỉ">Nghỉ</option>
-                            <option value="Nghỉ sáng">Nghỉ sáng</option>
-                            <option value="Nghỉ chiều">Nghỉ chiều</option>
-                        </select>
-                    </div>
+                </div>
 
-                    <div class="section-subtitle" style="margin-top: 10px;">🛠 ĐỘI NGŨ KỸ THUẬT VIÊN</div>
-                    <div id="ktvStatusContainer"></div>
+                <div class="form-group">
+                    <label>Dự kiến nghỉ ngày mai:</label>
+                    <input type="text" id="nghiMai_8h" value="Chưa có." oninput="render8h()">
+                </div>
+                <div class="form-group">
+                    <label>Đi muộn:</label>
+                    <input type="text" id="diMuon_8h" value="Không có." oninput="render8h()">
+                </div>
+                <div class="form-group full-width">
+                    <label>Ghi chú bổ sung (nếu có):</label>
+                    <input type="text" id="chiTiet_8h" value="" placeholder="Nhập ghi chú chi tiết..." oninput="render8h()">
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>Dự kiến nghỉ ngày mai:</label>
-                <input type="text" id="nghiMai_8h" value="Chưa có." oninput="render8h()">
-            </div>
-            <div class="form-group">
-                <label>Đi muộn:</label>
-                <input type="text" id="diMuon_8h" value="Không có." oninput="render8h()">
-            </div>
-            <div class="form-group full-width">
-                <label>Ghi chú bổ sung cho mục Chi tiết (nếu có):</label>
-                <input type="text" id="chiTiet_8h" value="" placeholder="Nhập thêm ghi chú khác nếu cần..." oninput="render8h()">
-            </div>
         </div>
-    </div>
 
-    <!-- FORM 17H -->
-    <div id="tab17h" class="form-section">
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label>Loại hình báo cáo:</label>
-                <div class="checkbox-group" style="flex-direction: row;">
-                    <label class="checkbox-item" style="display:flex; align-items:center; gap:6px;"><input type="radio" name="otMode" value="ĐĂNG KÝ TĂNG CA" checked onchange="render17h()"> Đăng Ký Tăng Ca</label>
-                    <label class="checkbox-item" style="display:flex; align-items:center; gap:6px;"><input type="radio" name="otMode" value="BÁO CÁO TĂNG CA" onchange="render17h()"> Báo Cáo Tăng Ca</label>
+        <!-- FORM 17H -->
+        <div id="tab17h" class="form-section">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Loại hình báo cáo:</label>
+                    <div class="checkbox-group" style="flex-direction: row;">
+                        <label class="checkbox-item" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700;"><input type="radio" name="otMode" value="ĐĂNG KÝ TĂNG CA" checked onchange="render17h()"> Đăng Ký Tăng Ca</label>
+                        <label class="checkbox-item" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700;"><input type="radio" name="otMode" value="BÁO CÁO TĂNG CA" onchange="render17h()"> Báo Cáo Tăng Ca</label>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Nội dung công việc:</label>
+                    <textarea id="congViec_17h" rows="3" placeholder="Chi tiết nội dung công việc tăng ca..." oninput="render17h()"></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Kỹ thuật viên & Giờ tăng ca:</label>
+                    <div class="checkbox-group" id="ktv17hContainer"></div>
                 </div>
             </div>
+        </div>
 
-            <div class="form-group full-width">
-                <label>Nội dung công việc:</label>
-                <textarea id="congViec_17h" rows="3" placeholder="Nhập nội dung công việc..." oninput="render17h()"></textarea>
-            </div>
+        <!-- FORM 18H -->
+        <div id="tab18h" class="form-section">
+            <div class="form-grid">
+                <div class="form-group full-width"><label>Dán phim cách nhiệt:</label><input type="text" id="danPhim_18h" placeholder="Ví dụ: 2 xe..." oninput="render18h()"></div>
+                <div class="form-group full-width"><label>PPF:</label><input type="text" id="ppf_18h" placeholder="Ví dụ: 1 xe..." oninput="render18h()"></div>
+                <div class="form-group full-width"><label>Wrap:</label><input type="text" id="wrap_18h" value="" placeholder="Nhập tình trạng Wrap..." oninput="render18h()"></div>
+                
+                <div class="form-group full-width">
+                    <label>Ghi chú công việc:</label>
+                    <textarea id="ghiChu_18h" rows="4" placeholder="Nhập ghi chú tổng hợp cuối ngày..." oninput="render18h()"></textarea>
+                </div>
 
-            <div class="form-group full-width">
-                <label>Chọn Kỹ thuật viên & Khung giờ tăng ca riêng:</label>
-                <div class="checkbox-group" id="ktv17hContainer"></div>
+                <div class="form-group full-width"><label>Tổng số lỗi:</label><input type="text" id="soLoi_18h" value="0" oninput="render18h()"></div>
+                <div class="form-group"><label>Lỗi chất lượng giao xe:</label><input type="text" id="loi1_18h" value="0" oninput="render18h()"></div>
+                <div class="form-group"><label>Lỗi đồng phục:</label><input type="text" id="loi2_18h" value="0" oninput="render18h()"></div>
+                <div class="form-group"><label>Lỗi 5S cơ sở:</label><input type="text" id="loi3_18h" value="0" oninput="render18h()"></div>
+                <div class="form-group"><label>Lỗi khác:</label><input type="text" id="loi4_18h" value="Không có" oninput="render18h()"></div>
+                <div class="form-group full-width"><label>Kiểm tra thiết bị điện:</label><input type="text" id="loi5_18h" value="đã được tắt đầy đủ." oninput="render18h()"></div>
             </div>
         </div>
-    </div>
 
-    <!-- FORM 18H -->
-    <div id="tab18h" class="form-section">
-        <div class="form-grid">
-            <div class="form-group full-width"><label>Dán phim cách nhiệt:</label><input type="text" id="danPhim_18h" placeholder="Ví dụ: 2 xe..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>PPF:</label><input type="text" id="ppf_18h" placeholder="Ví dụ: 1 xe..." oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Wrap:</label><input type="text" id="wrap_18h" value="" placeholder="Nhập tình trạng Wrap..." oninput="render18h()"></div>
-            
-            <div class="form-group full-width">
-                <label>Ghi chú:</label>
-                <textarea id="ghiChu_18h" rows="5" placeholder="Nhập ghi chú chi tiết tại đây..." oninput="render18h()"></textarea>
+        <!-- KHUNG XUẤT KẾT QUẢ -->
+        <div class="output-box">
+            <div class="output-header">📋 Xem trước nội dung xuất báo cáo:</div>
+            <div id="reportOutput" class="output-content"></div>
+
+            <div class="button-group">
+                <button class="btn btn-copy" onclick="copyReport()">📋 Sao Chép Báo Cáo</button>
+                <button class="btn btn-sync" id="btnSync" onclick="sendToGoogleSheet()">🚀 Gửi Lên Google Sheet</button>
             </div>
-
-            <div class="form-group full-width"><label>Số lỗi:</label><input type="text" id="soLoi_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Lỗi chất lượng khi giao xe:</label><input type="text" id="loi1_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Lỗi đồng phục không tuân thủ:</label><input type="text" id="loi2_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Lỗi 5S tại cơ sở:</label><input type="text" id="loi3_18h" value="0" oninput="render18h()"></div>
-            <div class="form-group"><label>Các lỗi khác:</label><input type="text" id="loi4_18h" value="Không có" oninput="render18h()"></div>
-            <div class="form-group full-width"><label>Thiết bị điện các khu vực không sử dụng:</label><input type="text" id="loi5_18h" value="đã được tắt đầy đủ." oninput="render18h()"></div>
-        </div>
-    </div>
-
-    <!-- KHUNG XUẤT KẾT QUẢ -->
-    <div class="output-box">
-        <div class="output-header">Nội dung báo cáo copy:</div>
-        <div id="reportOutput" class="output-content"></div>
-
-        <div class="button-group">
-            <button class="btn btn-copy" onclick="copyReport()">Sao Chép Báo Cáo</button>
-            <button class="btn btn-sync" id="btnSync" onclick="sendToGoogleSheet()">Gửi Lên Google Sheet</button>
         </div>
     </div>
 
     <!-- KHUNG QUẢN LÝ KTV -->
     <div class="ktv-manage-box">
-        <label>🛠 Quản lý danh sách Kỹ thuật viên (Thêm / Xóa):</label>
-        <div class="ktv-manage-inputs" style="margin-top: 6px;">
-            <input type="text" id="newKtvName" placeholder="Nhập tên KTV mới...">
+        <label>🛠 QUẢN LÝ DANH SÁCH KỸ THUẬT VIÊN</label>
+        <div class="ktv-manage-inputs">
+            <input type="text" id="newKtvName" placeholder="Thêm KTV mới...">
             <button class="btn-add-ktv" onclick="addNewKTV()">+ Thêm</button>
         </div>
         <div class="ktv-tags" id="ktvTagsList"></div>
@@ -260,25 +350,25 @@
         <div class="stats-header">
             <div class="stats-title">📊 Thống Kê Theo Tháng</div>
             <div class="month-selector-badge">
-                <span>CHỌN THÁNG:</span>
+                <span>THÁNG:</span>
                 <select id="statsMonthSelect" onchange="onMonthChange()"></select>
             </div>
         </div>
 
-        <div class="stats-section-title">👨‍🔧 TỔNG SỐ NGÀY ĐI LÀM TRONG THÁNG</div>
+        <div class="stats-section-title">👨‍🔧 TỔNG NGÀY ĐI LÀM TRONG THÁNG</div>
         <div class="stats-grid" id="statsDaysGrid"></div>
 
-        <div class="stats-section-title">⏰ TỔNG SỐ GIỜ TĂNG CA TRONG THÁNG</div>
+        <div class="stats-section-title">⏰ TỔNG GIỜ TĂNG CA TRONG THÁNG</div>
         <div class="stats-grid" id="statsHoursGrid"></div>
     </div>
 
     <!-- BẢNG LỊCH BÁO CÁO -->
-    <div class="history-box">
+    <div class="card history-box">
         <div class="history-title">
-            <span>📅 Bảng Lịch Báo Cáo</span>
+            <span>📅 Lịch Sử Báo Cáo</span>
             <div class="history-actions">
-                <button onclick="exportToExcel()" style="border:1px solid #34c759; background:#fff; color:#34c759; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">📥 Xuất File Excel</button>
-                <button onclick="refreshAllData()" style="border:1px solid #007aff; background:#fff; color:#007aff; font-size:12px; font-weight:bold; padding:5px 10px; border-radius:6px; cursor:pointer;">🔄 Tải lại dữ liệu</button>
+                <button onclick="exportToExcel()">📥 Xuất Excel</button>
+                <button onclick="refreshAllData()">🔄 Làm mới</button>
             </div>
         </div>
 
@@ -821,7 +911,7 @@ Em báo cáo ạ.`;
 
         const btnSync = document.getElementById('btnSync');
         btnSync.disabled = true;
-        btnSync.innerText = "Đang gửi & copy...";
+        btnSync.innerText = "⏳ Đang gửi & Copy...";
 
         const params = new URLSearchParams();
         const reportDate = getSelectedDateFormatted();
@@ -862,7 +952,7 @@ Em báo cáo ạ.`;
             if (selectedCount === 0) {
                 alert("Vui lòng chọn ít nhất 1 Kỹ thuật viên tăng ca!");
                 btnSync.disabled = false;
-                btnSync.innerText = "Gửi Lên Google Sheet";
+                btnSync.innerText = "🚀 Gửi Lên Google Sheet";
                 return;
             }
 
@@ -873,7 +963,7 @@ Em báo cáo ạ.`;
         } else {
             alert("Báo cáo 18H không gửi dữ liệu lên Google Sheet.");
             btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
+            btnSync.innerText = "🚀 Gửi Lên Google Sheet";
             return;
         }
 
@@ -884,14 +974,14 @@ Em báo cáo ạ.`;
         .then(res => res.json())
         .then(data => {
             btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
+            btnSync.innerText = "🚀 Gửi Lên Google Sheet";
             showSuccessPopup("Đã gửi Google Sheet & Sao chép báo cáo!");
             resetFormToDefault();
             refreshAllData();
         })
         .catch(err => {
             btnSync.disabled = false;
-            btnSync.innerText = "Gửi Lên Google Sheet";
+            btnSync.innerText = "🚀 Gửi Lên Google Sheet";
             showSuccessPopup("Đã gửi Google Sheet & Sao chép báo cáo!");
             resetFormToDefault();
             refreshAllData();
@@ -946,7 +1036,7 @@ Em báo cáo ạ.`;
 
     function loadReportCalendar() {
         const gridEl = document.getElementById('calendarGrid');
-        gridEl.innerHTML = `<div style="grid-column: span 7; text-align:center; color:#8e8e93; padding:15px;">Đang tải lịch báo cáo...</div>`;
+        gridEl.innerHTML = `<div style="grid-column: span 7; text-align:center; color:var(--text-muted); padding:15px; font-size:13px; font-weight:600;">Đang đồng bộ dữ liệu...</div>`;
 
         const monthStr = document.getElementById('statsMonthSelect').value || "";
         if (!monthStr) return;
