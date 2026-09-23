@@ -808,7 +808,12 @@
             ? chiTietFull.map(item => `   •  ${item}`).join('\n')
             : "   •  Không có.";
 
-        // MÀU SẮC ĐỊNH DẠNG: Ngày -> Xanh nước biển | Số lượng -> Vàng | Chi tiết -> Đỏ (khi thay đổi)
+        // MÀU SẮC ĐỊNH DẠNG:
+        // Tiêu đề -> Xanh nõn chuối (#84cc16)
+        // Ngày -> Xanh nước biển (#38bdf8)
+        // Số lượng -> Vàng (#facc15)
+        // Chi tiết -> Đỏ (khi thay đổi)
+        const titleDisplay = `<span style="color: #84cc16; font-weight: bold;">BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO</span>`;
         const dateDisplay = `<span style="color: #38bdf8; font-weight: bold;">${ngayStr}</span>`;
         const tongNhanLucDisplay = `<span style="color: #facc15; font-weight: bold;">${fmt(tongNhanLuc)}</span>`;
         const nhanSuDiLamDisplay = `<span style="color: #facc15; font-weight: bold;">${fmt(nhanSuDiLam)}</span>`;
@@ -816,13 +821,12 @@
             ? `<span style="color: #ef4444; font-weight: bold;">${chiTietFormatted}</span>` 
             : chiTietFormatted;
 
-        // Các biến số hiển thị màu vàng trong Mục 1
         const quanLyDisplay = `<span style="color: #facc15; font-weight: bold;">01</span>`;
         const saleOffDisplay = `<span style="color: #facc15; font-weight: bold;">02</span>`;
         const ktvCoSoDisplay = `<span style="color: #facc15; font-weight: bold;">${fmt(ktvCoSo)}</span>`;
         const keToanDisplay = `<span style="color: #facc15; font-weight: bold;">01</span>`;
 
-        const htmlText = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
+        const htmlText = `${titleDisplay}
 Cơ sở: ${coSo}
 Ngày: ${dateDisplay}
 Thời gian: ${thoiGian}
@@ -1177,7 +1181,6 @@ Em báo cáo ạ.`;
         return str;
     }
 
-    // ĐÃ ĐỒNG BỘ CHUẨN VỚI API GETCALENDARSTATUS CỦA APPSCRIPT
     function loadReportCalendar() {
         const gridEl = document.getElementById('calendarGrid');
         gridEl.innerHTML = `<div style="grid-column: span 7; text-align:center; color:var(--text-muted); padding:15px; font-size:13px; font-weight:600;">Đang đồng bộ dữ liệu...</div>`;
