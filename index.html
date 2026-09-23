@@ -6,7 +6,7 @@
     <title>F4 AUTO - Executive Management Dashboard</title>
 
     <!-- Icon Ô tô sắc nét (Base64 PNG 180x180) chuẩn PWA cho iOS & Android -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSU24ErkJggg==https://img.icons8.com/isometric/512/car.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/isometric/512/car.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/car.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/isometric/512/car.png">
     
@@ -193,7 +193,7 @@
             border-radius: var(--radius-md); 
         }
         
-        /* KTV OT ITEM CARDS - Nổi bật & Sáng rõ */
+        /* KTV OT ITEM CARDS */
         .ktv-ot-item { 
             background: rgba(255, 255, 255, 0.05); 
             border: 1px solid var(--border); 
@@ -376,7 +376,7 @@
                     <div style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--surface-card);">
                         <div class="section-subtitle">👔 BỘ PHẬN QUẢN LÝ / SALE</div>
                         
-                        <!-- Thịnh -->
+                        <!-- Thịnh (Quản lý) -->
                         <div class="ktv-row">
                             <span class="ktv-name">Thịnh</span>
                             <select id="status_QuanLy" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
@@ -387,10 +387,21 @@
                             </select>
                         </div>
                         
-                        <!-- Quân -->
+                        <!-- Quân (Sale Off) -->
                         <div class="ktv-row">
                             <span class="ktv-name">Quân</span>
-                            <select id="status_SaleOff" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
+                            <select id="status_SaleOff_Quan" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
+                                <option value="Đi làm" selected>Đi làm</option>
+                                <option value="Nghỉ">Nghỉ</option>
+                                <option value="Nghỉ sáng">Nghỉ sáng</option>
+                                <option value="Nghỉ chiều">Nghỉ chiều</option>
+                            </select>
+                        </div>
+
+                        <!-- Ánh (Sale Off) -->
+                        <div class="ktv-row">
+                            <span class="ktv-name">Ánh</span>
+                            <select id="status_SaleOff_Anh" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
                                 <option value="Đi làm" selected>Đi làm</option>
                                 <option value="Nghỉ">Nghỉ</option>
                                 <option value="Nghỉ sáng">Nghỉ sáng</option>
@@ -538,7 +549,8 @@
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
     
-    let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV')) || ["Vũ", "Hậu", "Hoàng", "Tùng", "Tú", "Khánh"];
+    // KTV cố định mặc định theo yêu cầu: Tùng - Tú - Hậu - Hoàng - Vũ - Khánh
+    let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV_V2')) || ["Tùng", "Tú", "Hậu", "Hoàng", "Vũ", "Khánh"];
     
     const START_TIME_OPTIONS = ["18:00", "19:00"];
     const END_TIME_OPTIONS = [
@@ -599,7 +611,7 @@
     }
 
     function saveKTVList() {
-        localStorage.setItem('F4_ALL_KTV', JSON.stringify(ALL_KTV));
+        localStorage.setItem('F4_ALL_KTV_V2', JSON.stringify(ALL_KTV));
         renderKTVUI();
         updateAllSelectColors();
         updateAllRenders();
@@ -769,29 +781,45 @@
         const qlStatus = document.getElementById('status_QuanLy').value;
         let qlDiLam = (qlStatus === "Nghỉ") ? 0 : 1;
 
-        const saleStatus = document.getElementById('status_SaleOff').value;
-        let saleDiLam = (saleStatus === "Nghỉ") ? 0 : 1;
+        // Sale Off gồm 2 người: Quân và Ánh
+        const saleQuanStatus = document.getElementById('status_SaleOff_Quan').value;
+        let saleQuanDiLam = (saleQuanStatus === "Nghỉ") ? 0 : 1;
+
+        const saleAnhStatus = document.getElementById('status_SaleOff_Anh').value;
+        let saleAnhDiLam = (saleAnhStatus === "Nghỉ") ? 0 : 1;
 
         const keToan = 1;
         const ktvCoSo = ALL_KTV.length;
-        const tongNhanLuc = 1 + 1 + ktvCoSo + keToan;
+        // Tổng nhân lực: Quản lý (1) + Sale Off (2) + KTV + Kế toán (1)
+        const tongNhanLuc = 1 + 2 + ktvCoSo + keToan;
 
         let dsNghiText = [];
 
+        // Kiểm tra Quản lý (Không gắn tag (Quản Lý) trong báo cáo)
         if (qlStatus === "Nghỉ") {
-            dsNghiText.push("Thịnh (Quản lý) nghỉ.");
+            dsNghiText.push("Thịnh nghỉ.");
         } else if (qlStatus === "Nghỉ sáng") {
-            dsNghiText.push("Thịnh (Quản lý) nghỉ buổi sáng.");
+            dsNghiText.push("Thịnh nghỉ buổi sáng.");
         } else if (qlStatus === "Nghỉ chiều") {
-            dsNghiText.push("Thịnh (Quản lý) nghỉ buổi chiều.");
+            dsNghiText.push("Thịnh nghỉ buổi chiều.");
         }
 
-        if (saleStatus === "Nghỉ") {
-            dsNghiText.push("Quân (Sale Off) nghỉ.");
-        } else if (saleStatus === "Nghỉ sáng") {
-            dsNghiText.push("Quân (Sale Off) nghỉ buổi sáng.");
-        } else if (saleStatus === "Nghỉ chiều") {
-            dsNghiText.push("Quân (Sale Off) nghỉ buổi chiều.");
+        // Kiểm tra Sale Off: Quân (Không gắn tag (Sale Off) trong báo cáo)
+        if (saleQuanStatus === "Nghỉ") {
+            dsNghiText.push("Quân nghỉ.");
+        } else if (saleQuanStatus === "Nghỉ sáng") {
+            dsNghiText.push("Quân nghỉ buổi sáng.");
+        } else if (saleQuanStatus === "Nghỉ chiều") {
+            dsNghiText.push("Quân nghỉ buổi chiều.");
+        }
+
+        // Kiểm tra Sale Off: Ánh (Không gắn tag (Sale Off) trong báo cáo)
+        if (saleAnhStatus === "Nghỉ") {
+            dsNghiText.push("Ánh nghỉ.");
+        } else if (saleAnhStatus === "Nghỉ sáng") {
+            dsNghiText.push("Ánh nghỉ buổi sáng.");
+        } else if (saleAnhStatus === "Nghỉ chiều") {
+            dsNghiText.push("Ánh nghỉ buổi chiều.");
         }
 
         let countKtvDiLam = 0;
@@ -813,7 +841,7 @@
             }
         });
 
-        const nhanSuDiLam = qlDiLam + saleDiLam + keToan + countKtvDiLam;
+        const nhanSuDiLam = qlDiLam + saleQuanDiLam + saleAnhDiLam + keToan + countKtvDiLam;
 
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
@@ -837,7 +865,7 @@ Ngày: ${ngay}
 Thời gian: ${thoiGian}
 1. Tổng nhân lực: ${fmt(tongNhanLuc)}
    •  Quản lý: 01
-   •  Sale Off: 01
+   •  Sale Off: 02
    •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
    •  Kế toán văn phòng: 01
 2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
@@ -1026,7 +1054,8 @@ Em báo cáo ạ.`;
         setDefaultDate();
 
         document.getElementById('status_QuanLy').value = "Đi làm";
-        document.getElementById('status_SaleOff').value = "Đi làm";
+        document.getElementById('status_SaleOff_Quan').value = "Đi làm";
+        document.getElementById('status_SaleOff_Anh').value = "Đi làm";
 
         ALL_KTV.forEach(ten => {
             const el = document.getElementById(`status_${ten}`);
@@ -1083,7 +1112,8 @@ Em báo cáo ạ.`;
         if (currentTab === 'tab8h') {
             let statusMap = {};
             statusMap["Thịnh"] = document.getElementById('status_QuanLy').value;
-            statusMap["Quân"] = document.getElementById('status_SaleOff').value;
+            statusMap["Quân"] = document.getElementById('status_SaleOff_Quan').value;
+            statusMap["Ánh"] = document.getElementById('status_SaleOff_Anh').value;
 
             ALL_KTV.forEach(ten => {
                 const el = document.getElementById(`status_${ten}`);
