@@ -795,7 +795,7 @@
 
         let dsNghiText = [];
 
-        // Kiểm tra Quản lý (Không gắn tag (Quản Lý) trong báo cáo)
+        // Kiểm tra Quản lý
         if (qlStatus === "Nghỉ") {
             dsNghiText.push("Thịnh nghỉ.");
         } else if (qlStatus === "Nghỉ sáng") {
@@ -804,7 +804,7 @@
             dsNghiText.push("Thịnh nghỉ buổi chiều.");
         }
 
-        // Kiểm tra Sale Off: Quân (Không gắn tag (Sale Off) trong báo cáo)
+        // Kiểm tra Sale Off: Quân
         if (saleQuanStatus === "Nghỉ") {
             dsNghiText.push("Quân nghỉ.");
         } else if (saleQuanStatus === "Nghỉ sáng") {
@@ -813,7 +813,7 @@
             dsNghiText.push("Quân nghỉ buổi chiều.");
         }
 
-        // Kiểm tra Sale Off: Ánh (Không gắn tag (Sale Off) trong báo cáo)
+        // Kiểm tra Sale Off: Ánh
         if (saleAnhStatus === "Nghỉ") {
             dsNghiText.push("Ánh nghỉ.");
         } else if (saleAnhStatus === "Nghỉ sáng") {
@@ -853,13 +853,20 @@
         }
         
         let chiTietFormatted = "";
-        if (chiTietFull.length > 0) {
+        let isChiTietChanged = chiTietFull.length > 0;
+
+        if (isChiTietChanged) {
             chiTietFormatted = chiTietFull.map(item => `   •  ${item}`).join('\n');
         } else {
             chiTietFormatted = "   •  Không có.";
         }
 
-        const text = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
+        // Tạo chuỗi màu đỏ nếu có thay đổi dành riêng cho mục hiển thị xem trước
+        const chiTietDisplay = isChiTietChanged 
+            ? `<span style="color: #ef4444; font-weight: bold;">${chiTietFormatted}</span>` 
+            : chiTietFormatted;
+
+        const htmlText = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
 Cơ sở: ${coSo}
 Ngày: ${ngay}
 Thời gian: ${thoiGian}
@@ -872,13 +879,13 @@ Thời gian: ${thoiGian}
 3. Dự kiến nghỉ ngày mai:
    •  ${nghiMai}
 4. Chi tiết:
-${chiTietFormatted}
+${chiTietDisplay}
 5. Đi muộn:
    •  ${diMuon}
 
 Em xin cảm ơn ạ!`;
 
-        document.getElementById('reportOutput').innerText = text;
+        document.getElementById('reportOutput').innerHTML = htmlText;
     }
 
     function calculateOtHours(startTimeVal, endTimeVal) {
