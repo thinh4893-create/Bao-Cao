@@ -816,15 +816,21 @@
             ? `<span style="color: #ef4444; font-weight: bold;">${chiTietFormatted}</span>` 
             : chiTietFormatted;
 
+        // Các biến số hiển thị màu vàng trong Mục 1
+        const quanLyDisplay = `<span style="color: #facc15; font-weight: bold;">01</span>`;
+        const saleOffDisplay = `<span style="color: #facc15; font-weight: bold;">02</span>`;
+        const ktvCoSoDisplay = `<span style="color: #facc15; font-weight: bold;">${fmt(ktvCoSo)}</span>`;
+        const keToanDisplay = `<span style="color: #facc15; font-weight: bold;">01</span>`;
+
         const htmlText = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
 Cơ sở: ${coSo}
 Ngày: ${dateDisplay}
 Thời gian: ${thoiGian}
 1. Tổng nhân lực: ${tongNhanLucDisplay}
-   •  Quản lý: 01
-   •  Sale Off: 02
-   •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
-   •  Kế toán văn phòng: 01
+   •  Quản lý: ${quanLyDisplay}
+   •  Sale Off: ${saleOffDisplay}
+   •  Kỹ thuật viên cơ sở: ${ktvCoSoDisplay}
+   •  Kế toán văn phòng: ${keToanDisplay}
 2. Nhân sự đi làm: ${nhanSuDiLamDisplay}
 3. Dự kiến nghỉ ngày mai:
    •  ${nghiMai}
