@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F4 AUTO - Executive Management Dashboard</title>
 
-    <!-- Icon Ô tô sắc nét (Base64 PNG 180x180) chuẩn PWA cho iOS & Android -->
     <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/isometric/512/car.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/car.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/isometric/512/car.png">
@@ -19,7 +18,6 @@
 
     <style>
         :root {
-            /* MODERN EXECUTIVE DARK THEME */
             --primary: #0284c7;
             --primary-dark: #070c18;
             --primary-light: rgba(56, 189, 248, 0.12);
@@ -53,7 +51,6 @@
         }
         .container { max-width: 760px; margin: 0 auto; }
         
-        /* EXECUTIVE HEADER */
         .app-header {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             padding: 28px 24px;
@@ -93,7 +90,6 @@
             letter-spacing: 0.8px;
         }
 
-        /* PREMIUM CARD WRAPPER */
         .card { 
             background: var(--surface); 
             border: 1px solid var(--border); 
@@ -103,7 +99,6 @@
             box-shadow: var(--shadow-md); 
         }
 
-        /* DATE PICKER BAR */
         .date-picker-box {
             display: flex;
             align-items: center;
@@ -129,7 +124,6 @@
             color-scheme: dark;
         }
 
-        /* ELEGANT TABS */
         .tabs { 
             display: flex; 
             gap: 8px; 
@@ -158,7 +152,6 @@
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4); 
         }
 
-        /* FORM CONTROLS */
         .form-section { display: none; }
         .form-section.active { display: block; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -193,7 +186,6 @@
             border-radius: var(--radius-md); 
         }
         
-        /* KTV OT ITEM CARDS */
         .ktv-ot-item { 
             background: rgba(255, 255, 255, 0.05); 
             border: 1px solid var(--border); 
@@ -215,7 +207,6 @@
         .time-box-sub select { padding: 8px; font-size: 13px; font-weight: 700; }
         .ot-hours-badge { font-size: 12px; font-weight: 800; color: var(--accent-gold); background: rgba(250, 204, 21, 0.15); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(250, 204, 21, 0.3); }
 
-        /* STATUS ROW */
         .ktv-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); }
         .ktv-row:last-child { border-bottom: none; }
         .ktv-name { font-size: 14px; font-weight: 700; color: #ffffff; }
@@ -225,7 +216,6 @@
         .ktv-select-status.status-nghisang, .ktv-select-status.status-nghichieu { background-color: rgba(245, 158, 11, 0.2) !important; color: #fbbf24 !important; border-color: rgba(245, 158, 11, 0.4) !important; }
         .ktv-select-status.status-nghi { background-color: rgba(239, 68, 68, 0.2) !important; color: #f87171 !important; border-color: rgba(239, 68, 68, 0.4) !important; }
 
-        /* MANAGE KTV CONTAINER */
         .ktv-manage-box { background: var(--surface); border: 1px dashed var(--accent-blue); padding: 20px; border-radius: var(--radius-lg); margin-top: 24px; box-shadow: var(--shadow-sm); }
         .ktv-manage-inputs { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 14px; }
         .ktv-manage-inputs input { flex: 1; }
@@ -235,19 +225,15 @@
         .ktv-tag { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; color: var(--accent-blue); display: flex; align-items: center; gap: 8px; }
         .ktv-tag .remove-btn { color: var(--danger); cursor: pointer; font-weight: 800; font-size: 14px; }
 
-        /* OUTPUT BOX DESIGN */
         .output-box { margin-top: 24px; }
         .output-header { font-size: 12px; font-weight: 800; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
         .output-content { white-space: pre-wrap; font-size: 13.5px; background: #030712; color: #f8fafc; padding: 20px; border-radius: var(--radius-md); font-family: 'Courier New', Courier, monospace; line-height: 1.6; border: 1px solid rgba(56, 189, 248, 0.25); min-height: 120px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); }
         
         .button-group { display: flex; gap: 12px; margin-top: 16px; }
         .btn { flex: 1; padding: 14px; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; transition: all 0.2s ease; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
-        .btn-copy { background: var(--primary); }
-        .btn-copy:hover { background: #0369a1; box-shadow: var(--shadow-md); }
-        .btn-sync { background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%); border: 1px solid rgba(255,255,255,0.15); }
-        .btn-sync:hover { background: #0f172a; box-shadow: var(--shadow-md); }
+        .btn-sync { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: 1px solid rgba(255,255,255,0.15); width: 100%; }
+        .btn-sync:hover { background: #0284c7; box-shadow: var(--shadow-md); }
 
-        /* LUXURY STATS DASHBOARD */
         .stats-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: var(--radius-lg); padding: 24px; color: #ffffff; box-shadow: var(--shadow-lg); margin-top: 24px; border: 1px solid var(--border); }
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px; }
         .stats-title { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent-blue); }
@@ -261,7 +247,6 @@
         .stat-card .ktv-label { font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-card .stat-val { font-size: 18px; font-weight: 800; color: var(--accent-gold); text-shadow: 0 0 10px rgba(250, 204, 21, 0.25); }
 
-        /* CALENDAR BOARD */
         .history-box { margin-top: 24px; }
         .history-title { font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .history-actions { display: flex; gap: 8px; }
@@ -281,7 +266,6 @@
         .calendar-day-cell.empty { background: transparent; border: none; }
         .calendar-day-number { font-size: 13px; font-weight: 800; color: #ffffff; }
 
-        /* POPUP MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 12, 24, 0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
         .modal-card { background: #0f172a; padding: 32px 40px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-lg); border: 1px solid var(--accent-blue); }
         .modal-card .icon { font-size: 40px; color: var(--accent-blue); margin-bottom: 12px; }
@@ -289,7 +273,6 @@
 
         .section-subtitle { font-size: 11px; font-weight: 800; color: var(--accent-blue); background: rgba(56, 189, 248, 0.12); padding: 8px 14px; margin-bottom: 4px; letter-spacing: 0.6px; border-bottom: 1px solid var(--border); }
 
-        /* NÚT CUỘN LÊN ĐẦU TRANG */
         .btn-scroll-top {
             position: fixed;
             bottom: 25px;
@@ -343,7 +326,6 @@
 <body>
 
 <div class="container">
-    <!-- EXECUTIVE HEADER -->
     <div class="app-header">
         <div class="brand-info">
             <h1>🚗 F4 AUTO </h1>
@@ -352,7 +334,6 @@
         <div class="branch-badge">📍 CƠ SỞ TAM TRINH</div>
     </div>
 
-    <!-- MAIN DASHBOARD CARD -->
     <div class="card">
         <div class="date-picker-box">
             <label>📅 CHỌN NGÀY BÁO CÁO:</label>
@@ -376,7 +357,6 @@
                     <div style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--surface-card);">
                         <div class="section-subtitle">👔 BỘ PHẬN QUẢN LÝ / SALE</div>
                         
-                        <!-- Thịnh (Quản lý) -->
                         <div class="ktv-row">
                             <span class="ktv-name">Thịnh</span>
                             <select id="status_QuanLy" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
@@ -387,7 +367,6 @@
                             </select>
                         </div>
                         
-                        <!-- Quân (Sale Off) -->
                         <div class="ktv-row">
                             <span class="ktv-name">Quân</span>
                             <select id="status_SaleOff_Quan" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
@@ -398,7 +377,6 @@
                             </select>
                         </div>
 
-                        <!-- Ánh (Sale Off) -->
                         <div class="ktv-row">
                             <span class="ktv-name">Ánh</span>
                             <select id="status_SaleOff_Anh" class="ktv-select-status" onchange="onStatusChange(this); render8h();">
@@ -479,7 +457,6 @@
             <div id="reportOutput" class="output-content"></div>
 
             <div class="button-group">
-                <button class="btn btn-copy" onclick="copyReport()">📋 Sao Chép Báo Cáo</button>
                 <button class="btn btn-sync" id="btnSync" onclick="sendToGoogleSheet()">🚀 Gửi Lên Google Sheet</button>
             </div>
         </div>
@@ -531,7 +508,6 @@
     </div>
 </div>
 
-<!-- NÚT CUỘN LÊN ĐẦU TRANG -->
 <button class="btn-scroll-top" id="scrollTopBtn" onclick="scrollToTop()" aria-label="Cuộn lên đầu trang">
     <svg viewBox="0 0 24 24">
         <line x1="12" y1="19" x2="12" y2="5"></line>
@@ -549,7 +525,6 @@
 <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZ_Zo53JqmoNCcnOdggkkEvmR1JX947SbURolMkpNWY8MtZIWsT4ukO_qV8ZX7wDI11w/exec";
     
-    // KTV cố định mặc định theo yêu cầu: Tùng - Tú - Hậu - Hoàng - Vũ - Khánh
     let ALL_KTV = JSON.parse(localStorage.getItem('F4_ALL_KTV_V2')) || ["Tùng", "Tú", "Hậu", "Hoàng", "Vũ", "Khánh"];
     
     const START_TIME_OPTIONS = ["18:00", "19:00"];
@@ -579,10 +554,7 @@
     };
 
     function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function onStatusChange(selectEl) {
@@ -775,13 +747,12 @@
 
     function render8h() {
         const coSo = "Tam Trinh";
-        const ngay = getSelectedDateFormatted();
+        const ngayStr = getSelectedDateFormatted();
         const thoiGian = document.getElementById('thoiGian_8h').value.trim();
 
         const qlStatus = document.getElementById('status_QuanLy').value;
         let qlDiLam = (qlStatus === "Nghỉ") ? 0 : 1;
 
-        // Sale Off gồm 2 người: Quân và Ánh
         const saleQuanStatus = document.getElementById('status_SaleOff_Quan').value;
         let saleQuanDiLam = (saleQuanStatus === "Nghỉ") ? 0 : 1;
 
@@ -790,37 +761,21 @@
 
         const keToan = 1;
         const ktvCoSo = ALL_KTV.length;
-        // Tổng nhân lực: Quản lý (1) + Sale Off (2) + KTV + Kế toán (1)
         const tongNhanLuc = 1 + 2 + ktvCoSo + keToan;
 
         let dsNghiText = [];
 
-        // Kiểm tra Quản lý
-        if (qlStatus === "Nghỉ") {
-            dsNghiText.push("Thịnh nghỉ.");
-        } else if (qlStatus === "Nghỉ sáng") {
-            dsNghiText.push("Thịnh nghỉ buổi sáng.");
-        } else if (qlStatus === "Nghỉ chiều") {
-            dsNghiText.push("Thịnh nghỉ buổi chiều.");
-        }
+        if (qlStatus === "Nghỉ") dsNghiText.push("Thịnh nghỉ.");
+        else if (qlStatus === "Nghỉ sáng") dsNghiText.push("Thịnh nghỉ buổi sáng.");
+        else if (qlStatus === "Nghỉ chiều") dsNghiText.push("Thịnh nghỉ buổi chiều.");
 
-        // Kiểm tra Sale Off: Quân
-        if (saleQuanStatus === "Nghỉ") {
-            dsNghiText.push("Quân nghỉ.");
-        } else if (saleQuanStatus === "Nghỉ sáng") {
-            dsNghiText.push("Quân nghỉ buổi sáng.");
-        } else if (saleQuanStatus === "Nghỉ chiều") {
-            dsNghiText.push("Quân nghỉ buổi chiều.");
-        }
+        if (saleQuanStatus === "Nghỉ") dsNghiText.push("Quân nghỉ.");
+        else if (saleQuanStatus === "Nghỉ sáng") dsNghiText.push("Quân nghỉ buổi sáng.");
+        else if (saleQuanStatus === "Nghỉ chiều") dsNghiText.push("Quân nghỉ buổi chiều.");
 
-        // Kiểm tra Sale Off: Ánh
-        if (saleAnhStatus === "Nghỉ") {
-            dsNghiText.push("Ánh nghỉ.");
-        } else if (saleAnhStatus === "Nghỉ sáng") {
-            dsNghiText.push("Ánh nghỉ buổi sáng.");
-        } else if (saleAnhStatus === "Nghỉ chiều") {
-            dsNghiText.push("Ánh nghỉ buổi chiều.");
-        }
+        if (saleAnhStatus === "Nghỉ") dsNghiText.push("Ánh nghỉ.");
+        else if (saleAnhStatus === "Nghỉ sáng") dsNghiText.push("Ánh nghỉ buổi sáng.");
+        else if (saleAnhStatus === "Nghỉ chiều") dsNghiText.push("Ánh nghỉ buổi chiều.");
 
         let countKtvDiLam = 0;
         ALL_KTV.forEach(ten => {
@@ -842,40 +797,35 @@
         });
 
         const nhanSuDiLam = qlDiLam + saleQuanDiLam + saleAnhDiLam + keToan + countKtvDiLam;
-
         const nghiMai = document.getElementById('nghiMai_8h').value.trim();
         const ghiChuBoSung = document.getElementById('chiTiet_8h').value.trim();
         const diMuon = document.getElementById('diMuon_8h').value.trim();
 
         let chiTietFull = [...dsNghiText];
-        if (ghiChuBoSung !== "") {
-            chiTietFull.push(ghiChuBoSung);
-        }
+        if (ghiChuBoSung !== "") chiTietFull.push(ghiChuBoSung);
         
-        let chiTietFormatted = "";
-        let isChiTietChanged = chiTietFull.length > 0;
+        let chiTietFormatted = chiTietFull.length > 0 
+            ? chiTietFull.map(item => `   •  ${item}`).join('\n')
+            : "   •  Không có.";
 
-        if (isChiTietChanged) {
-            chiTietFormatted = chiTietFull.map(item => `   •  ${item}`).join('\n');
-        } else {
-            chiTietFormatted = "   •  Không có.";
-        }
-
-        // Tạo chuỗi màu đỏ nếu có thay đổi dành riêng cho mục hiển thị xem trước
-        const chiTietDisplay = isChiTietChanged 
+        // MÀU SẮC ĐỊNH DẠNG: Ngày -> Xanh nước biển | Số lượng -> Vàng | Chi tiết -> Đỏ (khi thay đổi)
+        const dateDisplay = `<span style="color: #38bdf8; font-weight: bold;">${ngayStr}</span>`;
+        const tongNhanLucDisplay = `<span style="color: #facc15; font-weight: bold;">${fmt(tongNhanLuc)}</span>`;
+        const nhanSuDiLamDisplay = `<span style="color: #facc15; font-weight: bold;">${fmt(nhanSuDiLam)}</span>`;
+        const chiTietDisplay = chiTietFull.length > 0 
             ? `<span style="color: #ef4444; font-weight: bold;">${chiTietFormatted}</span>` 
             : chiTietFormatted;
 
         const htmlText = `BÁO CÁO TỶ LỆ ĐI LÀM KỸ THUẬT – F4 AUTO
 Cơ sở: ${coSo}
-Ngày: ${ngay}
+Ngày: ${dateDisplay}
 Thời gian: ${thoiGian}
-1. Tổng nhân lực: ${fmt(tongNhanLuc)}
+1. Tổng nhân lực: ${tongNhanLucDisplay}
    •  Quản lý: 01
    •  Sale Off: 02
    •  Kỹ thuật viên cơ sở: ${fmt(ktvCoSo)}
    •  Kế toán văn phòng: 01
-2. Nhân sự đi làm: ${fmt(nhanSuDiLam)}
+2. Nhân sự đi làm: ${nhanSuDiLamDisplay}
 3. Dự kiến nghỉ ngày mai:
    •  ${nghiMai}
 4. Chi tiết:
@@ -891,31 +841,22 @@ Em xin cảm ơn ạ!`;
     function calculateOtHours(startTimeVal, endTimeVal) {
         let [startH, startM] = startTimeVal.split(':').map(Number);
         let [endH, endM] = endTimeVal.split(':').map(Number);
-        
-        const startTotalMin = startH * 60 + startM;
-        const endTotalMin = endH * 60 + endM;
-
-        const diffMin = endTotalMin - startTotalMin;
-        if (diffMin <= 0) return 0;
-        return diffMin / 60;
+        const diffMin = (endH * 60 + endM) - (startH * 60 + startM);
+        return diffMin <= 0 ? 0 : diffMin / 60;
     }
 
     function formatHourStr(timeStr) {
         if (!timeStr) return "18h";
         let parts = timeStr.split(':');
         if (parts.length === 2) {
-            if (parts[1] === "00") {
-                return parseInt(parts[0], 10) + "h";
-            } else {
-                return parseInt(parts[0], 10) + "h" + parts[1];
-            }
+            return parts[1] === "00" ? parseInt(parts[0], 10) + "h" : parseInt(parts[0], 10) + "h" + parts[1];
         }
         return timeStr;
     }
 
     function render17h() {
         const coSo = "Tam Trinh";
-        const ngay = getSelectedDateFormatted();
+        const ngayStr = getSelectedDateFormatted();
         const modeRadio = document.querySelector('input[name="otMode"]:checked');
         const otTitle = modeRadio ? modeRadio.value : 'ĐĂNG KÝ TĂNG CA';
         const congViec = document.getElementById('congViec_17h').value.trim();
@@ -923,12 +864,8 @@ Em xin cảm ơn ạ!`;
         const filmGroup = ["Vũ", "Tùng", "Tú"];
         const ppfGroup = ["Hậu", "Hoàng", "Khánh"];
 
-        let filmSelected = [];
-        let filmTimeRange = "";
-        
-        let ppfSelected = [];
-        let ppfTimeRange = "";
-
+        let filmSelected = [], filmTimeRange = "";
+        let ppfSelected = [], ppfTimeRange = "";
         let otherSelected = [];
 
         ALL_KTV.forEach(ten => {
@@ -962,31 +899,16 @@ Em xin cảm ơn ạ!`;
         });
 
         let sections = [];
+        if (filmSelected.length > 0) sections.push(`Dán Film\n+ ${filmSelected.join(" - ")}: ${filmTimeRange || "từ 18h đến 21h"}`);
+        if (ppfSelected.length > 0) sections.push(`Dán PPF\n+ ${ppfSelected.join(" - ")}: ${ppfTimeRange || "từ 18h đến 21h"}`);
+        otherSelected.forEach(item => sections.push(`Khác\n+ ${item.name}: ${item.time}`));
 
-        if (filmSelected.length > 0) {
-            let names = filmSelected.join(" - ");
-            sections.push(`Dán Film\n+ ${names}: ${filmTimeRange || "từ 18h đến 21h"}`);
-        }
+        let ktvRenderText = sections.length > 0 ? sections.join('\n\n') : "+ Chưa chọn nhân sự nào";
+        const dateDisplay = `<span style="color: #38bdf8; font-weight: bold;">${ngayStr}</span>`;
 
-        if (ppfSelected.length > 0) {
-            let names = ppfSelected.join(" - ");
-            sections.push(`Dán PPF\n+ ${names}: ${ppfTimeRange || "từ 18h đến 21h"}`);
-        }
+        const htmlText = `${otTitle}
 
-        otherSelected.forEach(item => {
-            sections.push(`Khác\n+ ${item.name}: ${item.time}`);
-        });
-
-        let ktvRenderText = "";
-        if (sections.length > 0) {
-            ktvRenderText = sections.join('\n\n');
-        } else {
-            ktvRenderText = "+ Chưa chọn nhân sự nào";
-        }
-
-        const text = `${otTitle}
-
-– Ngày: ${ngay}
+– Ngày: ${dateDisplay}
 – Cơ sở: ${coSo}
 – Kỹ thuật viên tăng ca:
 ${ktvRenderText}
@@ -994,12 +916,12 @@ ${ktvRenderText}
 
 Em gửi ạ.`;
 
-        document.getElementById('reportOutput').innerText = text;
+        document.getElementById('reportOutput').innerHTML = htmlText;
     }
 
     function render18h() {
         const coSo = "Tam Trinh";
-        const ngay = getSelectedDateFormatted();
+        const ngayStr = getSelectedDateFormatted();
         const danPhim = document.getElementById('danPhim_18h').value.trim();
         const ppf = document.getElementById('ppf_18h').value.trim();
         const wrap = document.getElementById('wrap_18h').value.trim();
@@ -1011,10 +933,12 @@ Em gửi ạ.`;
         const loi4 = document.getElementById('loi4_18h').value.trim();
         const loi5 = document.getElementById('loi5_18h').value.trim();
 
-        const text = `BÁO CÁO CUỐI NGÀY
+        const dateDisplay = `<span style="color: #38bdf8; font-weight: bold;">${ngayStr}</span>`;
+
+        const htmlText = `BÁO CÁO CUỐI NGÀY
 
 Cơ sở: ${coSo}
-Ngày: ${ngay}
+Ngày: ${dateDisplay}
 Tiến độ công việc
 • Dán phim cách nhiệt: ${danPhim}
 • PPF: ${ppf}
@@ -1030,16 +954,12 @@ Kiểm soát chất lượng
 
 Em báo cáo ạ.`;
 
-        document.getElementById('reportOutput').innerText = text;
+        document.getElementById('reportOutput').innerHTML = htmlText;
     }
 
-    function copyReport(silent = false) {
+    function copyReportToClipboard() {
         const text = document.getElementById('reportOutput').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            if (!silent) {
-                showSuccessPopup("Đã sao chép nội dung báo cáo!");
-            }
-        });
+        navigator.clipboard.writeText(text);
     }
 
     function exportToExcel() {
@@ -1049,17 +969,14 @@ Em báo cáo ạ.`;
             if (data.status === "success" && data.exportUrl) {
                 window.open(data.exportUrl, '_blank');
             } else {
-                alert("Không thể tải file Excel. Vui lòng thử lại!");
+                alert("Không thể tải file Excel!");
             }
         })
-        .catch(err => {
-            alert("Lỗi kết nối khi tải file Excel!");
-        });
+        .catch(err => alert("Lỗi kết nối khi tải file Excel!"));
     }
 
     function resetFormToDefault() {
         setDefaultDate();
-
         document.getElementById('status_QuanLy').value = "Đi làm";
         document.getElementById('status_SaleOff_Quan').value = "Đi làm";
         document.getElementById('status_SaleOff_Anh').value = "Đi làm";
@@ -1070,7 +987,6 @@ Em báo cáo ạ.`;
         });
 
         updateAllSelectColors();
-
         document.getElementById('nghiMai_8h').value = "Chưa có.";
         document.getElementById('diMuon_8h').value = "Không có.";
         document.getElementById('chiTiet_8h').value = "";
@@ -1107,11 +1023,11 @@ Em báo cáo ạ.`;
     }
 
     function sendToGoogleSheet() {
-        copyReport(true);
+        copyReportToClipboard();
 
         const btnSync = document.getElementById('btnSync');
         btnSync.disabled = true;
-        btnSync.innerText = "⏳ Đang gửi & Copy...";
+        btnSync.innerText = "⏳ Đang gửi lên Google Sheet...";
 
         const params = new URLSearchParams();
         const reportDate = getSelectedDateFormatted();
@@ -1238,18 +1154,11 @@ Em báo cáo ạ.`;
     function normalizeDateString(rawStr) {
         if (!rawStr) return "";
         let str = String(rawStr).trim();
-        
-        if (str.includes('T')) {
-            str = str.split('T')[0];
-        }
-
+        if (str.includes('T')) str = str.split('T')[0];
         if (str.includes('-')) {
             const p = str.split('-');
-            if (p[0].length === 4) {
-                return `${String(p[2]).padStart(2, '0')}/${String(p[1]).padStart(2, '0')}/${p[0]}`;
-            }
+            if (p[0].length === 4) return `${String(p[2]).padStart(2, '0')}/${String(p[1]).padStart(2, '0')}/${p[0]}`;
         }
-
         if (str.includes('/')) {
             const p = str.split('/');
             if (p.length === 3) {
@@ -1259,10 +1168,10 @@ Em báo cáo ạ.`;
                 return `${d}/${m}/${y}`;
             }
         }
-
         return str;
     }
 
+    // ĐÃ ĐỒNG BỘ CHUẨN VỚI API GETCALENDARSTATUS CỦA APPSCRIPT
     function loadReportCalendar() {
         const gridEl = document.getElementById('calendarGrid');
         gridEl.innerHTML = `<div style="grid-column: span 7; text-align:center; color:var(--text-muted); padding:15px; font-size:13px; font-weight:600;">Đang đồng bộ dữ liệu...</div>`;
@@ -1274,21 +1183,18 @@ Em báo cáo ạ.`;
         const month = parseInt(mStr, 10);
         const year = parseInt(yStr, 10);
 
-        fetch(`${WEB_APP_URL}?action=getHistory&month=${encodeURIComponent(monthStr)}`)
+        fetch(`${WEB_APP_URL}?action=getCalendarStatus&month=${encodeURIComponent(monthStr)}`)
         .then(res => res.json())
         .then(data => {
             let reportedDates = new Set();
-            if (data.status === "success") {
-                let h8 = data.history8h || [];
-                let h17 = data.history17h || [];
-                [...h8, ...h17].forEach(item => {
-                    if (item && item.time) {
-                        const cleanDate = normalizeDateString(item.time);
-                        if (cleanDate) reportedDates.add(cleanDate);
+            if (data.status === "success" && data.calendarStatus) {
+                Object.keys(data.calendarStatus).forEach(d => {
+                    const statusObj = data.calendarStatus[d];
+                    if (statusObj && (statusObj.has8h || statusObj.has17h)) {
+                        reportedDates.add(d);
                     }
                 });
             }
-
             renderCalendarGrid(month, year, reportedDates);
         })
         .catch(err => {
